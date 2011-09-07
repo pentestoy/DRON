@@ -5,8 +5,9 @@
  *  Created 06 Sept. 2011
  */
 
+#include "targetver.h"
 #include <Windows.h>
-#include "Engine/App.hpp"
+#include "App.hpp"
 
 int WINAPI wWinMain( HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int show )
 {

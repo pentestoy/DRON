@@ -1,0 +1,62 @@
+//Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+#include <windows.h>
+
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+
+IDC_DRON	ICON	"DRON.ico"
+IDI_SMALL   ICON	"small.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+   IDC_DRON			"DRONMAINWINDOWCLASS"
+   IDS_APP_TITLE    "DRON"
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DisplayOptionsDialog
+//
+
+DLG_DISPLAYSETTINGSDIALOG DIALOGEX 200, 200, 160, 95
+STYLE DS_CENTER | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "DRON: Video Settings"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT          "Please select your preferred display settings.", IDC_STATIC, 8, 8, 145, 8
+    LTEXT          "Resolution:", IDC_STATIC, 8, 19, 35, 8
+    COMBOBOX       IDC_DSDLG_COMBOBOX 8, 29, 145, 56, CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CHECKBOX       "Run in Fullscreen", IDC_DSDLG_FULLSCREEN, 8, 45, 68, 8, BS_CHECKBOX | WS_TABSTOP
+    CHECKBOX       "Save Settings", IDC_DSDLG_SAVESETTINGS, 8, 58, 68, 8, BS_CHECKBOX | WS_TABSTOP
+    DEFPUSHBUTTON  "OK", IDOK, 25, 73, 50, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON     "Cancel", IDCANCEL, 78, 73, 50, 14
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AudioDialog
+//
+
+DLG_AUDIODIALOG DIALOGEX 200, 200, 160, 80
+STYLE DS_CENTER | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "DRON: Audio Settings"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT          "Move the slider to adjust the volume.", IDC_STATIC, 8, 8, 145, 8
+    DEFPUSHBUTTON  "OK", IDOK, 25, 58, 50, 14, WS_GROUP | WS_TABSTOP
+    PUSHBUTTON     "Cancel", IDCANCEL, 78, 58, 50, 14
+END
