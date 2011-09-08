@@ -40,6 +40,12 @@
     <Filter Include="Source Files\Resource">
       <UniqueIdentifier>{39159c4b-d260-4fde-9ba1-5b9b6a0643af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{ac3ecfe1-dba1-4030-a193-6e44cbbba19a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameState">
+      <UniqueIdentifier>{ed22c834-1018-4da1-b40b-b61b507950bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -71,6 +77,12 @@
     </ClCompile>
     <ClCompile Include="Display\D3D11Renderer.cpp">
       <Filter>Source Files\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState\GameState.cpp">
+      <Filter>Source Files\GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState\Menu.cpp">
+      <Filter>Source Files\GameState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="Display\D3D11Renderer.hpp">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState\GameState.hpp">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState\Menu.hpp">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\MovableComponent.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

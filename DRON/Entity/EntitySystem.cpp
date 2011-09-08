@@ -11,6 +11,12 @@
 #include <cassert>
 #endif
 
+#include <Windows.h>
+EntitySystem::EntitySystem()
+{
+	MessageBox( 0, L"Constructing ec", L"", MB_OK );
+}
+
 EntitySystem::~EntitySystem()
 {
 	std::map< Entity, std::vector< BaseComponent* >* >::iterator ec_iter =
@@ -183,6 +189,9 @@ BaseComponent* EntitySystem::CreateNewComponent( COMPONENT_TYPE type )
 	{
 		case COMPONENT_CAMERA:
 			return new CameraComponent;
+
+		case COMPONENT_MOVABLE:
+			return new MovableComponent;
 
 		case COMPONENT_RENDERABLE:
 			return new RenderableComponent;

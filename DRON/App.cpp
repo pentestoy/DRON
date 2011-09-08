@@ -10,6 +10,7 @@
 #include "Display/DisplaySettingsDialog.hpp"
 #include "Display/MainWindow.hpp"
 #include "Entity/EntitySystem.hpp"
+#include "GameState/Menu.hpp"
 #include "Utility/StringHelper.hpp"
 
 // ============================================================================
@@ -17,13 +18,14 @@
 // ============================================================================
 App::App( HINSTANCE instance )
 	: _instance( instance ), _entity_system_ptr( new EntitySystem() ),
-	  _main_window_ptr( 0 )
+	  _main_window_ptr( 0 ), _renderer_ptr( 0 ), _menu_ptr( 0 ), _world_ptr( 0 )
 { }
 
 App::~App()
 {
 	SAFE_DELETE( _renderer_ptr );
 	SAFE_DELETE( _main_window_ptr );
+	SAFE_DELETE( _menu_ptr );
 	SAFE_DELETE( _entity_system_ptr );
 }
 
@@ -36,6 +38,7 @@ bool App::Initialize()
 	DisplaySettings ds = dsd.GetDisplaySettings();
 	try
 	{
+		_menu_ptr = new Menu( *_entity_system_ptr );
 		_main_window_ptr = new MainWindow( _instance, ds );
 		_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(), ds );
 	}

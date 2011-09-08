@@ -9,6 +9,7 @@
 
 #include "BaseComponent.hpp"
 #include "CameraComponent.hpp"
+#include "MovableComponent.hpp"
 #include "RenderableComponent.hpp"
 #include "XformComponent.hpp"
 

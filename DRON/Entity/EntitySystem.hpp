@@ -17,7 +17,7 @@ class BaseComponent;
 class EntitySystem
 {
 	public:
-		EntitySystem() { }
+		EntitySystem();
 		~EntitySystem();
 
 		Entity CreateNewEntity();

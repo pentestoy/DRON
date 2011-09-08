@@ -85,6 +85,8 @@
     <ClCompile Include="Display\MainWindow.cpp" />
     <ClCompile Include="DRON.cpp" />
     <ClCompile Include="Entity\EntitySystem.cpp" />
+    <ClCompile Include="GameState\GameState.cpp" />
+    <ClCompile Include="GameState\Menu.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
   </ItemGroup>
@@ -99,9 +101,12 @@
     <ClInclude Include="Entity\Components\CameraComponent.hpp" />
     <ClInclude Include="Entity\Components\Components.hpp" />
     <ClInclude Include="Entity\Components\ComponentTypes.hpp" />
+    <ClInclude Include="Entity\Components\MovableComponent.hpp" />
     <ClInclude Include="Entity\Components\RenderableComponent.hpp" />
     <ClInclude Include="Entity\Components\XformComponent.hpp" />
     <ClInclude Include="Entity\EntitySystem.hpp" />
+    <ClInclude Include="GameState\GameState.hpp" />
+    <ClInclude Include="GameState\Menu.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\DXUtil.hpp" />

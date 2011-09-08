@@ -16,6 +16,8 @@
 class D3D11Renderer;
 class EntitySystem;
 class MainWindow;
+class Menu;
+class World;
 class App
 {
     public:
@@ -37,6 +39,8 @@ class App
 		MainWindow*		_main_window_ptr;
 		D3D11Renderer*	_renderer_ptr;
 
+		Menu*			_menu_ptr;
+		World*			_world_ptr;
 };
 
 #endif  _APP_HPP_

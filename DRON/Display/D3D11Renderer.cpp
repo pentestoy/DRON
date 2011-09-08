@@ -32,7 +32,7 @@ BufferMapping< T >::~BufferMapping()
 D3D11Renderer::D3D11Renderer( HWND window, DisplaySettings& ds )//,
 	//ShaderManager& sm, MeshManager& mm, Script& script )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
-      _render_target_view( 0 ), _depth_stencil_view( 0 ), //_shader_mgr( sm ),
+      _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),//_shader_mgr( sm ),
 	  /* _mesh_mgr( mm ), */ _vertex_buffer( 0 ), _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
