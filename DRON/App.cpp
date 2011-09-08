@@ -4,27 +4,27 @@
  *  Created 06 Sept. 2011
  */
 
-#include <algorithm>
 #include <Windows.h>
 #include "App.hpp"
+#include "Display/D3D11Renderer.hpp"
 #include "Display/DisplaySettingsDialog.hpp"
 #include "Display/MainWindow.hpp"
+#include "Entity/EntitySystem.hpp"
 #include "Utility/StringHelper.hpp"
 
 // ============================================================================
 // Create instances for all the SubSystems and Menu
 // ============================================================================
 App::App( HINSTANCE instance )
-	: _instance( instance ), _main_window_ptr( 0 )
+	: _instance( instance ), _entity_system_ptr( new EntitySystem() ),
+	  _main_window_ptr( 0 )
 { }
 
 App::~App()
 {
-	if( _main_window_ptr )
-	{
-		delete _main_window_ptr;
-		_main_window_ptr = 0;
-	}
+	SAFE_DELETE( _renderer_ptr );
+	SAFE_DELETE( _main_window_ptr );
+	SAFE_DELETE( _entity_system_ptr );
 }
 
 bool App::Initialize()
@@ -37,10 +37,12 @@ bool App::Initialize()
 	try
 	{
 		_main_window_ptr = new MainWindow( _instance, ds );
+		_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(), ds );
 	}
 	catch( std::exception& e )
 	{
-		MessageBox( 0, StringToWString( e.what() ).c_str(), L"DRON Fatal Error", MB_OK | MB_ICONERROR );
+		MessageBox( 0, StringToWString( e.what() ).c_str(),
+			L"DRON Fatal Error", MB_OK | MB_ICONERROR );
 		return false;
 	}
 
@@ -72,4 +74,6 @@ int App::Run()
 }
 
 void App::Update( float dt )
-{ }
+{
+	_renderer_ptr->Draw();
+}

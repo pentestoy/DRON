@@ -39,7 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;C:\Program Files %28x86%29\Visual Leak Detector\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -55,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3D11.lib;DXGI.lib;DXErr.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,19 +79,29 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Display\BaseWindow.cpp" />
+    <ClCompile Include="Display\D3D11Renderer.cpp" />
     <ClCompile Include="Display\DisplaySettings.cpp" />
     <ClCompile Include="Display\DisplaySettingsDialog.cpp" />
     <ClCompile Include="Display\MainWindow.cpp" />
     <ClCompile Include="DRON.cpp" />
+    <ClCompile Include="Entity\EntitySystem.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Display\BaseWindow.hpp" />
+    <ClInclude Include="Display\D3D11Renderer.hpp" />
     <ClInclude Include="Display\DisplaySettings.hpp" />
     <ClInclude Include="Display\DisplaySettingsDialog.hpp" />
     <ClInclude Include="Display\MainWindow.hpp" />
+    <ClInclude Include="Entity\Components\BaseComponent.hpp" />
+    <ClInclude Include="Entity\Components\CameraComponent.hpp" />
+    <ClInclude Include="Entity\Components\Components.hpp" />
+    <ClInclude Include="Entity\Components\ComponentTypes.hpp" />
+    <ClInclude Include="Entity\Components\RenderableComponent.hpp" />
+    <ClInclude Include="Entity\Components\XformComponent.hpp" />
+    <ClInclude Include="Entity\EntitySystem.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\DXUtil.hpp" />

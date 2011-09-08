@@ -11,6 +11,10 @@
 
 #include <Windows.h>
 
+#define SAFE_DELETE( x ) if( x ){ delete x; x = 0; }
+
+class D3D11Renderer;
+class EntitySystem;
 class MainWindow;
 class App
 {
@@ -29,7 +33,10 @@ class App
 		void Update( float );
 
 		HINSTANCE		_instance;
+		EntitySystem*	_entity_system_ptr;
 		MainWindow*		_main_window_ptr;
+		D3D11Renderer*	_renderer_ptr;
+
 };
 
 #endif  _APP_HPP_

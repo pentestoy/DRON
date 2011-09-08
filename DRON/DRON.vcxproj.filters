@@ -25,6 +25,21 @@
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{21d612be-f850-46d0-9319-7fa0be9a6961}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{b755604d-fa03-4174-add9-3c7a24bc9d1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity">
+      <UniqueIdentifier>{9f49fd7b-5077-42b5-9146-b149c75b2bb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entity\Components">
+      <UniqueIdentifier>{fb0a031a-b34b-456c-a46a-84f97c14c3bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resource">
+      <UniqueIdentifier>{48d1ecd0-e992-4cd8-837c-5a9d7ee7279c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Resource">
+      <UniqueIdentifier>{39159c4b-d260-4fde-9ba1-5b9b6a0643af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -50,6 +65,12 @@
     </ClCompile>
     <ClCompile Include="Utility\StringHelper.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity\EntitySystem.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\D3D11Renderer.cpp">
+      <Filter>Source Files\Display</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +100,30 @@
     </ClInclude>
     <ClInclude Include="Utility\StringHelper.hpp">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\EntitySystem.hpp">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\BaseComponent.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\CameraComponent.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\Components.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\ComponentTypes.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\RenderableComponent.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Components\XformComponent.hpp">
+      <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11Renderer.hpp">
+      <Filter>Header Files\Display</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
