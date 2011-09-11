@@ -16,13 +16,12 @@ LRESULT CALLBACK BaseWindowProc(HWND window, UINT msg, WPARAM wParam, LPARAM lPa
 
     BaseWindow* bw = reinterpret_cast<BaseWindow*>(GetWindowLongPtr(window, GWLP_USERDATA));
     
-    ////////////////////////////////////////////////////////
-    //
-    // WM_SETFONT is sent to dialogs *before WM_INITDIALOG
-    // so we can't just return bw->Proc
-    // this works, but I'm not sure it's the best solutioin
-    //
-
+    /**************************************************************************
+	 * 
+     * WM_SETFONT is sent to dialogs before WM_INITDIALOG
+     * so we can't just return bw->Proc
+     *
+	 */
     if(bw)
         return bw->Proc(window, msg, wParam, lParam);
 

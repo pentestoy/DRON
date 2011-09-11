@@ -13,7 +13,6 @@ class MovableComponent : public TplComponent< MovableComponent >
 {
 	public:
 		typedef int ComponentData;
-
 		int GetData() const { return 0; }
 
 	private:
@@ -21,5 +20,6 @@ class MovableComponent : public TplComponent< MovableComponent >
 };
 
 COMPONENT_TYPE TplComponent< MovableComponent >::_type = COMPONENT_MOVABLE;
+AutoRegistrar< MovableComponent > TplComponent< MovableComponent >::_registrar;
 
-#endif  _MOVALBE_COMPONENT_HPP_
+#endif  //_MOVALBE_COMPONENT_HPP_

@@ -19,7 +19,6 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 {
 	public:
 		typedef RenderableData ComponentData;
-
 		RenderableData GetData() const { return _data; }
 
 	private:
@@ -27,5 +26,6 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 };
 
 COMPONENT_TYPE TplComponent< RenderableComponent >::_type = COMPONENT_RENDERABLE;
+AutoRegistrar< RenderableComponent > TplComponent< RenderableComponent >::_registrar;
 
-#endif  _RENDERABLE_COMPONENT_HPP_
+#endif  //_RENDERABLE_COMPONENT_HPP_

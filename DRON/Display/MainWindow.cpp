@@ -15,8 +15,8 @@ MainWindow::MainWindow( HINSTANCE instance, DisplaySettings& ds )
 {
 	_title.assign( MAX_STRING_LENGTH, L'\n' );
 	_classname.assign( MAX_STRING_LENGTH, L'\n' );
-    LoadString( _instance, IDS_APP_TITLE, &_title[ 0 ], MAX_STRING_LENGTH );
-    LoadString( _instance, IDC_DRON, &_classname[ 0 ], MAX_STRING_LENGTH );
+    LoadString( GetInstance(), IDS_APP_TITLE, &_title[ 0 ], MAX_STRING_LENGTH );
+    LoadString( GetInstance(), IDC_DRON, &_classname[ 0 ], MAX_STRING_LENGTH );
 
 	Register();
 	Create();
@@ -31,13 +31,13 @@ void MainWindow::Register()
 	wcx.lpfnWndProc	  = BaseWindowProc;
 	wcx.cbClsExtra	  = 0;
 	wcx.cbWndExtra	  = 0;
-	wcx.hInstance	  = _instance;
-	wcx.hIcon		  = LoadIcon( _instance, MAKEINTRESOURCE( IDC_DRON ) );
+	wcx.hInstance	  = GetInstance();
+	wcx.hIcon		  = LoadIcon( GetInstance(), MAKEINTRESOURCE( IDC_DRON ) );
 	wcx.hCursor		  = LoadCursor( NULL, IDC_ARROW );
 	wcx.hbrBackground = ( HBRUSH )( COLOR_WINDOW + 1 );
 	wcx.lpszMenuName  = 0;
 	wcx.lpszClassName = &_classname[ 0 ];
-	wcx.hIconSm		  = LoadIcon( _instance, MAKEINTRESOURCE( IDI_SMALL ) );
+	wcx.hIconSm		  = LoadIcon( GetInstance(), MAKEINTRESOURCE( IDI_SMALL ) );
 
 	if( !RegisterClassEx( &wcx ) )
 		throw std::exception( "Failed to register the window class!" );
@@ -53,7 +53,7 @@ void MainWindow::Create()
                            WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
                            WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
                            CW_USEDEFAULT, 0, r.right - r.left, r.bottom - r.top,
-                           0, 0, _instance, this );
+                           0, 0, GetInstance(), this );
 
 	/**************************************************************************
 	 *

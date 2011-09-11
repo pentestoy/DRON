@@ -31,6 +31,11 @@ App::~App()
 
 bool App::Initialize()
 {
+	_camera = _entity_system_ptr->CreateNewEntity();
+	_entity_system_ptr->AttachComponent( _camera, COMPONENT_CAMERA );
+	_entity_system_ptr->AttachComponent( _camera, COMPONENT_MOVABLE );
+	_entity_system_ptr->AttachComponent( _camera, COMPONENT_XFORM );
+
 	DisplaySettingsDialog dsd( _instance );
 	if( !dsd.Show() )
 		return false;

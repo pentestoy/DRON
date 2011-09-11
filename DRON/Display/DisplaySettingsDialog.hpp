@@ -22,13 +22,9 @@ class DisplaySettingsDialog : public BaseWindow
         bool Show();
         const DisplaySettings& GetDisplaySettings() const;
 
-        LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
+        virtual LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
         
-    protected:
-        HWND            _parentwindow;
-        DisplaySettings _settings;
-        bool            _is_ingame;
-
+    private:
         void OnInitDialog( HWND );
         void OnToggleFullscreen( HWND );
         void OnToggleSaveSettings( HWND );
@@ -40,6 +36,10 @@ class DisplaySettingsDialog : public BaseWindow
         //prevent copying
         DisplaySettingsDialog( const DisplaySettingsDialog& );
         DisplaySettingsDialog& operator=( const DisplaySettingsDialog& );
+
+        HWND            _parentwindow;
+        DisplaySettings _settings;
+        bool            _is_ingame;
 };
 
-#endif  _DISPLAY_SETTINGS_DIALOG_HPP_
+#endif  //_DISPLAY_SETTINGS_DIALOG_HPP_

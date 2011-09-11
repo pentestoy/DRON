@@ -13,21 +13,21 @@
 
 struct XformData
 {
-	XMVECTOR	_position;
-	XMVECTOR	_scale;
-	XMVECTOR	_rotation;
+	XMFLOAT4	_position;
+	XMFLOAT4	_scale;
+	XMFLOAT4	_rotation;
 };
 
 class XformComponent : public TplComponent< XformComponent >
 {
 	public:
-		typedef XformData ComponentData;
-		XformData GetData() const { return _data; }
+		XformData& Data() { return _data; }
 
 	private:
 		XformData	_data;
 };
 
 COMPONENT_TYPE TplComponent< XformComponent >::_type = COMPONENT_XFORM;
+AutoRegistrar< XformComponent > TplComponent< XformComponent >::_registrar;
 
-#endif  _XFORM_COMPONENT_HPP_
+#endif  //_XFORM_COMPONENT_HPP_

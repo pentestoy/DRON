@@ -80,7 +80,6 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Display\BaseWindow.cpp" />
     <ClCompile Include="Display\D3D11Renderer.cpp" />
-    <ClCompile Include="Display\DisplaySettings.cpp" />
     <ClCompile Include="Display\DisplaySettingsDialog.cpp" />
     <ClCompile Include="Display\MainWindow.cpp" />
     <ClCompile Include="DRON.cpp" />

@@ -20,9 +20,11 @@ class BaseWindow
 
         virtual LRESULT CALLBACK Proc(HWND, UINT, WPARAM, LPARAM) = 0;
 
-    protected:
+		const HINSTANCE GetInstance() const { return _instance; }
+
+    private:
         HINSTANCE _instance;
         bool      _is_dialog;
 };
 
-#endif  _BASE_WINDOW_HPP_
+#endif  //_BASE_WINDOW_HPP_

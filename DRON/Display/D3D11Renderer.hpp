@@ -11,23 +11,6 @@
 #include <xnamath.h>
 #include <vector>
 
-template < typename T >
-class BufferMapping
-{
-	public:
-		BufferMapping( ID3D11Buffer*, ID3D11DeviceContext*, D3D11_MAP );
-		~BufferMapping();
-
-		void Close();
-		const T* GetDataPtr() const { return static_cast< T* >( _data.pData ); }
-		T* GetDataPtr() { return static_cast< T* >( _data.pData ); }
-
-	protected:
-		ID3D11DeviceContext*		_dc_ptr;
-		ID3D11Buffer*				_buffer_ptr;
-		D3D11_MAPPED_SUBRESOURCE	_data;
-};
-
 struct DisplaySettings;
 
 class ShaderManager;
@@ -51,6 +34,23 @@ class D3D11Renderer
 
         void OnResize( DisplaySettings& );
         void SetFullscreen( bool );
+
+		template < typename T >
+		class BufferMapping
+		{
+			public:
+				BufferMapping( ID3D11Buffer*, ID3D11DeviceContext*, D3D11_MAP );
+				~BufferMapping();
+
+				void Close();
+				const T* GetDataPtr() const { return static_cast< T* >( _data.pData ); }
+				T* GetDataPtr() { return static_cast< T* >( _data.pData ); }
+
+			protected:
+				ID3D11DeviceContext*		_dc_ptr;
+				ID3D11Buffer*				_buffer_ptr;
+				D3D11_MAPPED_SUBRESOURCE	_data;
+		};
 
     protected:
         bool InitializeBuffers();
@@ -79,4 +79,4 @@ class D3D11Renderer
 		ID3D11Buffer*				_per_frame_buffer;
 };
 
-#endif  _D3DRENDERER_HPP_
+#endif  //_D3DRENDERER_HPP_

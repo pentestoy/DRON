@@ -13,4 +13,4 @@
 #include "RenderableComponent.hpp"
 #include "XformComponent.hpp"
 
-#endif  _COMPONENTS_HPP_
+#endif  //_COMPONENTS_HPP_

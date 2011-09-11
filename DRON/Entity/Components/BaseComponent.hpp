@@ -12,37 +12,58 @@
 
 typedef unsigned int Entity;
 
+/*********************************************
+ * BaseComponent
+ * This simply provides GetType()
+ * and a common base class, of course ;)
+ */
 class BaseComponent
 {
 	public:
 		virtual COMPONENT_TYPE GetType() const = 0;
+		virtual bool operator==( const BaseComponent& other ) const = 0;
+		virtual bool operator!=( const BaseComponent& other ) const = 0;
+		virtual bool operator<( const BaseComponent& other ) const = 0;
 };
 
+/**********************************************************
+ * AutoRegistrar< T >
+ * When instantiated, the constructor auto-registers
+ * Create(), which creates a new T*, with the EntitySystem.
+ * Each component type inherits from a templated class that
+ * has a static AutoRegistrar< T > member, so that 
+ * instantiation occurs at program startup.
+ */
 template< class T >
 struct AutoRegistrar
 {
 	AutoRegistrar()
-	{
-		/*****************************************************
-		 *
-		 * TODO: Register the component with the EntitySystem.
-		 *
-		 *****************************************************/
-	}
+		{ EntitySystem::Register( TplComponent< T >::GetTypeStatic(), AutoRegistrar< T >::Create ); }
+	static BaseComponent* Create() { return new T; }
 };
 
+/***********************************************
+ * TplComponent< T >
+ * Each component T derives from this class.
+ */
 template< class T >
 class TplComponent : public BaseComponent
 {
 	public:
 		TplComponent() { &_registrar; }
-		COMPONENT_TYPE GetType() const { return _type; }
+		virtual COMPONENT_TYPE GetType() const { return _type; }
 		static COMPONENT_TYPE GetTypeStatic() { return _type; }
-	protected:
-		static COMPONENT_TYPE _type;
-		static AutoRegistrar< T > _registrar;
+
+		virtual bool operator==( const BaseComponent& other ) const
+			{ return GetType() == other.GetType(); }
+		virtual bool operator!=( const BaseComponent& other ) const
+			{ return !( *this == other ); }
+		virtual bool operator<( const BaseComponent& other ) const
+			{ return GetType() < other.GetType(); }
+
+	private:
+		static COMPONENT_TYPE		_type;
+		static AutoRegistrar< T >	_registrar;
 };
 
-template< class T > AutoRegistrar< T > TplComponent< T >::_registrar;
-
-#endif  _BASE_COMPONENT_HPP_
+#endif  //_BASE_COMPONENT_HPP_

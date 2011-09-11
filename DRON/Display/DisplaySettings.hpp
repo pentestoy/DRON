@@ -9,10 +9,12 @@
 
 struct DisplaySettings
 {
-    DisplaySettings();	// provide safe and sane defaults
+    DisplaySettings()
+		: _width(800), _height(600), _fullscreen(false) { }
+
     unsigned int _width;
     unsigned int _height;
     bool         _fullscreen;
 };
 
-#endif  _DISPLAY_SETTINGS_HPP_
+#endif  //_DISPLAY_SETTINGS_HPP_

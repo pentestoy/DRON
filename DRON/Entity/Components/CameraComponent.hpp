@@ -22,7 +22,6 @@ class CameraComponent : public TplComponent< CameraComponent >
 {
 	public:
 		typedef CameraData ComponentData;
-
 		CameraData GetData() const { return _data; }
 
 	private:
@@ -30,5 +29,6 @@ class CameraComponent : public TplComponent< CameraComponent >
 };
 
 COMPONENT_TYPE TplComponent< CameraComponent >::_type = COMPONENT_CAMERA;
+AutoRegistrar< CameraComponent > TplComponent< CameraComponent >::_registrar;
 
-#endif  _CAMERA_COMPONENT_HPP_
+#endif  //_CAMERA_COMPONENT_HPP_

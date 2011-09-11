@@ -13,6 +13,8 @@
 
 #define SAFE_DELETE( x ) if( x ){ delete x; x = 0; }
 
+typedef unsigned int Entity;
+
 class D3D11Renderer;
 class EntitySystem;
 class MainWindow;
@@ -41,6 +43,8 @@ class App
 
 		Menu*			_menu_ptr;
 		World*			_world_ptr;
+
+		Entity			_camera;
 };
 
 #endif  _APP_HPP_

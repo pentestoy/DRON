@@ -57,9 +57,6 @@
     <ClCompile Include="Display\BaseWindow.cpp">
       <Filter>Source Files\Display</Filter>
     </ClCompile>
-    <ClCompile Include="Display\DisplaySettings.cpp">
-      <Filter>Source Files\Display</Filter>
-    </ClCompile>
     <ClCompile Include="Display\DisplaySettingsDialog.cpp">
       <Filter>Source Files\Display</Filter>
     </ClCompile>

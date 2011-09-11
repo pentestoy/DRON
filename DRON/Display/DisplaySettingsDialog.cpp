@@ -4,13 +4,15 @@
  *  Created 07 Sept. 2011
  */
 
+#include "DisplaySettingsDialog.hpp"
+
+#include <Commctrl.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
 #include <DXGI.h>
 #include <WindowsX.h>
-#include <Commctrl.h>
-#include <sstream>
-#include <fstream>
-#include <vector>
-#include "DisplaySettingsDialog.hpp"
+
 #include "../Resource.h"
 #include "../Utility/DXUtil.hpp"
 
@@ -31,7 +33,7 @@ DisplaySettingsDialog::~DisplaySettingsDialog()
 
 bool DisplaySettingsDialog::Show()
 {
-    if( DialogBoxParam( _instance, MAKEINTRESOURCE( DLG_DISPLAYSETTINGSDIALOG ),
+    if( DialogBoxParam( GetInstance(), MAKEINTRESOURCE( DLG_DISPLAYSETTINGSDIALOG ),
         _parentwindow, ( DLGPROC )BaseWindowProc, ( LPARAM )this )
             == IDOK )
         return true;

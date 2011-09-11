@@ -22,9 +22,9 @@ class MainWindow : public BaseWindow
         const DisplaySettings& GetDisplaySettings() const { return *_ds_ptr; }
         void OnResize( DisplaySettings& );
 
-        LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
+        virtual LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
 
-    protected:
+    private:
         void Register();
         void Create();
 
@@ -42,4 +42,4 @@ class MainWindow : public BaseWindow
         std::auto_ptr< DisplaySettings >	_ds_ptr;
 };
 
-#endif  _MAIN_WINDOW_HPP_
+#endif  //_MAIN_WINDOW_HPP_

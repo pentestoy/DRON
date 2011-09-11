@@ -4,19 +4,18 @@
  *  Created 07 Sept. 2011
  */
 
+#include "D3D11Renderer.hpp"
+
 #include <D3DX11.h>
 #include <D3Dcompiler.h>
 #include <sstream>
-#include "D3D11Renderer.hpp"
+
 #include "DisplaySettings.hpp"
-#include "../Entity/Components/CameraComponent.hpp"
-//#include "../Resource/Geometry.hpp"
-//#include "../Resource/MeshManager.hpp"
-//#include "../Resource/ShaderManager.hpp"
+//#include "../Entity/Components/CameraComponent.hpp"
 #include "../Utility/DXUtil.hpp"
 
 template< typename T >
-BufferMapping< T >::BufferMapping( ID3D11Buffer* buffer,
+D3D11Renderer::BufferMapping< T >::BufferMapping( ID3D11Buffer* buffer,
 	ID3D11DeviceContext* dc, D3D11_MAP map_flag )
 : _buffer_ptr( buffer ), _dc_ptr( dc )
 {
@@ -24,7 +23,7 @@ BufferMapping< T >::BufferMapping( ID3D11Buffer* buffer,
 }
 
 template< typename T >
-BufferMapping< T >::~BufferMapping()
+D3D11Renderer::BufferMapping< T >::~BufferMapping()
 {
 	_dc_ptr->Unmap( _buffer_ptr, 0 );
 }
