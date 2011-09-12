@@ -18,6 +18,11 @@ struct WVP
 	XMMATRIX	_proj;
 };
 
+struct TestVertex
+{
+	XMFLOAT3 _position;
+};
+
 struct DisplaySettings;
 class PixelShaderManager;
 class VertexShaderManager;

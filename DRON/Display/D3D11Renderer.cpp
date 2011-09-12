@@ -88,7 +88,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
      */
 
 	/***** _hud_matrix defined here *******/
-    XMVECTOR eye = XMVectorSet( 3.0f, -1.0f, -5.0f, 0.0f );
+    XMVECTOR eye = XMVectorSet( 0.0f, 1.0f, -5.0f, 0.0f );
     XMVECTOR at  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
     XMVECTOR up  = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( eye, at, up ) );
@@ -192,15 +192,25 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 
 bool D3D11Renderer::InitializeBuffers()
 {
-	/*
+	TestVertex vertices[] =
+	{
+		XMFLOAT3( 0.0f, 0.5f, 0.5f ),
+		XMFLOAT3( 0.5f, -0.5f, 0.5f ),
+		XMFLOAT3( -0.5f, -0.5f, 0.5f )
+	};
+
     D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( Vertex ) * 3;
-    bd.Usage = D3D11_USAGE_DYNAMIC;
+    bd.ByteWidth = sizeof( TestVertex ) * 3;
+    bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bd.CPUAccessFlags = 0;
     bd.MiscFlags = 0;
 
-	HR( _d3d_device->CreateBuffer( &bd, 0, &_vertex_buffer ) );
+	D3D11_SUBRESOURCE_DATA dsd;
+	ZeroMemory( &dsd, sizeof( dsd ) );
+	dsd.pSysMem = vertices;
+
+	HR( _d3d_device->CreateBuffer( &bd, &dsd, &_vertex_buffer ) );
 
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -208,7 +218,7 @@ bool D3D11Renderer::InitializeBuffers()
     bd.CPUAccessFlags = 0;
 
 	HR( _d3d_device->CreateBuffer( &bd, 0, &_per_frame_buffer ) );
-	*/
+
     return true;
 }
 
@@ -226,7 +236,7 @@ void D3D11Renderer::Draw()
 	per_frame._world = XMMatrixTranspose( XMLoadFloat4x4( &_world_mx ) );
 	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &_view_mx ) );
 	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
-	//_device_context->UpdateSubresource( _per_frame_buffer, 0, 0, &per_frame, 0, 0 );
+	_device_context->UpdateSubresource( _per_frame_buffer, 0, 0, &per_frame, 0, 0 );
 
 	/*
 	Mesh* m = _mesh_mgr.Get( "Triangle" );
@@ -240,24 +250,24 @@ void D3D11Renderer::Draw()
 	}
 		 
 	delete vb_mapping;
+	*/
 
-	unsigned int stride = sizeof( Vertex );
+	unsigned int stride = sizeof( TestVertex );
 	unsigned int offset = 0;
 	_device_context->IASetVertexBuffers( 0, 1,
 		&_vertex_buffer, &stride, &offset );
 	_device_context->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	_device_context->IASetInputLayout( _shader_mgr.GetInputLayout() );
+	_device_context->IASetInputLayout( _vs_manager.GetInputLayout() );
 
-	ID3D11VertexShader* vs = _shader_mgr.GetVertexShader( "VS_Test" );
+	ID3D11VertexShader* vs = _vs_manager.RequestResource( _vs_id ).Data();
 	_device_context->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
 
-	ID3D11PixelShader* ps = _shader_mgr.GetPixelShader( "PS_Test" );
+	ID3D11PixelShader* ps = _ps_manager.RequestResource( _ps_id ).Data();
 	_device_context->VSSetShader( vs, 0, 0 );
 	_device_context->PSSetShader( ps, 0, 0 );
 	_device_context->Draw( 3, 0 );
-	*/
 
 	_swap_chain_ptr->Present( 0, 0 );
 }

@@ -40,6 +40,9 @@ unsigned int VertexShaderManager::LoadResource( const std::string& filename,
 	_resources.insert(
 		std::pair< unsigned int, VertexShaderResource* >( ++_id_count, vsr ) );
 
+	if( !_input_layout )
+		CreateInputLayout( blob );
+
 	return _id_count;
 }
 
@@ -60,4 +63,20 @@ ID3DBlob* VertexShaderManager::CompileVertexShaderFromFile(
 		"vs_4_0", shader_flags, 0, 0, &shader_blob, &error_blob, 0 ) );
 
 	return shader_blob;
+}
+
+void VertexShaderManager::CreateInputLayout( ID3DBlob* blob )
+{
+	D3D11_INPUT_ELEMENT_DESC ied[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	HR( _device->CreateInputLayout( ied, 1, blob->GetBufferPointer(),
+		blob->GetBufferSize(), &_input_layout ) );
+}
+
+ID3D11InputLayout* VertexShaderManager::GetInputLayout() const
+{
+	return _input_layout;
 }

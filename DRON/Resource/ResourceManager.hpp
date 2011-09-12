@@ -31,7 +31,7 @@ class ResourceManager
 		virtual unsigned int LoadResource( const std::string& filename ) = 0;
 		T& RequestResource( unsigned int resource_id )
 		{
-			return *_resources.find( resource_id ).second;
+			return *( *_resources.find( resource_id ) ).second;
 		}
 
 	protected:
