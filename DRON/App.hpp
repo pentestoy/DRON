@@ -17,8 +17,11 @@ typedef unsigned int Entity;
 
 class D3D11Renderer;
 class EntitySystem;
+class GameState;
 class MainWindow;
 class Menu;
+class PixelShaderManager;
+class VertexShaderManager;
 class World;
 class App
 {
@@ -34,15 +37,18 @@ class App
         App& operator=( const App& );
 
         bool Initialize();
-		void Update( float );
 
 		HINSTANCE		_instance;
 		EntitySystem*	_entity_system_ptr;
 		MainWindow*		_main_window_ptr;
 		D3D11Renderer*	_renderer_ptr;
 
+		PixelShaderManager*		_ps_manager_ptr;
+		VertexShaderManager*	_vs_manager_ptr;
+
 		Menu*			_menu_ptr;
 		World*			_world_ptr;
+		GameState*		_current_state_ptr;
 
 		Entity			_camera;
 };

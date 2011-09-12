@@ -11,19 +11,22 @@
 #include "Display/MainWindow.hpp"
 #include "Entity/EntitySystem.hpp"
 #include "GameState/Menu.hpp"
+#include "Resource/PixelShaderManager.hpp"
+#include "Resource/VertexShaderManager.hpp"
 #include "Utility/StringHelper.hpp"
 
-// ============================================================================
-// Create instances for all the SubSystems and Menu
-// ============================================================================
 App::App( HINSTANCE instance )
 	: _instance( instance ), _entity_system_ptr( new EntitySystem() ),
-	  _main_window_ptr( 0 ), _renderer_ptr( 0 ), _menu_ptr( 0 ), _world_ptr( 0 )
+	  _main_window_ptr( 0 ), _renderer_ptr( 0 ), _menu_ptr( 0 ),
+	  _world_ptr( 0 ), _current_state_ptr( 0 ), _ps_manager_ptr( 0 ),
+	  _vs_manager_ptr( 0 )
 { }
 
 App::~App()
 {
 	SAFE_DELETE( _renderer_ptr );
+	SAFE_DELETE( _vs_manager_ptr );
+	SAFE_DELETE( _ps_manager_ptr );
 	SAFE_DELETE( _main_window_ptr );
 	SAFE_DELETE( _menu_ptr );
 	SAFE_DELETE( _entity_system_ptr );
@@ -31,11 +34,6 @@ App::~App()
 
 bool App::Initialize()
 {
-	_camera = _entity_system_ptr->CreateNewEntity();
-	_entity_system_ptr->AttachComponent( _camera, COMPONENT_CAMERA );
-	_entity_system_ptr->AttachComponent( _camera, COMPONENT_MOVABLE );
-	_entity_system_ptr->AttachComponent( _camera, COMPONENT_XFORM );
-
 	DisplaySettingsDialog dsd( _instance );
 	if( !dsd.Show() )
 		return false;
@@ -43,9 +41,7 @@ bool App::Initialize()
 	DisplaySettings ds = dsd.GetDisplaySettings();
 	try
 	{
-		_menu_ptr = new Menu( *_entity_system_ptr );
 		_main_window_ptr = new MainWindow( _instance, ds );
-		_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(), ds );
 	}
 	catch( std::exception& e )
 	{
@@ -54,12 +50,18 @@ bool App::Initialize()
 		return false;
 	}
 
+	_ps_manager_ptr = new PixelShaderManager();
+	_vs_manager_ptr = new VertexShaderManager();
+	_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(),
+									   ds,
+									   *_ps_manager_ptr,
+									   *_vs_manager_ptr );
+	_menu_ptr = new Menu( *_entity_system_ptr, *_renderer_ptr );
+	_current_state_ptr = _menu_ptr;
+
 	return true;
 }
 
-// ============================================================================
-// Calling this enters the game loop
-// ============================================================================
 int App::Run()
 {
     if( !Initialize() )
@@ -75,13 +77,8 @@ int App::Run()
 		}
 
 		float dt = 0.0f;
-		Update( dt );
+		_current_state_ptr->Update( dt );
 	}
 
 	return msg.wParam;
-}
-
-void App::Update( float dt )
-{
-	_renderer_ptr->Draw();
 }

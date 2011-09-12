@@ -11,7 +11,8 @@
 #include <sstream>
 
 #include "DisplaySettings.hpp"
-//#include "../Entity/Components/CameraComponent.hpp"
+#include "../Resource/PixelShaderManager.hpp"
+#include "../Resource/VertexShaderManager.hpp"
 #include "../Utility/DXUtil.hpp"
 
 template< typename T >
@@ -28,11 +29,14 @@ D3D11Renderer::BufferMapping< T >::~BufferMapping()
 	_dc_ptr->Unmap( _buffer_ptr, 0 );
 }
 
-D3D11Renderer::D3D11Renderer( HWND window, DisplaySettings& ds )//,
-	//ShaderManager& sm, MeshManager& mm, Script& script )
+D3D11Renderer::D3D11Renderer( HWND window,
+							  DisplaySettings& ds,
+							  PixelShaderManager& psm,
+							  VertexShaderManager& vsm )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
-      _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),//_shader_mgr( sm ),
-	  /* _mesh_mgr( mm ), */ _vertex_buffer( 0 ), _per_frame_buffer( 0 )
+      _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
+	  _ps_manager( psm ), _vs_manager( vsm ), _vertex_buffer( 0 ),
+	  _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -70,14 +74,18 @@ D3D11Renderer::D3D11Renderer( HWND window, DisplaySettings& ds )//,
 		D3D11_SDK_VERSION, &scd, &_swap_chain_ptr, &_d3d_device, 0,
 		&_device_context ) );
 
-	//_shader_mgr.Initialize( _d3d_device );
+	_ps_manager.Initialize( _d3d_device );
+	_ps_id = _ps_manager.LoadResource( "test.fx", "PS_Test" );
+
+	_vs_manager.Initialize( _d3d_device );
+	_vs_id = _vs_manager.LoadResource( "test.fx", "VS_Test" );
 
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
 
     /**
      *  TODO: this should really be pulled from the camera instead of using
-      *       constants.
-      */
+     *        constants.
+     */
 
 	/***** _hud_matrix defined here *******/
     XMVECTOR eye = XMVectorSet( 3.0f, -1.0f, -5.0f, 0.0f );

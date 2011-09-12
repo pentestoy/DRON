@@ -81,6 +81,15 @@
     <ClCompile Include="GameState\Menu.cpp">
       <Filter>Source Files\GameState</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\MeshManager.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\PixelShaderManager.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\VertexShaderManager.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -142,6 +151,18 @@
     </ClInclude>
     <ClInclude Include="Entity\Components\MovableComponent.hpp">
       <Filter>Header Files\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\ResourceManager.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\MeshManager.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\PixelShaderManager.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShaderManager.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

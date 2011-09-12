@@ -11,16 +11,19 @@
 
 typedef unsigned int Entity;
 class EntitySystem;
+class D3D11Renderer;
 class Menu : public GameState
 {
 	public:
-		Menu( EntitySystem& );
+		Menu( EntitySystem&, D3D11Renderer& );
 		virtual ~Menu() { }
 
 		void Update( float );
 
 	private:
-		Entity	_camera;
+		EntitySystem&	_entity_system;
+		D3D11Renderer&	_renderer;
+		Entity			_camera;
 };
 
 #endif  _MENU_HPP_

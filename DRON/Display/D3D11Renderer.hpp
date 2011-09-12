@@ -11,12 +11,6 @@
 #include <xnamath.h>
 #include <vector>
 
-struct DisplaySettings;
-
-class ShaderManager;
-class MeshManager;
-class Script;
-
 struct WVP
 {
 	XMMATRIX	_world;
@@ -24,10 +18,14 @@ struct WVP
 	XMMATRIX	_proj;
 };
 
+struct DisplaySettings;
+class PixelShaderManager;
+class VertexShaderManager;
 class D3D11Renderer
 {
     public:
-        D3D11Renderer( HWND, DisplaySettings& );//, ShaderManager&, MeshManager&, Script& );
+        D3D11Renderer( HWND, DisplaySettings&,
+					   PixelShaderManager&, VertexShaderManager& );
 		~D3D11Renderer();
 
 		void Draw();
@@ -56,7 +54,13 @@ class D3D11Renderer
         bool InitializeBuffers();
 		void ClearViewsAndRenderTargets();
 
-		//ShaderManager&				_shader_mgr;
+		PixelShaderManager&			_ps_manager;
+		VertexShaderManager&		_vs_manager;
+
+		// temporary
+		unsigned int				_ps_id;
+		unsigned int				_vs_id;
+
 		//MeshManager&				_mesh_mgr;
 
 		ID3D11Device*				_d3d_device;
