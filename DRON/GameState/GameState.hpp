@@ -7,18 +7,25 @@
 #ifndef _GAME_STATE_HPP_
 #define _GAME_STATE_HPP_
 
+#include <map>
 #include <string>
+#include <Windows.h>
+#include "../Input/ActionConstants.hpp"
 
 class GameState
 {
 	public:
-		GameState( const std::string& );
-		virtual ~GameState();
-		const std::string& GetName() const { return _name; }
-		virtual void Update( float ) = 0;
+		GameState() { }
+		virtual ~GameState() { }
+		virtual void Update( float dt ) = 0;
+		virtual void HandleKeypress( const WPARAM key ) = 0;
 
 	protected:
-		const std::string _name;
+		bool MapKeyToAction( const WPARAM key, ACTION& action );
+
+		typedef std::map< WPARAM, ACTION > ActionMap;
+		typedef std::pair< WPARAM, ACTION > ActionMapPair;
+		ActionMap	_mapped_actions;
 };
 
 #endif  _GAME_STATE_HPP_

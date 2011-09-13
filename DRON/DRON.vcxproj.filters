@@ -46,6 +46,9 @@
     <Filter Include="Source Files\GameState">
       <UniqueIdentifier>{ed22c834-1018-4da1-b40b-b61b507950bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{7d914c2d-867a-4020-bb63-4e8ade772675}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -163,6 +166,12 @@
     </ClInclude>
     <ClInclude Include="Resource\VertexShaderManager.hpp">
       <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\ActionConstants.hpp">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputMapper.hpp">
+      <Filter>Header Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,10 +6,12 @@
 
 #include "GameState.hpp"
 
-GameState::GameState( const std::string& name )
-	: _name( name )
-{ }
+bool GameState::MapKeyToAction( const WPARAM key, ACTION& action )
+{
+	ActionMap::const_iterator iter = _mapped_actions.find( key );
+	if( iter == _mapped_actions.end() )
+		return false;
 
-GameState::~GameState()
-{ }
-
+	action = ( *iter ).second;
+	return true;
+}

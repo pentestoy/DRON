@@ -6,12 +6,12 @@
 
 #include "MainWindow.hpp"
 #include "DisplaySettingsDialog.hpp"
+#include "../App.hpp"
 #include "../resource.h"
 
-MainWindow::MainWindow( HINSTANCE instance, DisplaySettings& ds )
-	: BaseWindow( instance, false ), _ds_ptr( new DisplaySettings( ds ) ),
-	  _is_cursor_hidden( false )
-
+MainWindow::MainWindow( HINSTANCE instance, App& app, DisplaySettings& ds )
+	: BaseWindow( instance, false ), _app( app ), _is_cursor_hidden( false ),
+	  _ds_ptr( new DisplaySettings( ds ) )
 {
 	_title.assign( MAX_STRING_LENGTH, L'\n' );
 	_classname.assign( MAX_STRING_LENGTH, L'\n' );
@@ -85,28 +85,36 @@ void MainWindow::OnResize( DisplaySettings& ds )
     SetWindowPos( _window, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER );
 }
 
-LRESULT CALLBACK MainWindow::Proc( HWND window, UINT message, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK MainWindow::Proc( HWND window,
+								   UINT message,
+								   WPARAM wparam,
+								   LPARAM lparam )
 {
 	switch ( message )
 	{
 	    case WM_COMMAND:
-		    switch ( LOWORD( wParam ) )
+		    switch ( LOWORD( wparam ) )
 		    {
 		        case IDM_EXIT:
 			        DestroyWindow( _window );
 			        break;
 		        default:
-			        return DefWindowProc( _window, message, wParam, lParam );
+			        return DefWindowProc( _window, message, wparam, lparam );
 		    }
 		    break;
 
         case WM_KEYDOWN:
-            //_app.GetCurrentGameState().HandleMessages( window, message, wParam, lParam );
+			/******************************************************************
+			 * Ignore keyboard auto-repeat. Bit 30 of lparam is set to 1 if
+			 * the key's previous state was down i.e. it was not just pressed.
+			 */
+			if( !( lparam & ( 1 << 30 ) ) )
+				_app.HandleKeypress( wparam );
             break;
 
 		case WM_SETCURSOR:
 		{
-			WORD hit_test = LOWORD( lParam );
+			WORD hit_test = LOWORD( lparam );
 			if ( hit_test == HTCLIENT && !_is_cursor_hidden )
 			{
 				_is_cursor_hidden = true;
@@ -125,7 +133,7 @@ LRESULT CALLBACK MainWindow::Proc( HWND window, UINT message, WPARAM wParam, LPA
 		    break;
 
 	    default:
-		    return DefWindowProc( _window, message, wParam, lParam );
+		    return DefWindowProc( _window, message, wparam, lparam );
 	}
 	return 0;
 }

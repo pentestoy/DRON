@@ -12,10 +12,11 @@
 #include <string>
 
 struct DisplaySettings;
+class App;
 class MainWindow : public BaseWindow
 {
     public:
-        MainWindow( HINSTANCE, DisplaySettings& );
+        MainWindow( HINSTANCE instance, App& app, DisplaySettings& ds );
 		virtual ~MainWindow() { }
 
         const HWND GetHWND() const { return _window; }
@@ -33,11 +34,12 @@ class MainWindow : public BaseWindow
 
         static const unsigned int MAX_STRING_LENGTH = 100;
 
-		std::wstring	_title;
-		std::wstring	_classname;
-
         HWND	_window;
 		bool	_is_cursor_hidden;
+		App&	_app;
+
+		std::wstring	_title;
+		std::wstring	_classname;
 
         std::auto_ptr< DisplaySettings >	_ds_ptr;
 };

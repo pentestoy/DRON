@@ -30,6 +30,7 @@ class App
 		~App();
 
         int Run();
+		void HandleKeypress( const WPARAM key );
 
     protected:
         //prevent copies

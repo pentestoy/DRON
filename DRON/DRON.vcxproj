@@ -109,6 +109,8 @@
     <ClInclude Include="Entity\EntitySystem.hpp" />
     <ClInclude Include="GameState\GameState.hpp" />
     <ClInclude Include="GameState\Menu.hpp" />
+    <ClInclude Include="Input\ActionConstants.hpp" />
+    <ClInclude Include="Input\InputMapper.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\MeshManager.hpp" />
     <ClInclude Include="Resource\ResourceManager.hpp" />

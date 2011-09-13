@@ -4,7 +4,6 @@
  *  Created 06 Sept. 2011
  */
 
-#include <Windows.h>
 #include "App.hpp"
 #include "Display/D3D11Renderer.hpp"
 #include "Display/DisplaySettingsDialog.hpp"
@@ -41,7 +40,7 @@ bool App::Initialize()
 	DisplaySettings ds = dsd.GetDisplaySettings();
 	try
 	{
-		_main_window_ptr = new MainWindow( _instance, ds );
+		_main_window_ptr = new MainWindow( _instance, *this, ds );
 	}
 	catch( std::exception& e )
 	{
@@ -81,4 +80,9 @@ int App::Run()
 	}
 
 	return msg.wParam;
+}
+
+void App::HandleKeypress( const WPARAM key )
+{
+	_current_state_ptr->HandleKeypress( key );
 }
