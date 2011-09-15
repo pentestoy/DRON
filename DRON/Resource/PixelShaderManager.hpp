@@ -4,8 +4,8 @@
  *  Created 11 Sept. 2011
  */
 
-#ifndef _PIXEL_SHADER_MANAGER_HPP_
-#define _PIXEL_SHADER_MANAGER_HPP_
+#ifndef PIXEL_SHADER_MANAGER_HPP
+#define PIXEL_SHADER_MANAGER_HPP
 
 #include <map>
 #include <D3D11.h>
@@ -39,5 +39,4 @@ class PixelShaderManager : public ResourceManager< PixelShaderResource >
 		ID3D11Device*	_device;
 };
 
-#endif //_PIXEL_SHADER_MANAGER_HPP_
-	
+#endif //PIXEL_SHADER_MANAGER_HPP

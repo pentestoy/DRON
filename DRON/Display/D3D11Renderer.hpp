@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _D3D11RENDERER_HPP_
-#define _D3D11RENDERER_HPP_
+#ifndef D3D11RENDERER_HPP
+#define D3D11RENDERER_HPP
 
 #include <D3D11.h>
 #include <xnamath.h>
@@ -86,4 +86,4 @@ class D3D11Renderer
 		ID3D11Buffer*				_per_frame_buffer;
 };
 
-#endif  //_D3DRENDERER_HPP_
+#endif  //D3D11RENDERER_HPP

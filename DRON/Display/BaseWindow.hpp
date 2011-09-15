@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _BASE_WINDOW_HPP_
-#define _BASE_WINDOW_HPP_
+#ifndef BASE_WINDOW_HPP
+#define BASE_WINDOW_HPP
 
 #include <windows.h>
 
@@ -27,4 +27,4 @@ class BaseWindow
         bool      _is_dialog;
 };
 
-#endif  //_BASE_WINDOW_HPP_
+#endif  //BASE_WINDOW_HPP

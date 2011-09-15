@@ -6,8 +6,8 @@
  *  Only create one instance of this class.
  */
 
-#ifndef _APP_HPP_
-#define _APP_HPP_
+#ifndef APP_HPP
+#define APP_HPP
 
 #include <Windows.h>
 
@@ -52,4 +52,4 @@ class App
 		Entity			_camera;
 };
 
-#endif  _APP_HPP_
+#endif  APP_HPP

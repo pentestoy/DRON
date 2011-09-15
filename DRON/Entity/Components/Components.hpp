@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _COMPONENTS_HPP_
-#define _COMPONENTS_HPP_
+#ifndef COMPONENTS_HPP
+#define COMPONENTS_HPP
 
 #include "BaseComponent.hpp"
 #include "CameraComponent.hpp"
@@ -13,4 +13,4 @@
 #include "RenderableComponent.hpp"
 #include "XformComponent.hpp"
 
-#endif  //_COMPONENTS_HPP_
+#endif  //COMPONENTS_HPP

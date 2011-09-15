@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _XFORM_COMPONENT_HPP_
-#define _XFORM_COMPONENT_HPP_
+#ifndef XFORM_COMPONENT_HPP
+#define XFORM_COMPONENT_HPP
 
 #include "BaseComponent.hpp"
 #include <Windows.h>
@@ -30,4 +30,4 @@ class XformComponent : public TplComponent< XformComponent >
 COMPONENT_TYPE TplComponent< XformComponent >::_type = COMPONENT_XFORM;
 AutoRegistrar< XformComponent > TplComponent< XformComponent >::_registrar;
 
-#endif  //_XFORM_COMPONENT_HPP_
+#endif  //XFORM_COMPONENT_HPP

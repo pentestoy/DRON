@@ -4,12 +4,12 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _STRING_HELPER_HPP_
-#define _STRING_HELPER_HPP_
+#ifndef STRING_HELPER_HPP
+#define STRING_HELPER_HPP
 
 #include <string>
 
 std::string WStringToString( const std::wstring& );
 std::wstring StringToWString( const std::string& );
 
-#endif  _STRING_HELPER_HPP_
+#endif  //STRING_HELPER_HPP

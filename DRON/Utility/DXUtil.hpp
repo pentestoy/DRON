@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _DXUTIL_HPP_
-#define _DXUTIL_HPP_
+#ifndef DXUTIL_HPP
+#define DXUTIL_HPP
 
 #include <D3DX10.h>
 #include <DXerr.h>
@@ -36,4 +36,4 @@ float DistanceXY( D3DXVECTOR3, D3DXVECTOR2 );
 
 bool AreParallel( const D3DXVECTOR3&, const D3DXVECTOR3& );
 
-#endif  _DXUTIL_HPP_
+#endif  DXUTIL_HPP

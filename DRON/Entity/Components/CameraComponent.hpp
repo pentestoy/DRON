@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _CAMERA_COMPONENT_HPP_
-#define _CAMERA_COMPONENT_HPP_
+#ifndef CAMERA_COMPONENT_HPP
+#define CAMERA_COMPONENT_HPP
 
 #include "BaseComponent.hpp"
 #include <Windows.h>
@@ -31,4 +31,4 @@ class CameraComponent : public TplComponent< CameraComponent >
 COMPONENT_TYPE TplComponent< CameraComponent >::_type = COMPONENT_CAMERA;
 AutoRegistrar< CameraComponent > TplComponent< CameraComponent >::_registrar;
 
-#endif  //_CAMERA_COMPONENT_HPP_
+#endif  //CAMERA_COMPONENT_HPP

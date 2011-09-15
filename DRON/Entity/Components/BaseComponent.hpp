@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _BASE_COMPONENT_HPP_
-#define _BASE_COMPONENT_HPP_
+#ifndef BASE_COMPONENT_HPP
+#define BASE_COMPONENT_HPP
 
 #include "ComponentTypes.hpp"
 #include "../EntitySystem.hpp"
@@ -66,4 +66,4 @@ class TplComponent : public BaseComponent
 		static AutoRegistrar< T >	_registrar;
 };
 
-#endif  //_BASE_COMPONENT_HPP_
+#endif  //BASE_COMPONENT_HPP

@@ -4,8 +4,8 @@
  *  Created 12 Sept. 2011
  */
 
-#ifndef _INPUT_MAPPER_HPP_
-#define _INPUT_MAPPER_HPP_
+#ifndef INPUT_MAPPER_HPP
+#define INPUT_MAPPER_HPP
 
 #include <WinUser.h>
 
@@ -20,4 +20,4 @@ class InputMapper
 		bool MapKeyToAction( char key, Action& action );
 };
 
-#endif //_INPUT_MAPPER_HPP_
+#endif //INPUT_MAPPER_HPP

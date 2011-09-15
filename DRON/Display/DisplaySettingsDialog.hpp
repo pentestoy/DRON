@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _DISPLAY_SETTINGS_DIALOG_HPP_
-#define _DISPLAY_SETTINGS_DIALOG_HPP_
+#ifndef DISPLAY_SETTINGS_DIALOG_HPP
+#define DISPLAY_SETTINGS_DIALOG_HPP
 
 #include <vector>
 #include "DisplaySettings.hpp"
@@ -42,4 +42,4 @@ class DisplaySettingsDialog : public BaseWindow
         bool            _is_ingame;
 };
 
-#endif  //_DISPLAY_SETTINGS_DIALOG_HPP_
+#endif  //DISPLAY_SETTINGS_DIALOG_HPP

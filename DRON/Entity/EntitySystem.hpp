@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _ENTITY_SYSTEM_HPP_
-#define _ENTITY_SYSTEM_HPP_
+#ifndef ENTITY_SYSTEM_HPP
+#define ENTITY_SYSTEM_HPP
 
 #include <functional>
 #include <map>
@@ -117,4 +117,4 @@ class EntitySystem
 		ComponentTypeEntityMap	_component_type_map;
 };
 
-#endif  //_ENTITY_SYSTEM_HPP_
+#endif  //ENTITY_SYSTEM_HPP

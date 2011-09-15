@@ -24,4 +24,3 @@
 
 #define DLG_AUDIODIALOG            2000
 #define IDC_ADLG_TRACKBAR          2001
-

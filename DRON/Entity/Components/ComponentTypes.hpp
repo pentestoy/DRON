@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _COMPONENT_TYPES_HPP_
-#define _COMPONENT_TYPES_HPP_
+#ifndef COMPONENT_TYPES_HPP
+#define COMPONENT_TYPES_HPP
 
 enum COMPONENT_TYPE
 {
@@ -15,4 +15,4 @@ enum COMPONENT_TYPE
 	COMPONENT_XFORM
 };
 
-#endif // _COMPONENT_TYPES_HPP_
+#endif // COMPONENT_TYPES_HPP

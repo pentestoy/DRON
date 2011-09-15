@@ -4,8 +4,8 @@
  *  Created 11 Sept. 2011
  */
 
-#ifndef _RESOURCE_MANAGER_HPP_
-#define _RESOURCE_MANAGER_HPP_
+#ifndef RESOURCE_MANAGER_HPP
+#define RESOURCE_MANAGER_HPP
 
 #include <map>
 #include <string>
@@ -43,4 +43,4 @@ class ResourceManager
 		std::map< unsigned int, T* >	_resources;
 };
 
-#endif //_RESOURCE_MANAGER_HPP_
+#endif //RESOURCE_MANAGER_HPP

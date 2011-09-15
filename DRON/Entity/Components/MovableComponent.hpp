@@ -4,8 +4,8 @@
  *  Created 08 Sept. 2011
  */
 
-#ifndef _MOVALBE_COMPONENT_HPP_
-#define _MOVALBE_COMPONENT_HPP_
+#ifndef MOVALBE_COMPONENT_HPP
+#define MOVALBE_COMPONENT_HPP
 
 #include "BaseComponent.hpp"
 
@@ -22,4 +22,4 @@ class MovableComponent : public TplComponent< MovableComponent >
 COMPONENT_TYPE TplComponent< MovableComponent >::_type = COMPONENT_MOVABLE;
 AutoRegistrar< MovableComponent > TplComponent< MovableComponent >::_registrar;
 
-#endif  //_MOVALBE_COMPONENT_HPP_
+#endif  //MOVALBE_COMPONENT_HPP

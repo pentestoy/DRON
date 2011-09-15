@@ -49,6 +49,12 @@
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{7d914c2d-867a-4020-bb63-4e8ade772675}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Resource\VertexShader">
+      <UniqueIdentifier>{22e63fec-1475-4ae0-a087-4794ce677a29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Resource\VertexShader">
+      <UniqueIdentifier>{235c3a89-94b2-4e41-99ce-d7a9f20840a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -90,8 +96,14 @@
     <ClCompile Include="Resource\PixelShaderManager.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\VertexShaderLocator.cpp">
-      <Filter>Source Files\Resource</Filter>
+    <ClCompile Include="Resource\VertexShader\VertexShaderLocator.cpp">
+      <Filter>Source Files\Resource\VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\VertexShader\VertexShaderCache.cpp">
+      <Filter>Source Files\Resource\VertexShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\VertexShader\VertexShaderResource.cpp">
+      <Filter>Source Files\Resource\VertexShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -170,8 +182,14 @@
     <ClInclude Include="Input\InputMapper.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\VertexShaderLocator.hpp">
-      <Filter>Header Files\Resource</Filter>
+    <ClInclude Include="Resource\VertexShader\VertexShaderLocator.hpp">
+      <Filter>Header Files\Resource\VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShader\VertexShaderCache.hpp">
+      <Filter>Header Files\Resource\VertexShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShader\VertexShaderResource.hpp">
+      <Filter>Header Files\Resource\VertexShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,8 +4,8 @@
  *  Created 08 Sept. 2011
  */
 
-#ifndef _GAME_STATE_HPP_
-#define _GAME_STATE_HPP_
+#ifndef GAME_STATE_HPP
+#define GAME_STATE_HPP
 
 #include <map>
 #include <string>
@@ -28,4 +28,4 @@ class GameState
 		ActionMap	_mapped_actions;
 };
 
-#endif  _GAME_STATE_HPP_
+#endif  GAME_STATE_HPP

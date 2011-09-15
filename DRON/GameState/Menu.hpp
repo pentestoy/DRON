@@ -4,8 +4,8 @@
  *  Created 08 Sept. 2011
  */
 
-#ifndef _MENU_HPP_
-#define _MENU_HPP_
+#ifndef MENU_HPP
+#define MENU_HPP
 
 #include "GameState.hpp"
 #include <deque>
@@ -33,4 +33,4 @@ class Menu : public GameState
 		ActionDeque	_actions;
 };
 
-#endif  _MENU_HPP_
+#endif  MENU_HPP

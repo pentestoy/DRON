@@ -12,7 +12,7 @@
 
 #include "DisplaySettings.hpp"
 #include "../Resource/PixelShaderManager.hpp"
-#include "../Resource/VertexShaderLocator.hpp"
+#include "../Resource/VertexShader/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
 
 template< typename T >

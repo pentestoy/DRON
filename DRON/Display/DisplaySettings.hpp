@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _DISPLAY_SETTINGS_HPP_
-#define _DISPLAY_SETTINGS_HPP_
+#ifndef DISPLAY_SETTINGS_HPP
+#define DISPLAY_SETTINGS_HPP
 
 struct DisplaySettings
 {
@@ -17,4 +17,4 @@ struct DisplaySettings
     bool         _fullscreen;
 };
 
-#endif  //_DISPLAY_SETTINGS_HPP_
+#endif  //DISPLAY_SETTINGS_HPP

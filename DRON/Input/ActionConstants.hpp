@@ -4,8 +4,8 @@
  *  Created 12 Sept. 2011
  */
 
-#ifndef _ACTION_CONSTANTS_HPP_
-#define _ACTION_CONSTANTS_HPP_
+#ifndef ACTION_CONSTANTS_HPP
+#define ACTION_CONSTANTS_HPP
 
 enum ACTION
 {
@@ -17,4 +17,4 @@ enum ACTION
 	ACTION_EXIT
 };
 
-#endif //_ACTION_CONSTANTS_HPP_
+#endif //ACTION_CONSTANTS_HPP

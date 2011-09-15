@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _MAIN_WINDOW_HPP_
-#define _MAIN_WINDOW_HPP_
+#ifndef MAIN_WINDOW_HPP
+#define MAIN_WINDOW_HPP
 
 #include "BaseWindow.hpp"
 #include <memory>
@@ -44,4 +44,4 @@ class MainWindow : public BaseWindow
         std::auto_ptr< DisplaySettings >	_ds_ptr;
 };
 
-#endif  //_MAIN_WINDOW_HPP_
+#endif  //MAIN_WINDOW_HPP

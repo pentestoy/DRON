@@ -1,24 +1,19 @@
 /**
- *  Resource/VertexShaderLocator.cpp
+ *  Resource/VertexShaderCache.cpp
  *  (c) Jonathan Capps
- *  Created 14 Sept. 2011
+ *  Created 15 Sept. 2011
  */
 
-#include "VertexShaderLocator.hpp"
+#include "VertexShaderCache.hpp"
 #include <cassert>
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
+#include "VertexShaderResource.hpp"
+#include "../../Utility/DXUtil.hpp"
+#include "../../Utility/StringHelper.hpp"
 
-#include "../Utility/DXUtil.hpp"
-#include "../Utility/StringHelper.hpp"
-
-VertexShaderResource::~VertexShaderResource()
-{
-	DXRelease( _data );
-}
-
-VertexShaderCache::VertexShaderCache( ID3D11Device* device )
-	: _device( device ), _input_layout( 0 )
+VertexShaderCache::VertexShaderCache()
+	: _device( 0 ), _input_layout( 0 )
 {
 	VertexShaderResource* invalid_resource = new VertexShaderResource();
 	invalid_resource->SetValid( false );
@@ -27,6 +22,13 @@ VertexShaderCache::VertexShaderCache( ID3D11Device* device )
 
 VertexShaderCache::~VertexShaderCache()
 {
+	ResourceMap::iterator iter = _resources.begin();
+	while( iter != _resources.end() )
+	{
+		DXRelease( ( *iter ).second->_data );
+		++iter;
+	}
+
 	DXRelease( _device );
 }
 
@@ -96,17 +98,3 @@ void VertexShaderCache::CreateInputLayout( ID3DBlob* blob )
 	HR( _device->CreateInputLayout( ied, 1, blob->GetBufferPointer(),
 		blob->GetBufferSize(), &_input_layout ) );
 }
-
-VertexShaderCache* VertexShaderLocator::_cache = 0;
-
-VertexShaderLocator::VertexShaderLocator( ID3D11Device* device )
-{
-	if( !_cache ) { _cache = new VertexShaderCache( device ); }
-}
-
-VertexShaderResource& VertexShaderLocator::Request( const std::string& filename,
-								   const std::string& shader )
-{
-	return _cache->Request( filename, shader );
-}
-

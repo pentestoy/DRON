@@ -4,8 +4,8 @@
  *  Created 11 Sept. 2011
  */
 
-#ifndef _MESH_MANAGER_HPP_
-#define _MESH_MANAGER_HPP_
+#ifndef MESH_MANAGER_HPP
+#define MESH_MANAGER_HPP
 
 #include "ResourceManager.hpp"
 
@@ -33,4 +33,4 @@ class MeshManager : public ResourceManager< MeshResource >
 		Mesh* LoadMesh( const std::string& filename ); 
 };
 
-#endif //_MESH_MANAGER_HPP_
+#endif //MESH_MANAGER_HPP

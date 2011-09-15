@@ -4,8 +4,8 @@
  *  Created 07 Sept. 2011
  */
 
-#ifndef _RENDERABLE_COMPONENT_HPP_
-#define _RENDERABLE_COMPONENT_HPP_
+#ifndef RENDERABLE_COMPONENT_HPP
+#define RENDERABLE_COMPONENT_HPP
 
 #include "BaseComponent.hpp"
 #include <string>
@@ -28,4 +28,4 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 COMPONENT_TYPE TplComponent< RenderableComponent >::_type = COMPONENT_RENDERABLE;
 AutoRegistrar< RenderableComponent > TplComponent< RenderableComponent >::_registrar;
 
-#endif  //_RENDERABLE_COMPONENT_HPP_
+#endif  //RENDERABLE_COMPONENT_HPP
