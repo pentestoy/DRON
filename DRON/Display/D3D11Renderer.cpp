@@ -12,7 +12,7 @@
 
 #include "DisplaySettings.hpp"
 #include "../Resource/PixelShaderManager.hpp"
-#include "../Resource/VertexShaderManager.hpp"
+#include "../Resource/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
 
 template< typename T >
@@ -31,12 +31,10 @@ D3D11Renderer::BufferMapping< T >::~BufferMapping()
 
 D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
-							  PixelShaderManager& psm,
-							  VertexShaderManager& vsm )
+							  PixelShaderManager& psm )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _ps_manager( psm ), _vs_manager( vsm ), _vertex_buffer( 0 ),
-	  _per_frame_buffer( 0 )
+	  _ps_manager( psm ), _vertex_buffer( 0 ), _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -76,9 +74,6 @@ D3D11Renderer::D3D11Renderer( HWND window,
 
 	_ps_manager.Initialize( _d3d_device );
 	_ps_id = _ps_manager.LoadResource( "test.fx", "PS_Test" );
-
-	_vs_manager.Initialize( _d3d_device );
-	_vs_id = _vs_manager.LoadResource( "test.fx", "VS_Test" );
 
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
 
@@ -252,6 +247,11 @@ void D3D11Renderer::Draw()
 	delete vb_mapping;
 	*/
 
+	//VertexShaderResource1& vsr =
+	//	VertexShaderLocator( _d3d_device ).Request( "test.fx", "VS_Test" );
+
+
+
 	unsigned int stride = sizeof( TestVertex );
 	unsigned int offset = 0;
 	_device_context->IASetVertexBuffers( 0, 1,
@@ -259,9 +259,17 @@ void D3D11Renderer::Draw()
 	_device_context->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	_device_context->IASetInputLayout( _vs_manager.GetInputLayout() );
-
-	ID3D11VertexShader* vs = _vs_manager.RequestResource( _vs_id ).Data();
+	VertexShaderLocator vsl( _d3d_device );
+	ID3D11VertexShader* vs = vsl.Request( "test.fx", "VS_Test" ).Data();
+	/**************************************************************************
+	 * VertexShaderLocator.GetInputLayout currently cannot be called before
+	 * successfully requesting at least one vertex shader. This is because we
+	 * need a shader blob to initialize the layout.
+	 * Also, right now we really only need to call it once, not once per draw,
+	 * since all the shaders have the same layout. We should probably add
+	 * another std::map and store input layouts per shader.
+	 */
+	_device_context->IASetInputLayout( vsl.GetInputLayout() );
 	_device_context->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
 
 	ID3D11PixelShader* ps = _ps_manager.RequestResource( _ps_id ).Data();

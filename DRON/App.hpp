@@ -21,7 +21,6 @@ class GameState;
 class MainWindow;
 class Menu;
 class PixelShaderManager;
-class VertexShaderManager;
 class World;
 class App
 {
@@ -45,7 +44,6 @@ class App
 		D3D11Renderer*	_renderer_ptr;
 
 		PixelShaderManager*		_ps_manager_ptr;
-		VertexShaderManager*	_vs_manager_ptr;
 
 		Menu*			_menu_ptr;
 		World*			_world_ptr;

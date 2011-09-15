@@ -14,11 +14,15 @@ template< class T >
 class Resource
 {
 	public:
-		virtual ~Resource() { _data; }
-		T& Data() { return *_data; }
+		Resource() : _data( 0 ), _valid( false ) { }
+		virtual ~Resource() { }
+		T& Data() const { return *_data; }
 
 	protected:
+		void SetValid( bool validity ) { _valid = validity; }
+
 		T* _data;
+		bool _valid;
 };
 
 template< class T >

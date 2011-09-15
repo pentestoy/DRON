@@ -88,7 +88,7 @@
     <ClCompile Include="GameState\Menu.cpp" />
     <ClCompile Include="Resource\MeshManager.cpp" />
     <ClCompile Include="Resource\PixelShaderManager.cpp" />
-    <ClCompile Include="Resource\VertexShaderManager.cpp" />
+    <ClCompile Include="Resource\VertexShaderLocator.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
   </ItemGroup>
@@ -113,9 +113,9 @@
     <ClInclude Include="Input\InputMapper.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\MeshManager.hpp" />
+    <ClInclude Include="Resource\VertexShaderLocator.hpp" />
     <ClInclude Include="Resource\ResourceManager.hpp" />
     <ClInclude Include="Resource\PixelShaderManager.hpp" />
-    <ClInclude Include="Resource\VertexShaderManager.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\DXUtil.hpp" />
     <ClInclude Include="Utility\StringHelper.hpp" />

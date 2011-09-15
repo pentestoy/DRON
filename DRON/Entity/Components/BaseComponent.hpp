@@ -34,7 +34,7 @@ class BaseComponent
  * has a static AutoRegistrar< T > member, so that 
  * instantiation occurs at program startup.
  */
-template< class T >
+template< typename T >
 struct AutoRegistrar
 {
 	AutoRegistrar()

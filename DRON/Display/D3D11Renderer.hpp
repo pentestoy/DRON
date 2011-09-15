@@ -25,12 +25,11 @@ struct TestVertex
 
 struct DisplaySettings;
 class PixelShaderManager;
-class VertexShaderManager;
 class D3D11Renderer
 {
     public:
         D3D11Renderer( HWND, DisplaySettings&,
-					   PixelShaderManager&, VertexShaderManager& );
+					   PixelShaderManager& );
 		~D3D11Renderer();
 
 		void Draw();
@@ -60,7 +59,6 @@ class D3D11Renderer
 		void ClearViewsAndRenderTargets();
 
 		PixelShaderManager&			_ps_manager;
-		VertexShaderManager&		_vs_manager;
 
 		// temporary
 		unsigned int				_ps_id;
