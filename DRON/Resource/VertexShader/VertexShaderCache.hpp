@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShaderCache.hpp
+ *  Resource/VertexShader/VertexShaderCache.hpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */
@@ -37,7 +37,7 @@ class VertexShaderCache
 		ID3D11InputLayout*	_input_layout;
 
 		typedef std::map< std::string, VertexShaderResource* > ResourceMap;
-		std::map< std::string, VertexShaderResource* > _resources;
+		ResourceMap _resources;
 };
 
 #endif //VERTEX_SHADER_CACHE_HPP

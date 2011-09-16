@@ -87,7 +87,9 @@
     <ClCompile Include="GameState\GameState.cpp" />
     <ClCompile Include="GameState\Menu.cpp" />
     <ClCompile Include="Resource\MeshManager.cpp" />
-    <ClCompile Include="Resource\PixelShaderManager.cpp" />
+    <ClCompile Include="Resource\PixelShader\PixelShaderCache.cpp" />
+    <ClCompile Include="Resource\PixelShader\PixelShaderLocator.cpp" />
+    <ClCompile Include="Resource\PixelShader\PixelShaderResource.cpp" />
     <ClCompile Include="Resource\VertexShader\VertexShaderCache.cpp" />
     <ClCompile Include="Resource\VertexShader\VertexShaderLocator.cpp" />
     <ClCompile Include="Resource\VertexShader\VertexShaderResource.cpp" />
@@ -115,8 +117,10 @@
     <ClInclude Include="Input\InputMapper.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\MeshManager.hpp" />
+    <ClInclude Include="Resource\PixelShader\PixelShaderCache.hpp" />
+    <ClInclude Include="Resource\PixelShader\PixelShaderLocator.hpp" />
+    <ClInclude Include="Resource\PixelShader\PixelShaderResource.hpp" />
     <ClInclude Include="Resource\ResourceManager.hpp" />
-    <ClInclude Include="Resource\PixelShaderManager.hpp" />
     <ClInclude Include="Resource\VertexShader\VertexShaderCache.hpp" />
     <ClInclude Include="Resource\VertexShader\VertexShaderLocator.hpp" />
     <ClInclude Include="Resource\VertexShader\VertexShaderResource.hpp" />

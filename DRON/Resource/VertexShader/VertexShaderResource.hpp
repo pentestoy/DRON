@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShaderResource.hpp
+ *  Resource/VertexShader/VertexShaderResource.hpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */

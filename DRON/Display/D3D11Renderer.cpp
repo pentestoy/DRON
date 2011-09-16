@@ -9,9 +9,10 @@
 #include <D3DX11.h>
 #include <D3Dcompiler.h>
 #include <sstream>
+#include <vector>
 
 #include "DisplaySettings.hpp"
-#include "../Resource/PixelShaderManager.hpp"
+#include "../Resource/PixelShader/PixelShaderLocator.hpp"
 #include "../Resource/VertexShader/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
 
@@ -30,11 +31,10 @@ D3D11Renderer::BufferMapping< T >::~BufferMapping()
 }
 
 D3D11Renderer::D3D11Renderer( HWND window,
-							  DisplaySettings& ds,
-							  PixelShaderManager& psm )
+							  DisplaySettings& ds )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _ps_manager( psm ), _vertex_buffer( 0 ), _per_frame_buffer( 0 )
+	  _vertex_buffer( 0 ), _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -72,9 +72,6 @@ D3D11Renderer::D3D11Renderer( HWND window,
 		D3D11_SDK_VERSION, &scd, &_swap_chain_ptr, &_d3d_device, 0,
 		&_device_context ) );
 
-	_ps_manager.Initialize( _d3d_device );
-	_ps_id = _ps_manager.LoadResource( "test.fx", "PS_Test" );
-
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
 
     /**
@@ -83,7 +80,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
      */
 
 	/***** _hud_matrix defined here *******/
-    XMVECTOR eye = XMVectorSet( 0.0f, 1.0f, -5.0f, 0.0f );
+    XMVECTOR eye = XMVectorSet( 0.0f, 0.0f, -3.0f, 0.0f );
     XMVECTOR at  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
     XMVECTOR up  = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( eye, at, up ) );
@@ -247,11 +244,6 @@ void D3D11Renderer::Draw()
 	delete vb_mapping;
 	*/
 
-	//VertexShaderResource1& vsr =
-	//	VertexShaderLocator( _d3d_device ).Request( "test.fx", "VS_Test" );
-
-
-
 	unsigned int stride = sizeof( TestVertex );
 	unsigned int offset = 0;
 	_device_context->IASetVertexBuffers( 0, 1,
@@ -272,7 +264,9 @@ void D3D11Renderer::Draw()
 	_device_context->IASetInputLayout( vsl.GetInputLayout() );
 	_device_context->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
 
-	ID3D11PixelShader* ps = _ps_manager.RequestResource( _ps_id ).Data();
+	PixelShaderLocator psl( _d3d_device );
+	ID3D11PixelShader* ps = psl.Request( "test.fx", "PS_Test" ).Data();
+	
 	_device_context->VSSetShader( vs, 0, 0 );
 	_device_context->PSSetShader( ps, 0, 0 );
 	_device_context->Draw( 3, 0 );

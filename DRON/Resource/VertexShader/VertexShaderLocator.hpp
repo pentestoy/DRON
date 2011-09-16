@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShaderLocator.hpp
+ *  Resource/VertexShader/VertexShaderLocator.hpp
  *  (c) Jonathan Capps
  *  Created 14 Sept. 2011
  */

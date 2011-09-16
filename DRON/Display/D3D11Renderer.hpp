@@ -9,7 +9,6 @@
 
 #include <D3D11.h>
 #include <xnamath.h>
-#include <vector>
 
 struct WVP
 {
@@ -24,12 +23,10 @@ struct TestVertex
 };
 
 struct DisplaySettings;
-class PixelShaderManager;
 class D3D11Renderer
 {
     public:
-        D3D11Renderer( HWND, DisplaySettings&,
-					   PixelShaderManager& );
+        D3D11Renderer( HWND, DisplaySettings& );
 		~D3D11Renderer();
 
 		void Draw();
@@ -57,8 +54,6 @@ class D3D11Renderer
     protected:
         bool InitializeBuffers();
 		void ClearViewsAndRenderTargets();
-
-		PixelShaderManager&			_ps_manager;
 
 		// temporary
 		unsigned int				_ps_id;

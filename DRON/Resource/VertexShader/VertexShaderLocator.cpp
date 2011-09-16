@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShaderLocator.cpp
+ *  Resource/VertexShader/VertexShaderLocator.cpp
  *  (c) Jonathan Capps
  *  Created 14 Sept. 2011
  */
@@ -18,7 +18,6 @@ VertexShaderLocator::VertexShaderLocator()
 
 VertexShaderLocator::VertexShaderLocator( ID3D11Device* device )
 {
-	//if( !_cache ) { _cache = new VertexShaderCache( device ); }
 	_cache.Initialize( device );
 }
 

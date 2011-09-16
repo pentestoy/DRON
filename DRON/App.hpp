@@ -20,7 +20,6 @@ class EntitySystem;
 class GameState;
 class MainWindow;
 class Menu;
-class PixelShaderManager;
 class World;
 class App
 {
@@ -42,8 +41,6 @@ class App
 		EntitySystem*	_entity_system_ptr;
 		MainWindow*		_main_window_ptr;
 		D3D11Renderer*	_renderer_ptr;
-
-		PixelShaderManager*		_ps_manager_ptr;
 
 		Menu*			_menu_ptr;
 		World*			_world_ptr;

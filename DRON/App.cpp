@@ -10,19 +10,17 @@
 #include "Display/MainWindow.hpp"
 #include "Entity/EntitySystem.hpp"
 #include "GameState/Menu.hpp"
-#include "Resource/PixelShaderManager.hpp"
 #include "Utility/StringHelper.hpp"
 
 App::App( HINSTANCE instance )
 	: _instance( instance ), _entity_system_ptr( new EntitySystem() ),
 	  _main_window_ptr( 0 ), _renderer_ptr( 0 ), _menu_ptr( 0 ),
-	  _world_ptr( 0 ), _current_state_ptr( 0 ), _ps_manager_ptr( 0 )
+	  _world_ptr( 0 ), _current_state_ptr( 0 )
 { }
 
 App::~App()
 {
 	SAFE_DELETE( _renderer_ptr );
-	SAFE_DELETE( _ps_manager_ptr );
 	SAFE_DELETE( _main_window_ptr );
 	SAFE_DELETE( _menu_ptr );
 	SAFE_DELETE( _entity_system_ptr );
@@ -46,10 +44,7 @@ bool App::Initialize()
 		return false;
 	}
 
-	_ps_manager_ptr = new PixelShaderManager();
-	_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(),
-									   ds,
-									   *_ps_manager_ptr );
+	_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(), ds );
 	_menu_ptr = new Menu( *_entity_system_ptr, *_renderer_ptr );
 	_current_state_ptr = _menu_ptr;
 

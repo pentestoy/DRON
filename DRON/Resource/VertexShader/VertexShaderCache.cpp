@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShaderCache.cpp
+ *  Resource/VertexShader/VertexShaderCache.cpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */
@@ -36,7 +36,7 @@ VertexShaderResource& VertexShaderCache::Request( const std::string& filename,
 												  const std::string& shader )
 {
 	std::string key( filename + shader );
-	std::map< std::string, VertexShaderResource* >::iterator iter = 
+	ResourceMap::iterator iter = 
 		_resources.find( key );
 
 	if( iter != _resources.end() ) return *( *iter ).second;

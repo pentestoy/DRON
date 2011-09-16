@@ -8,8 +8,8 @@
 #define DISPLAY_SETTINGS_DIALOG_HPP
 
 #include <vector>
-#include "DisplaySettings.hpp"
 #include "BaseWindow.hpp"
+#include "DisplaySettings.hpp"
 
 struct DXGI_MODE_DESC;
 class DisplaySettingsDialog : public BaseWindow
