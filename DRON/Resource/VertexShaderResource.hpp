@@ -15,7 +15,7 @@ class VertexShaderResource : public Resource< ID3D11VertexShader >
 {
 	public:
 		virtual ~VertexShaderResource();
-		ID3D11VertexShader* Data() { return _data; }
+		ID3D11VertexShader* Data() const { return _data; }
 
 		friend VertexShaderCache;
 };

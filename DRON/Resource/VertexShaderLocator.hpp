@@ -12,6 +12,7 @@
 #include "VertexShaderCache.hpp"
 #include "VertexShaderResource.hpp"
 
+class VertexShaderCache;
 class VertexShaderLocator
 {
 	public:

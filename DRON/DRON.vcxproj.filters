@@ -90,16 +90,25 @@
     <ClCompile Include="Resource\PixelShaderLocator.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\PixelShaderResource.cpp">
-      <Filter>Source Files\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\VertexShaderCache.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Resource\VertexShaderLocator.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\MeshLocator.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\MeshCache.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\PixelShaderResource.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
     <ClCompile Include="Resource\VertexShaderResource.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\MeshResource.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -195,6 +204,9 @@
       <Filter>Header Files\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Resource\VertexShaderResource.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\MeshCache.hpp">
       <Filter>Header Files\Resource</Filter>
     </ClInclude>
   </ItemGroup>

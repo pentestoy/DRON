@@ -5,6 +5,7 @@
  */
 
 #include "VertexShaderLocator.hpp"
+#include "VertexShaderCache.hpp"
 #include <cassert>
 
 VertexShaderCache VertexShaderLocator::_cache;

@@ -5,6 +5,7 @@
  */
 
 #include "PixelShaderLocator.hpp"
+#include "PixelShaderCache.hpp"
 #include <cassert>
 
 PixelShaderCache PixelShaderLocator::_cache;

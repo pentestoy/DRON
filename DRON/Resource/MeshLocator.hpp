@@ -7,11 +7,17 @@
 #ifndef MESH_LOCATOR_HPP
 #define MESH_LOCATOR_HPP
 
+#include <string>
+#include "MeshResource.hpp"
+
+class MeshCache;
 class MeshLocator
 {
 	public:
-		MeshLocator();
+		MeshResource& Request( const std::string& filename );
 
+	private:
+		static MeshCache	_cache;
 };
 
 #endif //MESH_LOCATOR_HPP

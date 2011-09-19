@@ -9,9 +9,9 @@
 
 #include <string>
 #include <D3D11.h>
-#include "PixelShaderCache.hpp"
 #include "PixelShaderResource.hpp"
 
+class PixelShaderCache;
 class PixelShaderLocator
 {
 	public:

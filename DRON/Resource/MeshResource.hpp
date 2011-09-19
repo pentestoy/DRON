@@ -10,8 +10,14 @@
 #include "BaseResource.hpp"
 
 struct aiMesh;
+class MeshCache;
 class MeshResource : public Resource< aiMesh >
 {
+	public:
+		~MeshResource() { delete _data; _data = 0; }
+		aiMesh* Data() { return _data; }
+
+		friend MeshCache;
 };
 
 #endif //MESH_RESOURCE_HPP

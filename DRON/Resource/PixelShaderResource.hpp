@@ -15,7 +15,7 @@ class PixelShaderResource : public Resource< ID3D11PixelShader >
 {
 	public:
 		virtual ~PixelShaderResource();
-		ID3D11PixelShader* Data() { return _data; }
+		ID3D11PixelShader* Data() const { return _data; }
 
 		friend PixelShaderCache;
 };

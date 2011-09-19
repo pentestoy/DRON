@@ -40,7 +40,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(DXSDK_DIR)Lib\x86;C:\Program Files %28x86%29\Visual Leak Detector\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;C:\libraries\assimp\assimp2.0\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -86,6 +86,9 @@
     <ClCompile Include="Entity\EntitySystem.cpp" />
     <ClCompile Include="GameState\GameState.cpp" />
     <ClCompile Include="GameState\Menu.cpp" />
+    <ClCompile Include="Resource\MeshCache.cpp" />
+    <ClCompile Include="Resource\MeshLocator.cpp" />
+    <ClCompile Include="Resource\MeshResource.cpp" />
     <ClCompile Include="Resource\PixelShaderCache.cpp" />
     <ClCompile Include="Resource\PixelShaderLocator.cpp" />
     <ClCompile Include="Resource\PixelShaderResource.cpp" />
@@ -116,6 +119,7 @@
     <ClInclude Include="Input\InputMapper.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\BaseResource.hpp" />
+    <ClInclude Include="Resource\MeshCache.hpp" />
     <ClInclude Include="Resource\MeshLocator.hpp" />
     <ClInclude Include="Resource\MeshResource.hpp" />
     <ClInclude Include="Resource\PixelShaderCache.hpp" />

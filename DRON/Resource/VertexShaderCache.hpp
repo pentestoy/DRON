@@ -8,8 +8,8 @@
 #define VERTEX_SHADER_CACHE_HPP
 
 #include <map>
+#include <string>
 #include <D3D11.h>
-#include "BaseResource.hpp"
 
 class VertexShaderResource;
 class VertexShaderCache
