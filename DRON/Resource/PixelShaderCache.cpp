@@ -17,7 +17,8 @@ PixelShaderCache::PixelShaderCache()
 {
 	PixelShaderResource* invalid_resource = new PixelShaderResource();
 	invalid_resource->SetValid( false );
-	_resources.insert( std::make_pair( "invalid_resource", invalid_resource ) );
+	_resources.insert(
+		std::make_pair( "invalid_resource", invalid_resource ) );
 }
 
 PixelShaderCache::~PixelShaderCache()
@@ -28,17 +29,13 @@ PixelShaderCache::~PixelShaderCache()
 		DXRelease( ( *iter ).second->_data );
 		++iter;
 	}
-
-	// not sure why this seems to be one Release() too many...
-	//DXRelease( _device );
 }
 
 PixelShaderResource& PixelShaderCache::Request( const std::string& filename,
 												const std::string& shader )
 {
 	std::string key( filename + shader );
-	ResourceMap::iterator iter = 
-		_resources.find( key );
+	ResourceMap::iterator iter = _resources.find( key );
 
 	if( iter != _resources.end() ) return *( *iter ).second;
 

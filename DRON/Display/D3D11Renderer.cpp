@@ -10,8 +10,10 @@
 #include <D3Dcompiler.h>
 #include <sstream>
 #include <vector>
+#include <aiMesh.h>
 
 #include "DisplaySettings.hpp"
+#include "../Resource/MeshLocator.hpp"
 #include "../Resource/PixelShaderLocator.hpp"
 #include "../Resource/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
@@ -250,6 +252,10 @@ void D3D11Renderer::Draw()
 		&_vertex_buffer, &stride, &offset );
 	_device_context->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+
+	MeshLocator ml;
+	MeshResource& m = ml.Request( "pipe90.x" );
+	aiMesh mesh = *m.Data();
 
 	VertexShaderLocator vsl( _d3d_device );
 	ID3D11VertexShader* vs = vsl.Request( "test.fx", "VS_Test" ).Data();

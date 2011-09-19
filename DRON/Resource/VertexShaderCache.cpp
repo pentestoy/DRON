@@ -17,7 +17,8 @@ VertexShaderCache::VertexShaderCache()
 {
 	VertexShaderResource* invalid_resource = new VertexShaderResource();
 	invalid_resource->SetValid( false );
-	_resources.insert( std::make_pair( "invalid_resource", invalid_resource ) );
+	_resources.insert(
+		std::make_pair( "invalid_resource", invalid_resource ) );
 }
 
 VertexShaderCache::~VertexShaderCache()
