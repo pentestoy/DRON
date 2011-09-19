@@ -1,5 +1,5 @@
 /**
- *  Resource/PixelShader/PixelShaderCache.cpp
+ *  Resource/PixelShaderCache.cpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */
@@ -9,8 +9,8 @@
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
 #include "PixelShaderResource.hpp"
-#include "../../Utility/DXUtil.hpp"
-#include "../../Utility/StringHelper.hpp"
+#include "../Utility/DXUtil.hpp"
+#include "../Utility/StringHelper.hpp"
 
 PixelShaderCache::PixelShaderCache()
 	: _device( 0 )

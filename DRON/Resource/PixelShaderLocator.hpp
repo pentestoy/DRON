@@ -1,5 +1,5 @@
 /**
- *  Resource/PixelShader/PixelShaderLocator.hpp
+ *  Resource/PixelShaderLocator.hpp
  *  (c) Jonathan Capps
  *  Created 16 Sept. 2011
  */
@@ -7,7 +7,6 @@
 #ifndef PIXEL_SHADER_LOCATOR_HPP
 #define PIXEL_SHADER_LOCATOR_HPP
 
-#include <map>
 #include <string>
 #include <D3D11.h>
 #include "PixelShaderCache.hpp"

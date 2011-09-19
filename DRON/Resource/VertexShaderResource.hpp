@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShader/VertexShaderResource.hpp
+ *  Resource/VertexShaderResource.hpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */
@@ -7,8 +7,8 @@
 #ifndef VERTEX_SHADER_RESOURCE_HPP
 #define VERTEX_SHADER_RESOURCE_HPP
 
-#include "../ResourceManager.hpp"
 #include <D3D11.h>
+#include "BaseResource.hpp"
 
 class VertexShaderCache;
 class VertexShaderResource : public Resource< ID3D11VertexShader >

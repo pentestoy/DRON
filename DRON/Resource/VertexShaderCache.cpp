@@ -1,5 +1,5 @@
 /**
- *  Resource/VertexShader/VertexShaderCache.cpp
+ *  Resource/VertexShaderCache.cpp
  *  (c) Jonathan Capps
  *  Created 15 Sept. 2011
  */
@@ -9,8 +9,8 @@
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
 #include "VertexShaderResource.hpp"
-#include "../../Utility/DXUtil.hpp"
-#include "../../Utility/StringHelper.hpp"
+#include "../Utility/DXUtil.hpp"
+#include "../Utility/StringHelper.hpp"
 
 VertexShaderCache::VertexShaderCache()
 	: _device( 0 ), _input_layout( 0 )

@@ -49,18 +49,6 @@
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{7d914c2d-867a-4020-bb63-4e8ade772675}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Resource\VertexShader">
-      <UniqueIdentifier>{22e63fec-1475-4ae0-a087-4794ce677a29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Resource\VertexShader">
-      <UniqueIdentifier>{235c3a89-94b2-4e41-99ce-d7a9f20840a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Resource\PixelShader">
-      <UniqueIdentifier>{87f7688f-352d-415a-87dc-b526de1e28e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Resource\PixelShader">
-      <UniqueIdentifier>{ada2cd9d-ff82-49bc-b744-406962f81190}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -96,26 +84,23 @@
     <ClCompile Include="GameState\Menu.cpp">
       <Filter>Source Files\GameState</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\MeshManager.cpp">
+    <ClCompile Include="Resource\PixelShaderCache.cpp">
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\VertexShader\VertexShaderLocator.cpp">
-      <Filter>Source Files\Resource\VertexShader</Filter>
+    <ClCompile Include="Resource\PixelShaderLocator.cpp">
+      <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\VertexShader\VertexShaderCache.cpp">
-      <Filter>Source Files\Resource\VertexShader</Filter>
+    <ClCompile Include="Resource\PixelShaderResource.cpp">
+      <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\VertexShader\VertexShaderResource.cpp">
-      <Filter>Source Files\Resource\VertexShader</Filter>
+    <ClCompile Include="Resource\VertexShaderCache.cpp">
+      <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\PixelShader\PixelShaderResource.cpp">
-      <Filter>Source Files\Resource\PixelShader</Filter>
+    <ClCompile Include="Resource\VertexShaderLocator.cpp">
+      <Filter>Source Files\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\PixelShader\PixelShaderCache.cpp">
-      <Filter>Source Files\Resource\PixelShader</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\PixelShader\PixelShaderLocator.cpp">
-      <Filter>Source Files\Resource\PixelShader</Filter>
+    <ClCompile Include="Resource\VertexShaderResource.cpp">
+      <Filter>Source Files\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,35 +164,38 @@
     <ClInclude Include="Entity\Components\MovableComponent.hpp">
       <Filter>Header Files\Entity\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\ResourceManager.hpp">
-      <Filter>Header Files\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\MeshManager.hpp">
-      <Filter>Header Files\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Input\ActionConstants.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputMapper.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\VertexShader\VertexShaderLocator.hpp">
-      <Filter>Header Files\Resource\VertexShader</Filter>
+    <ClInclude Include="Resource\BaseResource.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\VertexShader\VertexShaderCache.hpp">
-      <Filter>Header Files\Resource\VertexShader</Filter>
+    <ClInclude Include="Resource\MeshLocator.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\VertexShader\VertexShaderResource.hpp">
-      <Filter>Header Files\Resource\VertexShader</Filter>
+    <ClInclude Include="Resource\MeshResource.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\PixelShader\PixelShaderResource.hpp">
-      <Filter>Header Files\Resource\PixelShader</Filter>
+    <ClInclude Include="Resource\PixelShaderCache.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\PixelShader\PixelShaderCache.hpp">
-      <Filter>Header Files\Resource\PixelShader</Filter>
+    <ClInclude Include="Resource\PixelShaderLocator.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\PixelShader\PixelShaderLocator.hpp">
-      <Filter>Header Files\Resource\PixelShader</Filter>
+    <ClInclude Include="Resource\PixelShaderResource.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShaderCache.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShaderLocator.hpp">
+      <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\VertexShaderResource.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

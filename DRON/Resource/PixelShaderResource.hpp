@@ -7,8 +7,8 @@
 #ifndef PIXEL_SHADER_RESOURCE_HPP
 #define PIXEL_SHADER_RESOURCE_HPP
 
-#include "../ResourceManager.hpp"
 #include <D3D11.h>
+#include "BaseResource.hpp"
 
 class PixelShaderCache;
 class PixelShaderResource : public Resource< ID3D11PixelShader >

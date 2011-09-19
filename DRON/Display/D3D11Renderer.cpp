@@ -12,8 +12,8 @@
 #include <vector>
 
 #include "DisplaySettings.hpp"
-#include "../Resource/PixelShader/PixelShaderLocator.hpp"
-#include "../Resource/VertexShader/VertexShaderLocator.hpp"
+#include "../Resource/PixelShaderLocator.hpp"
+#include "../Resource/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
 
 template< typename T >

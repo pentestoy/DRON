@@ -1,5 +1,5 @@
 /**
- *  Resource/PixelShader/PixelShaderLocator.cpp
+ *  Resource/PixelShaderLocator.cpp
  *  (c) Jonathan Capps
  *  Created 14 Sept. 2011
  */
