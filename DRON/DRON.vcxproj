@@ -130,6 +130,7 @@
     <ClInclude Include="Resource\VertexShaderResource.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\DXUtil.hpp" />
+    <ClInclude Include="Utility\Geometry.hpp" />
     <ClInclude Include="Utility\StringHelper.hpp" />
   </ItemGroup>
   <ItemGroup>

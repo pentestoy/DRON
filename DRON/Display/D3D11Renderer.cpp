@@ -17,6 +17,7 @@
 #include "../Resource/PixelShaderLocator.hpp"
 #include "../Resource/VertexShaderLocator.hpp"
 #include "../Utility/DXUtil.hpp"
+#include "../Utility/Geometry.hpp"
 
 template< typename T >
 D3D11Renderer::BufferMapping< T >::BufferMapping( ID3D11Buffer* buffer,
@@ -36,7 +37,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _vertex_buffer( 0 ), _per_frame_buffer( 0 )
+	  _vertex_buffer( 0 ), _index_buffer( 0 ), _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -82,7 +83,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
      */
 
 	/***** _hud_matrix defined here *******/
-    XMVECTOR eye = XMVectorSet( 0.0f, 0.0f, -3.0f, 0.0f );
+    XMVECTOR eye = XMVectorSet( 1.0f, 2.0f, -3.0f, 0.0f );
     XMVECTOR at  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
     XMVECTOR up  = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( eye, at, up ) );
@@ -186,7 +187,7 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 
 bool D3D11Renderer::InitializeBuffers()
 {
-	TestVertex vertices[] =
+	Vertex vertices[] =
 	{
 		XMFLOAT3( 0.0f, 0.5f, 0.5f ),
 		XMFLOAT3( 0.5f, -0.5f, 0.5f ),
@@ -194,17 +195,24 @@ bool D3D11Renderer::InitializeBuffers()
 	};
 
     D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( TestVertex ) * 3;
-    bd.Usage = D3D11_USAGE_DEFAULT;
+    bd.ByteWidth = sizeof( Vertex ) * 500;
+    bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = 0;
+    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     bd.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA dsd;
 	ZeroMemory( &dsd, sizeof( dsd ) );
 	dsd.pSysMem = vertices;
 
-	HR( _d3d_device->CreateBuffer( &bd, &dsd, &_vertex_buffer ) );
+	//HR( _d3d_device->CreateBuffer( &bd, &dsd, &_vertex_buffer ) );
+	HR( _d3d_device->CreateBuffer( &bd, 0, &_vertex_buffer ) );
+
+	bd.ByteWidth = sizeof( unsigned int ) * 600;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	HR( _d3d_device->CreateBuffer( &bd, 0, &_index_buffer ) );
 
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
@@ -232,30 +240,26 @@ void D3D11Renderer::Draw()
 	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
 	_device_context->UpdateSubresource( _per_frame_buffer, 0, 0, &per_frame, 0, 0 );
 
-	/*
-	Mesh* m = _mesh_mgr.Get( "Triangle" );
-	BufferMapping< Vertex >* vb_mapping =
-		new BufferMapping< Vertex >( _vertex_buffer, _device_context,
-		D3D11_MAP_WRITE_DISCARD );
-
-	for( unsigned int idx = 0; idx < m->_verts.size(); ++idx )
-	{
-		vb_mapping->GetDataPtr()[ idx ] = *m->_verts[ idx ];
-	}
-		 
-	delete vb_mapping;
-	*/
-
-	unsigned int stride = sizeof( TestVertex );
-	unsigned int offset = 0;
-	_device_context->IASetVertexBuffers( 0, 1,
-		&_vertex_buffer, &stride, &offset );
 	_device_context->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-	MeshLocator ml;
+	MeshLocator ml( _d3d_device );
 	MeshResource& m = ml.Request( "pipe90.x" );
-	aiMesh mesh = *m.Data();
+	Mesh& mesh = *m.Data();
+
+	unsigned int stride = sizeof( Vertex );
+	unsigned int offset = 0;
+	_device_context->IASetVertexBuffers(
+		0,
+		1,
+		&mesh._vertex_buffer,
+		&stride,
+		&offset );
+
+	_device_context->IASetIndexBuffer(
+		mesh._index_buffer,
+		DXGI_FORMAT_R32_UINT,
+		0 );
 
 	VertexShaderLocator vsl( _d3d_device );
 	ID3D11VertexShader* vs = vsl.Request( "test.fx", "VS_Test" ).Data();
@@ -275,7 +279,7 @@ void D3D11Renderer::Draw()
 	
 	_device_context->VSSetShader( vs, 0, 0 );
 	_device_context->PSSetShader( ps, 0, 0 );
-	_device_context->Draw( 3, 0 );
+	_device_context->DrawIndexed( mesh._num_indices, 0, 0 );
 
 	_swap_chain_ptr->Present( 0, 0 );
 }

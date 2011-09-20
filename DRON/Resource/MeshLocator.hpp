@@ -10,10 +10,12 @@
 #include <string>
 #include "MeshResource.hpp"
 
+struct ID3D11Device;
 class MeshCache;
 class MeshLocator
 {
 	public:
+		MeshLocator( ID3D11Device* device );
 		MeshResource& Request( const std::string& filename );
 
 	private:

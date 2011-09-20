@@ -9,13 +9,13 @@
 
 #include "BaseResource.hpp"
 
-struct aiMesh;
+struct Mesh;
 class MeshCache;
-class MeshResource : public Resource< aiMesh >
+class MeshResource : public Resource< Mesh >
 {
 	public:
 		~MeshResource();
-		aiMesh* Data() { return _data; }
+		Mesh* Data() const { return _data; }
 
 		friend MeshCache;
 };

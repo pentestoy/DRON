@@ -209,6 +209,9 @@
     <ClInclude Include="Resource\MeshCache.hpp">
       <Filter>Header Files\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\Geometry.hpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DRON.rc">

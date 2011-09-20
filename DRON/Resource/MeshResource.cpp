@@ -5,7 +5,7 @@
  */
 
 #include "MeshResource.hpp"
-#include <aiMesh.h>
+#include "../Utility/Geometry.hpp"
 
 MeshResource::~MeshResource()
 {

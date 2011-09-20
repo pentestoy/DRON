@@ -9,6 +9,11 @@
 
 MeshCache MeshLocator::_cache;
 
+MeshLocator::MeshLocator( ID3D11Device* device )
+{
+	_cache.Initialize( device );
+}
+
 MeshResource& MeshLocator::Request( const std::string& filename )
 {
 	return _cache.Request( filename );
