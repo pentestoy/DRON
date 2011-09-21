@@ -20,6 +20,7 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 	public:
 		typedef RenderableData ComponentData;
 		RenderableData GetData() const { return _data; }
+		void SetMeshName( const std::string& name ) { _data._mesh_name = name; }
 
 	private:
 		RenderableData	_data;

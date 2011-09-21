@@ -96,6 +96,7 @@
     <ClCompile Include="Resource\VertexShaderLocator.cpp" />
     <ClCompile Include="Resource\VertexShaderResource.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
+    <ClCompile Include="Utility\Grometry.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@ class Menu : public GameState
 		EntitySystem&	_entity_system;
 		D3D11Renderer&	_renderer;
 		Entity			_camera;
+		Entity			_test_entity;
 
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;

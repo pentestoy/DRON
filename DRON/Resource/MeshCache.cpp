@@ -56,7 +56,6 @@ MeshResource& MeshCache::Load( const std::string& filename )
 
 	const aiScene* scene_ptr = importer.ReadFile( file_and_path,
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_MakeLeftHanded        |
 		aiProcess_Triangulate           |
 		aiProcess_ImproveCacheLocality  |
 		aiProcess_SortByPType           |
@@ -91,11 +90,28 @@ MeshResource& MeshCache::Load( const std::string& filename )
 
 Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
 {
-	aiMesh* aim = scene_ptr->mMeshes[ 0 ];
+	aiMesh* ai_mesh_ptr = scene_ptr->mMeshes[ 0 ];
 	Mesh* mesh = new Mesh;
 
+	aiNode* node_ptr = scene_ptr->mRootNode;
+
+	XMMATRIX xform = AIMatrixToXMMatrix( node_ptr->mTransformation );
+	xform = XMMatrixTranspose( xform );
+	std::vector< XMFLOAT3 > vertices;
+
+	for( unsigned int i = 0; i < ai_mesh_ptr->mNumVertices; ++i )
+	{
+		aiVector3D v = ai_mesh_ptr->mVertices[ i ];
+		XMFLOAT4 f( v.x, v.y, v.z, 1.0f );
+		XMVECTOR vert = XMLoadFloat4( &f );
+		vert = XMVector3Transform( vert, xform );
+		XMFLOAT3 final;
+		XMStoreFloat3( &final, vert );
+		vertices.push_back( final );
+	}
+		 
     D3D11_BUFFER_DESC bd;
-	bd.ByteWidth = sizeof( aiVector3D ) * aim->mNumVertices;
+	bd.ByteWidth = sizeof( aiVector3D ) * ai_mesh_ptr->mNumVertices;
     bd.Usage = D3D11_USAGE_IMMUTABLE;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = 0;
@@ -103,28 +119,28 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
 
 	D3D11_SUBRESOURCE_DATA dsd;
 	ZeroMemory( &dsd, sizeof( dsd ) );
-	dsd.pSysMem = aim->mVertices;
+	dsd.pSysMem = &vertices[ 0 ];
 
 	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_vertex_buffer ) );
-	mesh->_num_vertices = aim->mNumVertices;
+	mesh->_num_vertices = ai_mesh_ptr->mNumVertices;
 
 	std::vector< unsigned int > index_vector;
-	index_vector.reserve( aim->mNumFaces * 3 );
+	index_vector.reserve( ai_mesh_ptr->mNumFaces * 3 );
 
-	for( unsigned int i = 0; i < aim->mNumFaces; ++i )
+	for( unsigned int i = 0; i < ai_mesh_ptr->mNumFaces; ++i )
 	{
-		index_vector.push_back( aim->mFaces[ i ].mIndices[ 0 ] );
-		index_vector.push_back( aim->mFaces[ i ].mIndices[ 1 ] );
-		index_vector.push_back( aim->mFaces[ i ].mIndices[ 2 ] );
+		index_vector.push_back( ai_mesh_ptr->mFaces[ i ].mIndices[ 0 ] );
+		index_vector.push_back( ai_mesh_ptr->mFaces[ i ].mIndices[ 1 ] );
+		index_vector.push_back( ai_mesh_ptr->mFaces[ i ].mIndices[ 2 ] );
 	}
 
-	bd.ByteWidth = sizeof( unsigned int ) * aim->mNumFaces * 3;
+	bd.ByteWidth = sizeof( unsigned int ) * ai_mesh_ptr->mNumFaces * 3;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 	dsd.pSysMem = &index_vector[ 0 ];
 
 	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_index_buffer ) );
-	mesh->_num_indices = aim->mNumFaces * 3;
+	mesh->_num_indices = ai_mesh_ptr->mNumFaces * 3;
 
 	return mesh;
 }

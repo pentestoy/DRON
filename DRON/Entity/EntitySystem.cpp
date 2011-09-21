@@ -99,7 +99,14 @@ void EntitySystem::AttachComponent( Entity e, COMPONENT_TYPE type )
 {
 	// unfortunately, it appears we have to create the component
 	// and try to insert it. It's easier than iterating through the set.
-	BaseComponent* c = CreateNewComponent( type );
+	BaseComponent* c = _create_component_map()[ type ](); //CreateNewComponent( type );
+
+	if( c->GetType() == COMPONENT_RENDERABLE )
+	{
+		std::string foo = dynamic_cast< RenderableComponent* >( c )->GetData()._mesh_name;
+		int x = 1;
+	}
+
 	// result.second indicates success
 	std::pair< BaseComponentPtrSet::iterator, bool > result =
 		_entity_map[ e ].insert( c );
@@ -114,98 +121,11 @@ void EntitySystem::AttachComponent( Entity e, COMPONENT_TYPE type )
 		// component's list now
 		_component_type_map[ type ].insert( e );
 	}
-	/*
-	// look for the entity
-	std::map< Entity, std::vector< BaseComponent* >* >::iterator ec_iter =
-		_entity_map.find( e );
-
-	// if we didn't find it, then we add it and give it the component
-	if( ec_iter == _entity_map.end() )
-	{
-		std::vector< BaseComponent* >* v = new std::vector< BaseComponent* >;
-		BaseComponent* c = CreateNewComponent( type );
-		if( c )
-			v->push_back( c );
-
-		_entity_map.insert(
-			std::pair< Entity, std::vector< BaseComponent* >* >( e, v ) );
-	}
-	else
-	{
-		// we found it, so we check to see if it already has this component
-		bool found = false;
-		std::vector< BaseComponent* >::iterator comp_iter =
-			ec_iter->second->begin();
-
-		while( comp_iter != ec_iter->second->end() )
-		{
-			if( ( *comp_iter )->GetType() == type )
-				found = true;
-
-			++comp_iter;
-		}
-
-		// it doesn't have the component, so we add it.
-		if( found == false )
-		{
-			BaseComponent* c = CreateNewComponent( type );
-			if( c )
-				ec_iter->second->push_back( c );
-		}
-	}
-
-	// now we add the entity to the component_type's vector
-	std::map< COMPONENT_TYPE, std::vector< Entity >* >::iterator ce_iter =
-		_component_type_map.find( type );
-
-	// if we didn't find the component type, then we create it and add the entity to it
-	if( ce_iter == _component_type_map.end() )
-	{
-		std::vector< Entity >* v = new std::vector< Entity >;
-		v->push_back( e );
-
-		_component_type_map.insert(
-			std::pair< COMPONENT_TYPE, std::vector< Entity >* >( type, v ) );
-	}
-	else
-	{
-		// we found it, so we add the entity
-#if defined( DEBUG ) || defined( _DEBUG )
-		std::vector< Entity >::iterator e_iter =
-			std::find( ce_iter->second->begin(),
-					   ce_iter->second->end(),
-					   e );
-
-		assert( e_iter == ce_iter->second->end() );
-#endif
-		ce_iter->second->push_back( e );
-	}
-	*/
 }
 
 BaseComponent* EntitySystem::CreateNewComponent( COMPONENT_TYPE type )
 {
-	//CameraComponent cc;
-	return _create_component_map()[ type ]();//_create_component_map[type]();
-	/*
-	switch( type )
-	{
-		case COMPONENT_CAMERA:
-			return new CameraComponent;
-
-		case COMPONENT_MOVABLE:
-			return new MovableComponent;
-
-		case COMPONENT_RENDERABLE:
-			return new RenderableComponent;
-
-		case COMPONENT_XFORM:
-			return new XformComponent;
-
-		default:
-			return 0;
-	}
-	*/
+	return _create_component_map()[ type ]();
 }
 
 void EntitySystem::GetEntitiesByComponentType( COMPONENT_TYPE type, std::vector< Entity >& v )

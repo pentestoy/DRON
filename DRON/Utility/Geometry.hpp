@@ -12,6 +12,9 @@
 #include <d3d11.h>
 #include <xnamath.h>
 
+struct aiMatrix4x4;
+XMMATRIX AIMatrixToXMMatrix( const aiMatrix4x4& in );
+
 struct Vertex
 {
 	Vertex( const XMFLOAT3& f ) : _position( f ) {}
@@ -33,6 +36,7 @@ struct Triangle
 struct Mesh
 {
 	Mesh() : _vertex_buffer( 0 ), _index_buffer( 0 ) { }
+	~Mesh();
 
 	//std::vector< unsigned int > _indices;
 	//std::vector< Triangle >		_triangles;

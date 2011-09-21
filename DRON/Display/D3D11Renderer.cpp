@@ -37,7 +37,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _vertex_buffer( 0 ), _index_buffer( 0 ), _per_frame_buffer( 0 )
+	  _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -83,7 +83,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
      */
 
 	/***** _hud_matrix defined here *******/
-    XMVECTOR eye = XMVectorSet( 1.0f, 2.0f, -3.0f, 0.0f );
+    XMVECTOR eye = XMVectorSet( 0.0f, 0.0f, -5.0f, 0.0f );
     XMVECTOR at  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
     XMVECTOR up  = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( eye, at, up ) );
@@ -100,7 +100,6 @@ D3D11Renderer::~D3D11Renderer()
 	if( _device_context )
 		_device_context->ClearState();
 
-	DXRelease( _vertex_buffer );
 	DXRelease( _per_frame_buffer );
 	DXRelease( _depth_stencil_buffer );
 	DXRelease( _depth_stencil_view );
@@ -187,37 +186,12 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 
 bool D3D11Renderer::InitializeBuffers()
 {
-	Vertex vertices[] =
-	{
-		XMFLOAT3( 0.0f, 0.5f, 0.5f ),
-		XMFLOAT3( 0.5f, -0.5f, 0.5f ),
-		XMFLOAT3( -0.5f, -0.5f, 0.5f )
-	};
-
     D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( Vertex ) * 500;
-    bd.Usage = D3D11_USAGE_DYNAMIC;
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    bd.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA dsd;
-	ZeroMemory( &dsd, sizeof( dsd ) );
-	dsd.pSysMem = vertices;
-
-	//HR( _d3d_device->CreateBuffer( &bd, &dsd, &_vertex_buffer ) );
-	HR( _d3d_device->CreateBuffer( &bd, 0, &_vertex_buffer ) );
-
-	bd.ByteWidth = sizeof( unsigned int ) * 600;
-	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	HR( _d3d_device->CreateBuffer( &bd, 0, &_index_buffer ) );
-
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bd.CPUAccessFlags = 0;
+    bd.MiscFlags = 0;
 
 	HR( _d3d_device->CreateBuffer( &bd, 0, &_per_frame_buffer ) );
 

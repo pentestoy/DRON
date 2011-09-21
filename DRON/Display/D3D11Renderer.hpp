@@ -59,8 +59,6 @@ class D3D11Renderer
 		unsigned int				_ps_id;
 		unsigned int				_vs_id;
 
-		//MeshManager&				_mesh_mgr;
-
 		ID3D11Device*				_d3d_device;
 		IDXGISwapChain*				_swap_chain_ptr;
 		ID3D11DeviceContext*		_device_context;
@@ -77,8 +75,6 @@ class D3D11Renderer
 		XMFLOAT4X4					_perspec_mx;
 		XMFLOAT4X4					_ortho_mx;
 
-		ID3D11Buffer*				_vertex_buffer;
-		ID3D11Buffer*				_index_buffer;
 		ID3D11Buffer*				_per_frame_buffer;
 };
 
