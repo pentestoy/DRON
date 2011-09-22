@@ -11,20 +11,21 @@
 #include <Windows.h>
 #include <xnamath.h>
 
-struct XformData
-{
-	XMFLOAT4	_position;
-	XMFLOAT4	_scale;
-	XMFLOAT4	_rotation;
-};
-
 class XformComponent : public TplComponent< XformComponent >
 {
 	public:
-		XformData& Data() { return _data; }
+		struct Data : public BaseComponentData
+		{
+			XMFLOAT4	_position;
+			XMFLOAT4	_scale;
+			XMFLOAT4	_rotation;
+		};
+		Data& GetData() { return _data; }
+		void SetData( BaseComponent::BaseComponentData& data )
+			{ _data = static_cast< Data& >( data ); }
 
 	private:
-		XformData	_data;
+		Data	_data;
 };
 
 COMPONENT_TYPE TplComponent< XformComponent >::_type = COMPONENT_XFORM;

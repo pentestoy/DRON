@@ -95,17 +95,15 @@ void EntitySystem::DestroyEntity( Entity e )
 	_entities.erase( std::remove( _entities.begin(), _entities.end(), e ), _entities.end() );
 }
 
-void EntitySystem::AttachComponent( Entity e, COMPONENT_TYPE type )
+void EntitySystem::CreateAndAttachComponent(
+	Entity e,
+	COMPONENT_TYPE type,
+	BaseComponent::BaseComponentData& data )
 {
 	// unfortunately, it appears we have to create the component
 	// and try to insert it. It's easier than iterating through the set.
-	BaseComponent* c = _create_component_map()[ type ](); //CreateNewComponent( type );
-
-	if( c->GetType() == COMPONENT_RENDERABLE )
-	{
-		std::string foo = dynamic_cast< RenderableComponent* >( c )->GetData()._mesh_name;
-		int x = 1;
-	}
+	BaseComponent* c = _create_component_map()[ type ]();
+	c->SetData( data );
 
 	// result.second indicates success
 	std::pair< BaseComponentPtrSet::iterator, bool > result =
@@ -121,11 +119,6 @@ void EntitySystem::AttachComponent( Entity e, COMPONENT_TYPE type )
 		// component's list now
 		_component_type_map[ type ].insert( e );
 	}
-}
-
-BaseComponent* EntitySystem::CreateNewComponent( COMPONENT_TYPE type )
-{
-	return _create_component_map()[ type ]();
 }
 
 void EntitySystem::GetEntitiesByComponentType( COMPONENT_TYPE type, std::vector< Entity >& v )

@@ -21,11 +21,18 @@ struct CameraData
 class CameraComponent : public TplComponent< CameraComponent >
 {
 	public:
-		typedef CameraData ComponentData;
-		CameraData GetData() const { return _data; }
+		struct Data : public BaseComponentData
+		{
+			XMVECTOR _lookat;
+			XMVECTOR _up;
+			Entity	 _tracked_target;
+		};
+		Data& GetData() { return _data; }
+		void SetData( BaseComponent::BaseComponentData& data )
+			{ _data = static_cast< Data& >( data ); }
 
 	private:
-		CameraData	_data;
+		Data	_data;
 };
 
 COMPONENT_TYPE TplComponent< CameraComponent >::_type = COMPONENT_CAMERA;

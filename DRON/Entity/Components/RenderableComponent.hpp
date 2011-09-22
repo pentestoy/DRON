@@ -10,20 +10,19 @@
 #include "BaseComponent.hpp"
 #include <string>
 
-struct RenderableData
-{
-	std::string _mesh_name;
-};
-
 class RenderableComponent : public TplComponent< RenderableComponent >
 {
 	public:
-		typedef RenderableData ComponentData;
-		RenderableData GetData() const { return _data; }
-		void SetMeshName( const std::string& name ) { _data._mesh_name = name; }
+		struct Data : public BaseComponent::BaseComponentData
+		{
+			std::string _mesh_name;
+		};
+		virtual BaseComponent::BaseComponentData& GetData() { return _data; }
+		virtual void SetData( BaseComponent::BaseComponentData& data )
+			{ _data	= static_cast< Data& >( data ); }
 
 	private:
-		RenderableData	_data;
+		Data	_data;
 };
 
 COMPONENT_TYPE TplComponent< RenderableComponent >::_type = COMPONENT_RENDERABLE;

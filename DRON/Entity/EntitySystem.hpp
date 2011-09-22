@@ -15,7 +15,7 @@
 
 enum COMPONENT_TYPE;
 typedef unsigned int Entity;
-
+struct BaseComponentData;
 class EntitySystem
 {
 	public:
@@ -26,49 +26,17 @@ class EntitySystem
 		typedef std::vector< Entity > EntityVector;
 		typedef std::vector< BaseComponent* > BaseComponentPtrVector;
 
-		/**********************************************************************
-		 * CreateNewEntity()
-		 * Creates and returns a new Entity. The EntitySystem keeps track of
-		 * and reuses IDs of destroyed Entities.
-		 */
 		Entity CreateNewEntity();
-
-		/**********************************************************************
-		 * DestroyEntity( Entity e )
-		 * Calls delete on all components attached to the Entity. Removes the
-		 * Entity from any ComponentType lists it is associated with. Then
-		 * moves the Entity to the dead entities list.
-		 */
 		void DestroyEntity( Entity );
 
-		/**********************************************************************
-		 * AttachComponent( Entity e, COMPONENT_TYPE type )
-		 * If the Entity does not have the requested component type, it creates
-		 * a new one, associates it with the Entity, and associates the Entity
-		 * with the component type's list.
-		 *
-		 * If the Entity already has a component of the requested type
-		 * associated with it, the function does nothing.
-		 */
-		void AttachComponent( Entity e, COMPONENT_TYPE type );
+		void CreateAndAttachComponent(
+			Entity e,
+			COMPONENT_TYPE type,
+			BaseComponent::BaseComponentData& data );
 
-		/**********************************************************************
-		 * GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v )
-		 * Populates v with all entities that have a component of requested
-		 * type attached.
-		 */
 		void GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v );
-
-		/**********************************************************************
-		 * GetEntityComponents( Entity e, BaseComponentPtrVector& v )
-		 * Populates v with all components attached to Entity e.
-		 */
 		void GetEntityComponents( Entity e, BaseComponentPtrVector& v );
 
-		/**********************************************************************
-		 * Register( COMPONENT_TYPE type, ComponentCreator creator )
-		 * Registers a function that creates a component of the given type.
-		 */
 		static void Register( COMPONENT_TYPE type, ComponentCreator creator );
 
 	private:
@@ -99,6 +67,7 @@ class EntitySystem
 		typedef std::map< Entity, BaseComponentPtrSet > EntityComponentMap;
 		typedef std::map< COMPONENT_TYPE, EntitySet > ComponentTypeEntityMap;
 		typedef std::map< COMPONENT_TYPE, ComponentCreator > CreateComponentMap;
+		typedef std::vector< BaseComponent* > ComponentVector;
 
 		/**********************************************************************
 		 * _create_component_map() wraps the actual map in order to ensure
@@ -115,6 +84,7 @@ class EntitySystem
 		EntityVector			_dead_entities;
 		EntityComponentMap		_entity_map;
 		ComponentTypeEntityMap	_component_type_map;
+		ComponentVector			_orphaned_components;
 };
 
 #endif  //ENTITY_SYSTEM_HPP

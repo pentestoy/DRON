@@ -12,11 +12,14 @@
 class MovableComponent : public TplComponent< MovableComponent >
 {
 	public:
-		typedef int ComponentData;
-		int GetData() const { return 0; }
+		struct Data : public BaseComponentData
+		{ };
+		Data& GetData() { return _data; }
+		void SetData( BaseComponent::BaseComponentData& data )
+			{ _data = static_cast< Data& >( data ); }
 
 	private:
-		//int	_data;
+		Data	_data;
 };
 
 COMPONENT_TYPE TplComponent< MovableComponent >::_type = COMPONENT_MOVABLE;
