@@ -37,7 +37,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _per_frame_buffer( 0 )
+	  _instance_buffer( 0 ), _per_frame_buffer( 0 )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -187,6 +187,15 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 bool D3D11Renderer::InitializeBuffers()
 {
     D3D11_BUFFER_DESC bd;
+    bd.ByteWidth = sizeof( XMFLOAT4 ) * 4 * 100; //4 for pos, rot_quat, scale, color 
+    bd.Usage = D3D11_USAGE_DYNAMIC;
+    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    bd.MiscFlags = 0;
+
+	HR( _d3d_device->CreateBuffer( &bd, 0, &_instance_buffer ) );
+
+
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -218,7 +227,7 @@ void D3D11Renderer::Draw()
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	MeshLocator ml( _d3d_device );
-	MeshResource& m = ml.Request( "pipe90.x" );
+	MeshResource& m = ml.Request( "pipe00.x" );
 	Mesh& mesh = *m.Data();
 
 	unsigned int stride = sizeof( Vertex );

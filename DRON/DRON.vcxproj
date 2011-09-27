@@ -98,6 +98,7 @@
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\Grometry.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
+    <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -117,7 +118,7 @@
     <ClInclude Include="GameState\GameState.hpp" />
     <ClInclude Include="GameState\Menu.hpp" />
     <ClInclude Include="Input\ActionConstants.hpp" />
-    <ClInclude Include="Input\InputMapper.hpp" />
+    <ClInclude Include="Maze\Maze.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\BaseResource.hpp" />
     <ClInclude Include="Resource\MeshCache.hpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="Utility\DXUtil.hpp" />
     <ClInclude Include="Utility\Geometry.hpp" />
     <ClInclude Include="Utility\StringHelper.hpp" />
+    <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DRON.rc" />

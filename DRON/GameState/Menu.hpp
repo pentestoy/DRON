@@ -13,6 +13,7 @@
 typedef unsigned int Entity;
 class EntitySystem;
 class D3D11Renderer;
+class Maze;
 class Menu : public GameState
 {
 	public:
@@ -29,6 +30,8 @@ class Menu : public GameState
 		D3D11Renderer&	_renderer;
 		Entity			_camera;
 		Entity			_test_entity;
+
+		Maze*			_maze;
 
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;

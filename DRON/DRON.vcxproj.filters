@@ -49,6 +49,9 @@
     <Filter Include="Header Files\Input">
       <UniqueIdentifier>{7d914c2d-867a-4020-bb63-4e8ade772675}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Maze">
+      <UniqueIdentifier>{10a5e886-0a1c-42d1-9d85-30e0d6d00d9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -112,6 +115,9 @@
       <Filter>Source Files\Resource</Filter>
     </ClCompile>
     <ClCompile Include="Utility\Grometry.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Timer.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,9 +185,6 @@
     <ClInclude Include="Input\ActionConstants.hpp">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputMapper.hpp">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\BaseResource.hpp">
       <Filter>Header Files\Resource</Filter>
     </ClInclude>
@@ -214,6 +217,12 @@
     </ClInclude>
     <ClInclude Include="Utility\Geometry.hpp">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Timer.hpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\Maze.hpp">
+      <Filter>Header Files\Maze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

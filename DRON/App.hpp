@@ -10,6 +10,7 @@
 #define APP_HPP
 
 #include <Windows.h>
+#include "Utility/Timer.hpp"
 
 #define SAFE_DELETE( x ) if( x ){ delete x; x = 0; }
 
@@ -46,7 +47,7 @@ class App
 		World*			_world_ptr;
 		GameState*		_current_state_ptr;
 
-		Entity			_camera;
+		Timer			_timer;
 };
 
 #endif  APP_HPP

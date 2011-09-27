@@ -24,10 +24,14 @@ App::~App()
 	SAFE_DELETE( _main_window_ptr );
 	SAFE_DELETE( _menu_ptr );
 	SAFE_DELETE( _entity_system_ptr );
+
+	CoUninitialize();
 }
 
 bool App::Initialize()
 {
+	CoInitializeEx( 0, COINIT_APARTMENTTHREADED );
+
 	DisplaySettingsDialog dsd( _instance );
 	if( !dsd.Show() )
 		return false;
@@ -48,6 +52,8 @@ bool App::Initialize()
 	_menu_ptr = new Menu( *_entity_system_ptr, *_renderer_ptr );
 	_current_state_ptr = _menu_ptr;
 
+	_timer.Reset();
+
 	return true;
 }
 
@@ -65,8 +71,8 @@ int App::Run()
 			DispatchMessage(&msg);
 		}
 
-		float dt = 0.0f;
-		_current_state_ptr->Update( dt );
+		_timer.Tick();
+		_current_state_ptr->Update( _timer.GetDeltaTime() );
 	}
 
 	return msg.wParam;

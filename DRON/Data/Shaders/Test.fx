@@ -5,16 +5,24 @@ cbuffer per_frame : register( b0 )
     matrix proj;
 };
 
-float4 VS_Test( float4 pos : POSITION ) : SV_POSITION
+struct VS_OUT
 {
-    float4 v = mul( pos, world );
-    v = mul( v, view );
-    v = mul( v, proj );
-    return v;
+    float4 _wpos : NORMAL;
+    float4 _pos  : SV_POSITION;
+};
+
+VS_OUT VS_Test( float4 pos : POSITION )
+{
+    VS_OUT v2;
+    v2._wpos = pos;
+    v2._pos = mul( pos, world );
+    v2._pos = mul( v2._pos, view );
+    v2._pos = mul( v2._pos, proj );
+    
+    return v2;
 }
 
-float4 PS_Test( float4 pos : SV_POSITION ) : SV_Target
+float4 PS_Test( VS_OUT input ) : SV_Target
 {
-    return float4( 1.0, 0.0, 0.0, 1.0 );
+    return float4( 0.5, 0.5, 1.0, 1.0);
 }
-

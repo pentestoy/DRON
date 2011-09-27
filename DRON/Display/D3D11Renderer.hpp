@@ -75,6 +75,7 @@ class D3D11Renderer
 		XMFLOAT4X4					_perspec_mx;
 		XMFLOAT4X4					_ortho_mx;
 
+		ID3D11Buffer*				_instance_buffer;
 		ID3D11Buffer*				_per_frame_buffer;
 };
 
