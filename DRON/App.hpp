@@ -10,11 +10,10 @@
 #define APP_HPP
 
 #include <Windows.h>
+#include "Entity/Entity.hpp"
 #include "Utility/Timer.hpp"
 
 #define SAFE_DELETE( x ) if( x ){ delete x; x = 0; }
-
-typedef unsigned int Entity;
 
 class D3D11Renderer;
 class EntitySystem;

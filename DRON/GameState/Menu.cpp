@@ -6,8 +6,6 @@
 
 #include "Menu.hpp"
 
-//#include <WinUser.h>
-
 #include "../Display/D3D11Renderer.hpp"
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/ComponentTypes.hpp"
@@ -19,6 +17,9 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	  _test_entity( _entity_system.CreateNewEntity() )
 {
 	CameraComponent::Data cd;
+	cd._position = XMVectorSet( 0.0f, 0.0f, -20.0f, 0.0f );
+	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );
 
 	MovableComponent::Data md;
@@ -43,7 +44,10 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 void Menu::Update( float dt )
 {
 	ProcessInput();
-	_renderer.Draw();
+
+	std::vector< Entity > entities;
+	entities.push_back( _test_entity );
+	_renderer.Draw( entities, _camera );
 }
 
 void Menu::HandleKeypress( const WPARAM key )

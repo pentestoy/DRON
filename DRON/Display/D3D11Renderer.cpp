@@ -6,13 +6,16 @@
 
 #include "D3D11Renderer.hpp"
 
-#include <D3DX11.h>
-#include <D3Dcompiler.h>
+#include <cassert>
 #include <sstream>
 #include <vector>
+#include <D3DX11.h>
+#include <D3Dcompiler.h>
 #include <aiMesh.h>
 
 #include "DisplaySettings.hpp"
+#include "../Entity/EntitySystem.hpp"
+#include "../Entity/Components/CameraComponent.hpp"
 #include "../Resource/MeshLocator.hpp"
 #include "../Resource/PixelShaderLocator.hpp"
 #include "../Resource/VertexShaderLocator.hpp"
@@ -34,10 +37,11 @@ D3D11Renderer::BufferMapping< T >::~BufferMapping()
 }
 
 D3D11Renderer::D3D11Renderer( HWND window,
-							  DisplaySettings& ds )
+							  DisplaySettings& ds,
+							  EntitySystem& es )
     : _d3d_device( 0 ), _swap_chain_ptr( 0 ), _depth_stencil_buffer( 0 ),
       _render_target_view( 0 ), _depth_stencil_view( 0 ), _device_context( 0 ),
-	  _instance_buffer( 0 ), _per_frame_buffer( 0 )
+	  _instance_buffer( 0 ), _per_frame_buffer( 0 ), _entity_system( es )
 {
     // fill out a swap chain description...
 	DXGI_SWAP_CHAIN_DESC scd;
@@ -76,17 +80,6 @@ D3D11Renderer::D3D11Renderer( HWND window,
 		&_device_context ) );
 
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
-
-    /**
-     *  TODO: this should really be pulled from the camera instead of using
-     *        constants.
-     */
-
-	/***** _hud_matrix defined here *******/
-    XMVECTOR eye = XMVectorSet( 0.0f, 0.0f, -5.0f, 0.0f );
-    XMVECTOR at  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
-    XMVECTOR up  = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( eye, at, up ) );
 	
 	// set up the various buffers
 	InitializeBuffers();
@@ -207,7 +200,7 @@ bool D3D11Renderer::InitializeBuffers()
     return true;
 }
 
-void D3D11Renderer::Draw()
+void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
 	ClearViewsAndRenderTargets();
 
@@ -216,6 +209,13 @@ void D3D11Renderer::Draw()
 
     float bf[] = { 0.0f, 0.0f, 0.0f, 0.0f };
     _device_context->OMSetBlendState( 0, bf, 0xffffffff );
+
+	BaseComponent* cc = 0;
+	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
+	assert( cc );
+
+	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
+	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
 
 	WVP per_frame;
 	per_frame._world = XMMatrixTranspose( XMLoadFloat4x4( &_world_mx ) );

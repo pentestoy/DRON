@@ -48,7 +48,10 @@ bool App::Initialize()
 		return false;
 	}
 
-	_renderer_ptr = new D3D11Renderer( _main_window_ptr->GetHWND(), ds );
+	_renderer_ptr = new D3D11Renderer(
+		_main_window_ptr->GetHWND(),
+		ds,
+		*_entity_system_ptr );
 	_menu_ptr = new Menu( *_entity_system_ptr, *_renderer_ptr );
 	_current_state_ptr = _menu_ptr;
 

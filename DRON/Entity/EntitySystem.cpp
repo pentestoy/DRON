@@ -139,6 +139,36 @@ void EntitySystem::GetEntityComponents( Entity e, std::vector< BaseComponent* >&
 		v.insert( v.end(), ec_iter->second.begin(), ec_iter->second.end() );
 }
 
+bool EntitySystem::GetComponent(
+	Entity entity,
+	COMPONENT_TYPE type,
+	BaseComponent** component )
+{
+	*component = 0;
+
+	EntityComponentMap::iterator ec_iter =
+		_entity_map.find( entity );
+
+	int count = 0;
+	if( ec_iter != _entity_map.end() )
+	{
+		BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
+		while( bc_iter != ec_iter->second.end() )
+		{
+			if( ( *bc_iter )->GetType() == type )
+			{
+				*component = const_cast< BaseComponent* >( ( *bc_iter ) );
+				++count;
+				break;
+			}
+
+			++bc_iter;
+		}
+	}
+	
+	return *component != 0;
+}
+
 void EntitySystem::Register( COMPONENT_TYPE type, ComponentCreator creator_fn )
 {
 	_create_component_map()[ type ] = creator_fn;

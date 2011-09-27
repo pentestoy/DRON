@@ -8,9 +8,8 @@
 #define BASE_COMPONENT_HPP
 
 #include "ComponentTypes.hpp"
+#include "../Entity.hpp"
 #include "../EntitySystem.hpp"
-
-typedef unsigned int Entity;
 
 /*********************************************
  * BaseComponent

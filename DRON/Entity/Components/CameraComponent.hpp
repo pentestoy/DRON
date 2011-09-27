@@ -11,18 +11,22 @@
 #include <Windows.h>
 #include <xnamath.h>
 
+/*
 struct CameraData
 {
+	XMVECTOR _position;
 	XMVECTOR _lookat;
 	XMVECTOR _up;
 	Entity	 _tracked_target;
 };
+*/
 
 class CameraComponent : public TplComponent< CameraComponent >
 {
 	public:
 		struct Data : public BaseComponentData
 		{
+			XMVECTOR _position;
 			XMVECTOR _lookat;
 			XMVECTOR _up;
 			Entity	 _tracked_target;

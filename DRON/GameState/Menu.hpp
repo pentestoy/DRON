@@ -9,8 +9,8 @@
 
 #include "GameState.hpp"
 #include <deque>
+#include "../Entity/Entity.hpp"
 
-typedef unsigned int Entity;
 class EntitySystem;
 class D3D11Renderer;
 class Maze;

@@ -12,9 +12,9 @@
 #include <set>
 #include <vector>
 #include "Components/BaseComponent.hpp"
+#include "Entity.hpp"
 
 enum COMPONENT_TYPE;
-typedef unsigned int Entity;
 struct BaseComponentData;
 class EntitySystem
 {
@@ -36,6 +36,10 @@ class EntitySystem
 
 		void GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v );
 		void GetEntityComponents( Entity e, BaseComponentPtrVector& v );
+		bool GetComponent(
+			Entity e,
+			COMPONENT_TYPE type,
+			BaseComponent** component );
 
 		static void Register( COMPONENT_TYPE type, ComponentCreator creator );
 

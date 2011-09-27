@@ -224,6 +224,9 @@
     <ClInclude Include="Maze\Maze.hpp">
       <Filter>Header Files\Maze</Filter>
     </ClInclude>
+    <ClInclude Include="Entity\Entity.hpp">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DRON.rc">

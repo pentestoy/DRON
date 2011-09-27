@@ -7,8 +7,10 @@
 #ifndef D3D11RENDERER_HPP
 #define D3D11RENDERER_HPP
 
+#include <vector>
 #include <D3D11.h>
 #include <xnamath.h>
+#include "../Entity/Entity.hpp"
 
 struct WVP
 {
@@ -23,13 +25,15 @@ struct TestVertex
 };
 
 struct DisplaySettings;
+class EntitySystem;
 class D3D11Renderer
 {
     public:
-        D3D11Renderer( HWND, DisplaySettings& );
+        D3D11Renderer( HWND window, DisplaySettings& ds, EntitySystem& es );
 		~D3D11Renderer();
 
-		void Draw();
+		//void Draw();
+		void Draw( std::vector< Entity >& entities, Entity camera );
 
         void OnResize( DisplaySettings& );
         void SetFullscreen( bool );
@@ -77,6 +81,8 @@ class D3D11Renderer
 
 		ID3D11Buffer*				_instance_buffer;
 		ID3D11Buffer*				_per_frame_buffer;
+
+		EntitySystem&				_entity_system;
 };
 
 #endif  //D3D11RENDERER_HPP

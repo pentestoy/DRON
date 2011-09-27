@@ -114,6 +114,7 @@
     <ClInclude Include="Entity\Components\MovableComponent.hpp" />
     <ClInclude Include="Entity\Components\RenderableComponent.hpp" />
     <ClInclude Include="Entity\Components\XformComponent.hpp" />
+    <ClInclude Include="Entity\Entity.hpp" />
     <ClInclude Include="Entity\EntitySystem.hpp" />
     <ClInclude Include="GameState\GameState.hpp" />
     <ClInclude Include="GameState\Menu.hpp" />
