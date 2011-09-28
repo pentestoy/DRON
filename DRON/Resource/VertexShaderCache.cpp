@@ -30,6 +30,7 @@ VertexShaderCache::~VertexShaderCache()
 		++iter;
 	}
 
+	DXRelease( _input_layout );
 	DXRelease( _device );
 }
 

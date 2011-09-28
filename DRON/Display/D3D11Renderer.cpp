@@ -16,6 +16,7 @@
 #include "DisplaySettings.hpp"
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/CameraComponent.hpp"
+#include "../Entity/Components/RenderableComponent.hpp"
 #include "../Resource/MeshLocator.hpp"
 #include "../Resource/PixelShaderLocator.hpp"
 #include "../Resource/VertexShaderLocator.hpp"
@@ -213,7 +214,6 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	BaseComponent* cc = 0;
 	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
 	assert( cc );
-
 	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
 
@@ -226,8 +226,14 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device_context->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
+	Entity e = entities.front();
+	cc = 0;
+	_entity_system.GetComponent( e, COMPONENT_RENDERABLE, &cc );
+	assert( cc );
+	RenderableComponent::Data rcd = static_cast< RenderableComponent* >( cc )->GetData();
+
 	MeshLocator ml( _d3d_device );
-	MeshResource& m = ml.Request( "pipe00.x" );
+	MeshResource& m = ml.Request( rcd._mesh_name );
 	Mesh& mesh = *m.Data();
 
 	unsigned int stride = sizeof( Vertex );
@@ -245,20 +251,22 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 		0 );
 
 	VertexShaderLocator vsl( _d3d_device );
-	ID3D11VertexShader* vs = vsl.Request( "test.fx", "VS_Test" ).Data();
+	ID3D11VertexShader* vs =
+		vsl.Request( rcd._vertex_shader_filename, rcd._vertex_shader ).Data();
 	/**************************************************************************
-	 * VertexShaderLocator.GetInputLayout currently cannot be called before
-	 * successfully requesting at least one vertex shader. This is because we
-	 * need a shader blob to initialize the layout.
-	 * Also, right now we really only need to call it once, not once per draw,
-	 * since all the shaders have the same layout. We should probably add
-	 * another std::map and store input layouts per shader.
+	 * VertexShaderLocator.GetInputLayout cannot be called before successfully
+	 * requesting at least one vertex shader. This is because we need a shader
+	 * blob to initialize the layout. Also, right now we really only need to
+	 * call it once, not once per draw, since all the shaders have the same
+	 * layout. We should probably add another std::map and store input layouts
+	 * per shader.
 	 */
 	_device_context->IASetInputLayout( vsl.GetInputLayout() );
 	_device_context->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
 
 	PixelShaderLocator psl( _d3d_device );
-	ID3D11PixelShader* ps = psl.Request( "test.fx", "PS_Test" ).Data();
+	ID3D11PixelShader* ps =
+		psl.Request( rcd._pixel_shader_filename, rcd._pixel_shader ).Data();
 	
 	_device_context->VSSetShader( vs, 0, 0 );
 	_device_context->PSSetShader( ps, 0, 0 );

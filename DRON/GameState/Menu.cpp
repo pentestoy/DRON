@@ -28,10 +28,18 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	XformComponent::Data xd;
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xd );
 
+	xd._position = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );
+	xd._rotation = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
+	xd._scale    = XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_XFORM, xd );
 
 	RenderableComponent::Data rd;
 	rd._mesh_name = "pipe90.x";
+	rd._vertex_shader_filename = "test.fx";
+	rd._vertex_shader = "VS_Test";
+	rd._pixel_shader_filename = "test.fx";
+	rd._pixel_shader = "PS_Test";
+	rd._color = XMFLOAT4( 0.5f, 0.5f, 1.0f, 1.0f );
 	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_RENDERABLE, rd );
 
 	_mapped_actions.insert( ActionMapPair( VK_RETURN, ACTION_SELECT ) );

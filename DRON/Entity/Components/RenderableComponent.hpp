@@ -9,6 +9,7 @@
 
 #include "BaseComponent.hpp"
 #include <string>
+#include <xnamath.h>
 
 class RenderableComponent : public TplComponent< RenderableComponent >
 {
@@ -16,8 +17,14 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 		struct Data : public BaseComponent::BaseComponentData
 		{
 			std::string _mesh_name;
+			std::string _vertex_shader_filename;
+			std::string _vertex_shader;
+			std::string _pixel_shader_filename;
+			std::string _pixel_shader;
+			XMFLOAT4	_color;
 		};
-		virtual BaseComponent::BaseComponentData& GetData() { return _data; }
+		//virtual BaseComponent::BaseComponentData& GetData() { return _data; }
+		Data& GetData() { return _data; }
 		virtual void SetData( BaseComponent::BaseComponentData& data )
 			{ _data	= static_cast< Data& >( data ); }
 
