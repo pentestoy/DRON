@@ -22,6 +22,14 @@ struct Vertex
 	XMFLOAT3 _position;
 };
 
+struct InstanceData
+{
+	XMFLOAT3 _translation;
+	XMFLOAT4 _rotation;
+	XMFLOAT3 _scale;
+	XMFLOAT4 _color;
+};
+
 struct TexCoord
 {
 	XMFLOAT2 _coord;

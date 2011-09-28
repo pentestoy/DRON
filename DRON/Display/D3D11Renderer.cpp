@@ -181,7 +181,7 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 bool D3D11Renderer::InitializeBuffers()
 {
     D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( XMFLOAT4 ) * 4 * 100; //4 for pos, rot_quat, scale, color 
+    bd.ByteWidth = sizeof( InstanceData ) * 100; //4 for pos, rot_quat, scale, color 
     bd.Usage = D3D11_USAGE_DYNAMIC;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -236,14 +236,35 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	MeshResource& m = ml.Request( rcd._mesh_name );
 	Mesh& mesh = *m.Data();
 
-	unsigned int stride = sizeof( Vertex );
-	unsigned int offset = 0;
+	InstanceData id;
+	id._translation = XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	id._rotation = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
+	id._scale = XMFLOAT3( 1.0f, 1.0f, 1.0f );
+	id._color = XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f );
+
+	D3D11_MAPPED_SUBRESOURCE msr;
+	_device_context->Map( _instance_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr );
+	InstanceData* id_ptr = static_cast< InstanceData* >( msr.pData );
+	id_ptr[ 0 ] = id;
+	_device_context->Unmap( _instance_buffer, 0 );
+
+	ID3D11Buffer* buffers[ 2 ];
+	buffers[ 0 ] = mesh._vertex_buffer;
+	buffers[ 1 ] = _instance_buffer;
+
+	unsigned int strides[ 2 ];
+	strides[ 0 ] = sizeof( Vertex );
+	strides[ 1 ] = sizeof( InstanceData );
+	unsigned int offsets[ 2 ];
+	offsets[ 0 ] = 0;
+	offsets[ 1 ] = 0;
+
 	_device_context->IASetVertexBuffers(
 		0,
-		1,
-		&mesh._vertex_buffer,
-		&stride,
-		&offset );
+		2,
+		buffers, //&mesh._vertex_buffer,
+		strides,
+		offsets );
 
 	_device_context->IASetIndexBuffer(
 		mesh._index_buffer,
@@ -270,7 +291,7 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	
 	_device_context->VSSetShader( vs, 0, 0 );
 	_device_context->PSSetShader( ps, 0, 0 );
-	_device_context->DrawIndexed( mesh._num_indices, 0, 0 );
+	_device_context->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
 
 	_swap_chain_ptr->Present( 0, 0 );
 }

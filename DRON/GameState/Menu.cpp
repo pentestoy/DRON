@@ -17,7 +17,7 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	  _test_entity( _entity_system.CreateNewEntity() )
 {
 	CameraComponent::Data cd;
-	cd._position = XMVectorSet( 0.0f, 0.0f, -20.0f, 0.0f );
+	cd._position = XMVectorSet( 0.0f, 0.0f, -10.0f, 0.0f );
 	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );
