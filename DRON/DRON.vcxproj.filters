@@ -52,6 +52,21 @@
     <Filter Include="Header Files\Maze">
       <UniqueIdentifier>{10a5e886-0a1c-42d1-9d85-30e0d6d00d9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Script">
+      <UniqueIdentifier>{f1298e38-7b0f-42e4-96cc-b9f8f51ec462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Script">
+      <UniqueIdentifier>{f515b35a-a3ec-4ed1-887e-9fa711049507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Script">
+      <UniqueIdentifier>{4294c5ae-65d0-4968-8bd4-e3f9eceecc41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Display\D3D11">
+      <UniqueIdentifier>{bdb07a3d-3601-4f85-8de1-7fcab06a9c8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Display\D3D11">
+      <UniqueIdentifier>{6fd77f5d-299a-4d34-9e69-4c391918d4ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -119,6 +134,15 @@
     </ClCompile>
     <ClCompile Include="Utility\Timer.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Script\Script.cpp">
+      <Filter>Source Files\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\D3D11\GFXDevice.cpp">
+      <Filter>Source Files\Display\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\D3D11\SwapChain.cpp">
+      <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +250,18 @@
     </ClInclude>
     <ClInclude Include="Entity\Entity.hpp">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\Script.hpp">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Script\Lua.hpp">
+      <Filter>Header Files\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\GFXDevice.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\SwapChain.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

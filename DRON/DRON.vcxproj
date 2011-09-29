@@ -39,8 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(DXSDK_DIR)Lib\x86;C:\Program Files %28x86%29\Visual Leak Detector\lib;C:\libraries\assimp\assimp2.0\lib\assimp_debug-noboost-st_Win32;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;C:\libraries\assimp\assimp2.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib\x86;C:\Program Files %28x86%29\Visual Leak Detector\lib;C:\libraries\assimp\assimp2.0\lib\assimp_debug-noboost-st_Win32;C:\libraries\lua-5.1.4\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files %28x86%29\Visual Leak Detector\include;C:\libraries\assimp\assimp2.0\include;C:\libraries\lua-5.1.4\include;C:\libraries\lua-icxx\v1.02\include\lua_icxx;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -56,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3D11.lib;D3DX11.lib;DXGI.lib;DXErr.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3D11.lib;D3DX11.lib;DXGI.lib;DXErr.lib;assimp.lib;lua5.1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -80,6 +80,8 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Display\BaseWindow.cpp" />
     <ClCompile Include="Display\D3D11Renderer.cpp" />
+    <ClCompile Include="Display\D3D11\GFXDevice.cpp" />
+    <ClCompile Include="Display\D3D11\SwapChain.cpp" />
     <ClCompile Include="Display\DisplaySettingsDialog.cpp" />
     <ClCompile Include="Display\MainWindow.cpp" />
     <ClCompile Include="DRON.cpp" />
@@ -95,6 +97,7 @@
     <ClCompile Include="Resource\VertexShaderCache.cpp" />
     <ClCompile Include="Resource\VertexShaderLocator.cpp" />
     <ClCompile Include="Resource\VertexShaderResource.cpp" />
+    <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\Grometry.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
@@ -104,6 +107,8 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Display\BaseWindow.hpp" />
     <ClInclude Include="Display\D3D11Renderer.hpp" />
+    <ClInclude Include="Display\D3D11\GFXDevice.hpp" />
+    <ClInclude Include="Display\D3D11\SwapChain.hpp" />
     <ClInclude Include="Display\DisplaySettings.hpp" />
     <ClInclude Include="Display\DisplaySettingsDialog.hpp" />
     <ClInclude Include="Display\MainWindow.hpp" />
@@ -131,6 +136,8 @@
     <ClInclude Include="Resource\VertexShaderCache.hpp" />
     <ClInclude Include="Resource\VertexShaderLocator.hpp" />
     <ClInclude Include="Resource\VertexShaderResource.hpp" />
+    <ClInclude Include="Script\Lua.hpp" />
+    <ClInclude Include="Script\Script.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utility\DXUtil.hpp" />
     <ClInclude Include="Utility\Geometry.hpp" />

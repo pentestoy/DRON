@@ -10,6 +10,8 @@
 #include <vector>
 #include <D3D11.h>
 #include <xnamath.h>
+#include "D3D11/GFXDevice.hpp"
+#include "D3D11/SwapChain.hpp"
 #include "../Entity/Entity.hpp"
 
 struct WVP
@@ -26,13 +28,13 @@ struct TestVertex
 
 struct DisplaySettings;
 class EntitySystem;
+class SwapChain;
 class D3D11Renderer
 {
     public:
         D3D11Renderer( HWND window, DisplaySettings& ds, EntitySystem& es );
 		~D3D11Renderer();
 
-		//void Draw();
 		void Draw( std::vector< Entity >& entities, Entity camera );
 
         void OnResize( DisplaySettings& );
@@ -63,9 +65,8 @@ class D3D11Renderer
 		unsigned int				_ps_id;
 		unsigned int				_vs_id;
 
-		ID3D11Device*				_d3d_device;
-		IDXGISwapChain*				_swap_chain_ptr;
-		ID3D11DeviceContext*		_device_context;
+		GFXDevice					_device;
+		SwapChain					_swap_chain;
 
 	    ID3D11RenderTargetView*     _render_target_view;
 		ID3D11Texture2D*			_depth_stencil_buffer;
