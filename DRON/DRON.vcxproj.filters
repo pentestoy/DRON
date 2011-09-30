@@ -144,6 +144,12 @@
     <ClCompile Include="Display\D3D11\SwapChain.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
+    <ClCompile Include="Display\D3D11\DeviceContext.cpp">
+      <Filter>Source Files\Display\D3D11</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\D3D11\RenderTarget.cpp">
+      <Filter>Source Files\Display\D3D11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -261,6 +267,15 @@
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="Display\D3D11\SwapChain.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\DeviceContext.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\Topology.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\RenderTarget.hpp">
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,8 @@
 
 #include "GFXDevice.hpp"
 #include <vector>
+#include "RenderTarget.hpp"
+#include "SwapChain.hpp"
 #include"../../Utility/DXUtil.hpp"
 
 GFXDevice::GFXDevice()
@@ -42,4 +44,12 @@ GFXDevice::~GFXDevice()
 
 	DXRelease( _device_context_ptr );
 	DXRelease( _device_ptr );
+}
+
+void GFXDevice::CreateRenderTarget( const SwapChain& sc, RenderTarget& rt )
+{
+	rt.ReleaseData();
+    ID3D11Texture2D* buffer = sc.GetBuffer();
+    _device_ptr->CreateRenderTargetView( buffer, 0, rt.GetDataAddress() );
+	DXRelease( buffer );
 }

@@ -14,6 +14,7 @@
 #include <aiMesh.h>
 
 #include "DisplaySettings.hpp"
+#include "D3D11/Topology.hpp"
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/CameraComponent.hpp"
 #include "../Entity/Components/RenderableComponent.hpp"
@@ -40,11 +41,12 @@ D3D11Renderer::BufferMapping< T >::~BufferMapping()
 D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
-    : _device(), _swap_chain( _device, ds, window ),
-	  _depth_stencil_buffer( 0 ), _render_target_view( 0 ),
+    : _device(), _context( _device.GetRawContextPtr() ),
+	  _swap_chain( _device, ds, window ), _depth_stencil_buffer( 0 ),
 	  _depth_stencil_view( 0 ), _instance_buffer( 0 ), _per_frame_buffer( 0 ),
 	  _entity_system( es )
 {
+	// TODO: world matrix really needs to come from the gamestate
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
 	InitializeBuffers();
     OnResize( ds );
@@ -55,23 +57,19 @@ D3D11Renderer::~D3D11Renderer()
 	DXRelease( _per_frame_buffer );
 	DXRelease( _depth_stencil_buffer );
 	DXRelease( _depth_stencil_view );
-	DXRelease( _render_target_view );
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
 {
 	// Release the old views, as they hold references to the buffers we
 	// will be destroying.  Also release the old depth/stencil buffer.
-	DXRelease( _render_target_view );
+	//DXRelease( _render_target_view );
     DXRelease( _depth_stencil_view );
     DXRelease( _depth_stencil_buffer );
 
 	// Resize the swap chain and recreate the render target view.
 	_swap_chain.Resize( ds );
-
-    ID3D11Texture2D* back_buffer = _swap_chain.GetBuffer();
-    HR( _device.GetRawDevicePtr()->CreateRenderTargetView( back_buffer, 0, &_render_target_view ) );
-    DXRelease( back_buffer );
+	_device.CreateRenderTarget( _swap_chain, _render_target );
 
 	// Create the depth/stencil buffer and view.
 	D3D11_TEXTURE2D_DESC dsd;
@@ -92,17 +90,8 @@ void D3D11Renderer::OnResize( DisplaySettings& ds )
     _device.GetRawDevicePtr()->CreateDepthStencilView(_depth_stencil_buffer, 0, &_depth_stencil_view);
 
 	// Bind the render target view and depth/stencil view to the pipeline.
-	_device.GetRawContextPtr()->OMSetRenderTargets(1, &_render_target_view, _depth_stencil_view);
-
-	// set the viewport
-	_view_port.TopLeftX = 0;
-	_view_port.TopLeftY = 0;
-	_view_port.Width    = static_cast< float >( ds._width );
-	_view_port.Height   = static_cast< float >( ds._height );
-	_view_port.MinDepth = 0.0f;
-	_view_port.MaxDepth = 1.0f;
-
-	_device.GetRawContextPtr()->RSSetViewports(1, &_view_port);
+	_context.SetRenderTarget( _render_target, _depth_stencil_view );
+	_context.SetViewport( ds );
 
     // the aspect ratio may have changed, so refigure the projection matrices
 	XMStoreFloat4x4( &_perspec_mx,
@@ -161,28 +150,22 @@ bool D3D11Renderer::InitializeBuffers()
 
 void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
-	ClearViewsAndRenderTargets();
-
-    // set defaults for the depth/stencil and blend states
-    _device.GetRawContextPtr()->OMSetDepthStencilState( 0, 0 );
-
-    float bf[] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    _device.GetRawContextPtr()->OMSetBlendState( 0, bf, 0xffffffff );
+	_context.InitializeFrame( _render_target, _depth_stencil_view );
 
 	BaseComponent* cc = 0;
 	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
 	assert( cc );
 	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
+	/* TODO: If I'm going to fully abstract D3D away from the renderer class,
+	 *       I'm going to need to figure out what to use instead of xnamath.
+	 */
 	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
 
 	WVP per_frame;
 	per_frame._world = XMMatrixTranspose( XMLoadFloat4x4( &_world_mx ) );
 	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &_view_mx ) );
 	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
-	_device.GetRawContextPtr()->UpdateSubresource( _per_frame_buffer, 0, 0, &per_frame, 0, 0 );
-
-	_device.GetRawContextPtr()->IASetPrimitiveTopology(
-		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	_context.UpdateBuffer( _per_frame_buffer, per_frame );
 
 	Entity e = entities.front();
 	cc = 0;
@@ -220,18 +203,15 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.GetRawContextPtr()->IASetVertexBuffers(
 		0,
 		2,
-		buffers, //&mesh._vertex_buffer,
+		buffers,
 		strides,
 		offsets );
 
-	_device.GetRawContextPtr()->IASetIndexBuffer(
-		mesh._index_buffer,
-		DXGI_FORMAT_R32_UINT,
-		0 );
+	_context.SetIndexBuffer( mesh._index_buffer );
 
 	VertexShaderLocator vsl( _device.GetRawDevicePtr() );
-	ID3D11VertexShader* vs =
-		vsl.Request( rcd._vertex_shader_filename, rcd._vertex_shader ).Data();
+	VertexShaderResource vsr =
+		vsl.Request( rcd._vertex_shader_filename, rcd._vertex_shader );
 	/**************************************************************************
 	 * VertexShaderLocator.GetInputLayout cannot be called before successfully
 	 * requesting at least one vertex shader. This is because we need a shader
@@ -244,20 +224,13 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
 
 	PixelShaderLocator psl( _device.GetRawDevicePtr() );
-	ID3D11PixelShader* ps =
-		psl.Request( rcd._pixel_shader_filename, rcd._pixel_shader ).Data();
+	PixelShaderResource psr =
+		psl.Request( rcd._pixel_shader_filename, rcd._pixel_shader );
 	
-	_device.GetRawContextPtr()->VSSetShader( vs, 0, 0 );
-	_device.GetRawContextPtr()->PSSetShader( ps, 0, 0 );
+	_context.SetVertexShader( vsr );
+	_context.SetPixelShader( psr );
+
 	_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
 
 	_swap_chain.Show();
-}
-
-void D3D11Renderer::ClearViewsAndRenderTargets()
-{
-    //clear the views
-	float clear_color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	_device.GetRawContextPtr()->ClearRenderTargetView( _render_target_view, clear_color );
-	_device.GetRawContextPtr()->ClearDepthStencilView( _depth_stencil_view, D3D10_CLEAR_DEPTH | D3D10_CLEAR_STENCIL, 1.0f, 0 );
 }

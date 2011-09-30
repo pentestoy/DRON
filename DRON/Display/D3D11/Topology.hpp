@@ -1,0 +1,17 @@
+/**
+ *  Display/D3D11/Topology.hpp
+ *  (c) Jonathan Capps
+ *  Created 30 Sept. 2011
+ */
+
+#ifndef DISPLAY_D3D11_TOPOLOGY_HPP
+#define DISPLAY_D3D11_TOPOLOGY_HPP
+
+#include <D3D11.h>
+
+enum TOPOLOGY
+{
+	TOPOLOGY_TRIANGLE_LIST = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+};
+
+#endif //DISPLAY_D3D11_TOPOLOGY_HPP
