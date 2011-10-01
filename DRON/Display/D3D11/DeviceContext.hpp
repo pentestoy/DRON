@@ -11,6 +11,7 @@
 #include "Topology.hpp"
 
 struct DisplaySettings;
+class DepthStencilBuffer;
 class PixelShaderResource;
 class RenderTarget;
 class VertexShaderResource;
@@ -20,11 +21,11 @@ class DeviceContext
 		DeviceContext( ID3D11DeviceContext* );
 		~DeviceContext();
 
-		void InitializeFrame( RenderTarget& rt, ID3D11DepthStencilView* dsv ) const;
+		void InitializeFrame( RenderTarget& rt, DepthStencilBuffer& dsb ) const;
 
 		void SetRenderTarget(
 			RenderTarget& target,
-			ID3D11DepthStencilView* ds_view
+			DepthStencilBuffer& dsb
 		) const;
 		void SetViewport( const DisplaySettings& ds ) const;
 
@@ -34,19 +35,19 @@ class DeviceContext
 		void SetVertexShader( const VertexShaderResource& resource ) const;
 		void SetPixelShader( const PixelShaderResource& resource ) const;
 
-		ID3D11DeviceContext* GetRawPtr() const { return _context; }
+		ID3D11DeviceContext* GetRawPtr() const { return _context_ptr; }
 
 		template < typename T >
 		void UpdateBuffer( ID3D11Buffer* buffer, T& data );
 
 	private:
-		ID3D11DeviceContext*	_context;
+		ID3D11DeviceContext*	_context_ptr;
 };
 
 template < typename T >
 void DeviceContext::UpdateBuffer( ID3D11Buffer* buffer, T& data )
 {
-	_context->UpdateSubresource( buffer, 0, 0, &data, 0, 0 );
+	_context_ptr->UpdateSubresource( buffer, 0, 0, &data, 0, 0 );
 }
 
 #endif //DISPLAY_D3D11_DEVICE_CONTEXT_HPP

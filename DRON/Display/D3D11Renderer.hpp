@@ -10,6 +10,7 @@
 #include <vector>
 #include <D3D11.h>
 #include <xnamath.h>
+#include "D3D11/DepthStencilBuffer.hpp"
 #include "D3D11/DeviceContext.hpp"
 #include "D3D11/GFXDevice.hpp"
 #include "D3D11/RenderTarget.hpp"
@@ -21,11 +22,6 @@ struct WVP
 	XMMATRIX	_world;
 	XMMATRIX	_view;
 	XMMATRIX	_proj;
-};
-
-struct TestVertex
-{
-	XMFLOAT3 _position;
 };
 
 struct DisplaySettings;
@@ -61,6 +57,7 @@ class D3D11Renderer
 
     protected:
         bool InitializeBuffers();
+		void BuildProjectionMatrices( const DisplaySettings& ds );
 
 		// temporary
 		unsigned int				_ps_id;
@@ -69,11 +66,8 @@ class D3D11Renderer
 		GFXDevice					_device;
 		DeviceContext				_context;
 		SwapChain					_swap_chain;
-
-	    //ID3D11RenderTargetView*     _render_target_view;
 		RenderTarget				_render_target;
-		ID3D11Texture2D*			_depth_stencil_buffer;
-		ID3D11DepthStencilView*		_depth_stencil_view;
+		DepthStencilBuffer			_depth_stencil;
 
 		WVP							_per_frame;
 		XMFLOAT4X4					_world_mx;

@@ -13,22 +13,23 @@ SwapChain::SwapChain(
 	GFXDevice& device,
 	const DisplaySettings& ds,
 	HWND window )
+	: _swap_chain_ptr( 0 )
 {
 	//we need to get the IDXGIFactory object
 	//that was used to create the ID3D11Device
-	IDXGIDevice* dxgi_device_ptr;
+	IDXGIDevice* dxgi_device_ptr = 0;
 	HR( device.GetRawDevicePtr()->QueryInterface(
 			__uuidof( IDXGIDevice ),
 			reinterpret_cast< void** >( &dxgi_device_ptr)
 	) );
       
-	IDXGIAdapter* dxgi_adapter;
+	IDXGIAdapter* dxgi_adapter = 0;
 	HR( dxgi_device_ptr->GetParent(
 			__uuidof( IDXGIAdapter ),
 			reinterpret_cast< void** >( &dxgi_adapter)
 	) );
 
-	IDXGIFactory* dxgi_factory_ptr;
+	IDXGIFactory* dxgi_factory_ptr = 0;
 	HR( dxgi_adapter->GetParent(
 			__uuidof( IDXGIFactory ),
 			reinterpret_cast< void** >( &dxgi_factory_ptr )
@@ -53,6 +54,10 @@ SwapChain::SwapChain(
 
 	HR( dxgi_factory_ptr->CreateSwapChain(
 			device.GetRawDevicePtr(), &scd, &_swap_chain_ptr ) );
+	
+	DXRelease( dxgi_device_ptr );
+	DXRelease( dxgi_adapter );
+	DXRelease( dxgi_factory_ptr );
 }
 
 SwapChain::~SwapChain()

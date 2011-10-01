@@ -42,9 +42,8 @@ D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
     : _device(), _context( _device.GetRawContextPtr() ),
-	  _swap_chain( _device, ds, window ), _depth_stencil_buffer( 0 ),
-	  _depth_stencil_view( 0 ), _instance_buffer( 0 ), _per_frame_buffer( 0 ),
-	  _entity_system( es )
+	  _swap_chain( _device, ds, window ), _instance_buffer( 0 ),
+	  _per_frame_buffer( 0 ), _entity_system( es )
 {
 	// TODO: world matrix really needs to come from the gamestate
 	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
@@ -55,55 +54,29 @@ D3D11Renderer::D3D11Renderer( HWND window,
 D3D11Renderer::~D3D11Renderer()
 {
 	DXRelease( _per_frame_buffer );
-	DXRelease( _depth_stencil_buffer );
-	DXRelease( _depth_stencil_view );
+	DXRelease( _instance_buffer );
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
 {
-	// Release the old views, as they hold references to the buffers we
-	// will be destroying.  Also release the old depth/stencil buffer.
-	//DXRelease( _render_target_view );
-    DXRelease( _depth_stencil_view );
-    DXRelease( _depth_stencil_buffer );
+	/* TODO: I may be able to move this call to the beginning of
+	 *       DepthStencilBuffer::CreateNewBufferAndView()
+	 *       but I can't test it until I re-implement resizing.
+	 */
+	_depth_stencil.Release();
 
 	// Resize the swap chain and recreate the render target view.
 	_swap_chain.Resize( ds );
 	_device.CreateRenderTarget( _swap_chain, _render_target );
 
 	// Create the depth/stencil buffer and view.
-	D3D11_TEXTURE2D_DESC dsd;
-	
-	dsd.Width     = ds._width;
-	dsd.Height    = ds._height;
-	dsd.MipLevels = 1;
-	dsd.ArraySize = 1;
-	dsd.Format    = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	dsd.SampleDesc.Count   = 1; // multisampling must match
-	dsd.SampleDesc.Quality = 0; // swap chain values.
-	dsd.Usage          = D3D11_USAGE_DEFAULT;
-	dsd.BindFlags      = D3D11_BIND_DEPTH_STENCIL;
-	dsd.CPUAccessFlags = 0; 
-	dsd.MiscFlags      = 0;
-
-    _device.GetRawDevicePtr()->CreateTexture2D(&dsd, 0, &_depth_stencil_buffer);
-    _device.GetRawDevicePtr()->CreateDepthStencilView(_depth_stencil_buffer, 0, &_depth_stencil_view);
+	_depth_stencil.CreateNewBufferAndView( _device, ds );
 
 	// Bind the render target view and depth/stencil view to the pipeline.
-	_context.SetRenderTarget( _render_target, _depth_stencil_view );
+	_context.SetRenderTarget( _render_target, _depth_stencil );
 	_context.SetViewport( ds );
 
-    // the aspect ratio may have changed, so refigure the projection matrices
-	XMStoreFloat4x4( &_perspec_mx,
-		XMMatrixPerspectiveFovLH( 0.25f * XM_PI,
-			static_cast< float >( ds._width ) / static_cast< float >( ds._height ),
-			0.1f, 100.0f )
-	);
-
-	XMStoreFloat4x4( &_ortho_mx,
-		XMMatrixOrthographicLH( static_cast< float >( ds._width ) / 16.0f,
-			static_cast< float >( ds._height ) / 16.0f, 1.0f, 100.0f )
-	);
+	BuildProjectionMatrices( ds );
 
 	/*
     if( ds._fullscreen )
@@ -136,7 +109,6 @@ bool D3D11Renderer::InitializeBuffers()
 
 	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, 0, &_instance_buffer ) );
 
-
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -144,13 +116,13 @@ bool D3D11Renderer::InitializeBuffers()
     bd.MiscFlags = 0;
 
 	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, 0, &_per_frame_buffer ) );
-
+	
     return true;
 }
 
 void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
-	_context.InitializeFrame( _render_target, _depth_stencil_view );
+	_context.InitializeFrame( _render_target, _depth_stencil );//_depth_stencil_view );
 
 	BaseComponent* cc = 0;
 	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
@@ -233,4 +205,18 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
 
 	_swap_chain.Show();
+}
+
+void D3D11Renderer::BuildProjectionMatrices( const DisplaySettings& ds )
+{
+	XMStoreFloat4x4( &_perspec_mx,
+		XMMatrixPerspectiveFovLH( 0.25f * XM_PI,
+			static_cast< float >( ds._width ) / static_cast< float >( ds._height ),
+			0.1f, 100.0f )
+	);
+
+	XMStoreFloat4x4( &_ortho_mx,
+		XMMatrixOrthographicLH( static_cast< float >( ds._width ) / 16.0f,
+			static_cast< float >( ds._height ) / 16.0f, 1.0f, 100.0f )
+	);
 }

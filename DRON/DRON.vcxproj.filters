@@ -150,6 +150,9 @@
     <ClCompile Include="Display\D3D11\RenderTarget.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
+    <ClCompile Include="Display\D3D11\DepthStencilBuffer.cpp">
+      <Filter>Source Files\Display\D3D11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -276,6 +279,9 @@
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="Display\D3D11\RenderTarget.hpp">
+      <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\D3D11\DepthStencilBuffer.hpp">
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
   </ItemGroup>

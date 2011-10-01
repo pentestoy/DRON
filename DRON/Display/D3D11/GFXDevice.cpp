@@ -39,10 +39,10 @@ GFXDevice::GFXDevice()
 
 GFXDevice::~GFXDevice()
 {
-	if( _device_context_ptr )
-		_device_context_ptr->ClearState();
+	//if( _device_context_ptr )
+	//	_device_context_ptr->ClearState();
 
-	DXRelease( _device_context_ptr );
+	//DXRelease( _device_context_ptr );
 	DXRelease( _device_ptr );
 }
 
