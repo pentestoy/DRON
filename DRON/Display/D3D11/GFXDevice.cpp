@@ -39,17 +39,5 @@ GFXDevice::GFXDevice()
 
 GFXDevice::~GFXDevice()
 {
-	//if( _device_context_ptr )
-	//	_device_context_ptr->ClearState();
-
-	//DXRelease( _device_context_ptr );
 	DXRelease( _device_ptr );
-}
-
-void GFXDevice::CreateRenderTarget( const SwapChain& sc, RenderTarget& rt )
-{
-	rt.ReleaseData();
-    ID3D11Texture2D* buffer = sc.GetBuffer();
-    _device_ptr->CreateRenderTargetView( buffer, 0, rt.GetDataAddress() );
-	DXRelease( buffer );
 }

@@ -18,7 +18,7 @@ DepthStencilBuffer::~DepthStencilBuffer()
 	Release();
 }
 
-void DepthStencilBuffer::CreateNewBufferAndView(
+void DepthStencilBuffer::Initialize(
 	GFXDevice& device,
 	const DisplaySettings& ds )
 {

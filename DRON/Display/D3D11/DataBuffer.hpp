@@ -1,0 +1,63 @@
+/**
+ *  Display/D3D11/DataBuffer.hpp
+ *  (c) Jonathan Capps
+ *  Created 02 Oct. 2011
+ */
+
+#ifndef DISPLAY_D3D11_DATA_BUFFER_HPP
+#define DISPLAY_D3D11_DATA_BUFFER_HPP
+
+#include <vector>
+#include <D3D11.h>
+
+enum DATA_BUFFER_ACCESS
+{
+	DATA_BUFFER_READ  = D3D11_CPU_ACCESS_READ,
+	DATA_BUFFER_WRITE = D3D11_CPU_ACCESS_WRITE
+};
+
+enum DATA_BUFFER_BINDING
+{
+  DATA_BUFFER_BIND_VERTEX_BUFFER    = D3D11_BIND_VERTEX_BUFFER,
+  DATA_BUFFER_BIND_INDEX_BUFFER     = D3D11_BIND_INDEX_BUFFER,
+  DATA_BUFFER_BIND_CONSTANT_BUFFER  = D3D11_BIND_CONSTANT_BUFFER,
+  DATA_BUFFER_BIND_SHADER_RESOURCE  = D3D11_BIND_SHADER_RESOURCE,
+  DATA_BUFFER_BIND_STREAM_OUTPUT    = D3D11_BIND_STREAM_OUTPUT,
+  DATA_BUFFER_BIND_RENDER_TARGET    = D3D11_BIND_RENDER_TARGET,
+  DATA_BUFFER_BIND_DEPTH_STENCIL    = D3D11_BIND_DEPTH_STENCIL,
+  DATA_BUFFER_BIND_UNORDERED_ACCESS = D3D11_BIND_UNORDERED_ACCESS
+};
+
+enum DATA_BUFFER_USAGE
+{
+  DATA_BUFFER_USAGE_DEFAULT   = D3D11_USAGE_DEFAULT,
+  DATA_BUFFER_USAGE_IMMUTABLE = D3D11_USAGE_IMMUTABLE,
+  DATA_BUFFER_USAGE_DYNAMIC   = D3D11_USAGE_DYNAMIC,
+  DATA_BUFFER_USAGE_STAGING   = D3D11_USAGE_STAGING
+};
+
+struct DataBufferFlags
+{
+	DATA_BUFFER_ACCESS  _access;
+	DATA_BUFFER_BINDING _binding;
+	DATA_BUFFER_USAGE   _usage;
+};
+
+class DeviceContext;
+class GFXDevice;
+template< typename T >
+class DataBuffer
+{
+	public:
+		DataBuffer( GFXDevice& device, DataBufferFlags flags, size_t size );
+		void CopyDataToBuffer( DeviceContext& context, const std::vector< T >& data );
+		void Unmap();
+		~DataBuffer();
+
+	private:
+		ID3D11Buffer* _buffer;
+		T*            _data;
+		size_t		  _size;
+};
+
+#endif //DISPLAY_D3D11_DATA_BUFFER_HPP

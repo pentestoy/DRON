@@ -21,7 +21,7 @@ class DepthStencilBuffer
 		ID3D11DepthStencilView* GetViewPtr() const { return _view_ptr; }
 
 		void Release();
-		void CreateNewBufferAndView(
+		void Initialize(
 			GFXDevice& device,
 			const DisplaySettings& ds
 		);

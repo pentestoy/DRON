@@ -19,7 +19,6 @@ class GFXDevice
 		~GFXDevice();
 
 		ID3D11Device* GetRawDevicePtr() { return _device_ptr; }
-		void CreateRenderTarget( const SwapChain& sc, RenderTarget& rt );
 
 	private:
 		friend class D3D11Renderer;

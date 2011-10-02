@@ -5,6 +5,8 @@
  */
 
 #include "RenderTarget.hpp"
+#include "GFXDevice.hpp"
+#include "SwapChain.hpp"
 #include "../../Utility/DXUtil.hpp"
 
 RenderTarget::RenderTarget()
@@ -13,7 +15,15 @@ RenderTarget::RenderTarget()
 
 RenderTarget::~RenderTarget()
 {
-	DXRelease( _data );
+	Release();
+}
+
+void RenderTarget::Initialize( GFXDevice& device, const SwapChain& sc )
+{
+	Release();
+    ID3D11Texture2D* buffer = sc.GetBuffer();
+    device.GetRawDevicePtr()->CreateRenderTargetView( buffer, 0, GetDataAddress() );
+	DXRelease( buffer );
 }
 
 ID3D11RenderTargetView* RenderTarget::GetData()
@@ -26,7 +36,7 @@ ID3D11RenderTargetView** RenderTarget::GetDataAddress()
 	return &_data;
 }
 
-void RenderTarget::ReleaseData()
+void RenderTarget::Release()
 {
 	DXRelease( _data );
 }

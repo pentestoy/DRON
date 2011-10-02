@@ -24,20 +24,6 @@
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/Geometry.hpp"
 
-template< typename T >
-D3D11Renderer::BufferMapping< T >::BufferMapping( ID3D11Buffer* buffer,
-	ID3D11DeviceContext* dc, D3D11_MAP map_flag )
-: _buffer_ptr( buffer ), _dc_ptr( dc )
-{
-	_dc_ptr->Map( _buffer_ptr, 0, map_flag, 0, &_data );
-}
-
-template< typename T >
-D3D11Renderer::BufferMapping< T >::~BufferMapping()
-{
-	_dc_ptr->Unmap( _buffer_ptr, 0 );
-}
-
 D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
@@ -67,10 +53,10 @@ void D3D11Renderer::OnResize( DisplaySettings& ds )
 
 	// Resize the swap chain and recreate the render target view.
 	_swap_chain.Resize( ds );
-	_device.CreateRenderTarget( _swap_chain, _render_target );
+	_render_target.Initialize( _device, _swap_chain );
 
 	// Create the depth/stencil buffer and view.
-	_depth_stencil.CreateNewBufferAndView( _device, ds );
+	_depth_stencil.Initialize( _device, ds );
 
 	// Bind the render target view and depth/stencil view to the pipeline.
 	_context.SetRenderTarget( _render_target, _depth_stencil );
@@ -122,16 +108,9 @@ bool D3D11Renderer::InitializeBuffers()
 
 void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
-	_context.InitializeFrame( _render_target, _depth_stencil );//_depth_stencil_view );
+	_context.InitializeFrame( _render_target, _depth_stencil );
 
-	BaseComponent* cc = 0;
-	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
-	assert( cc );
-	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
-	/* TODO: If I'm going to fully abstract D3D away from the renderer class,
-	 *       I'm going to need to figure out what to use instead of xnamath.
-	 */
-	XMStoreFloat4x4NC( &_view_mx, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
+	BuildCameraMatrix( camera, _view_mx );
 
 	WVP per_frame;
 	per_frame._world = XMMatrixTranspose( XMLoadFloat4x4( &_world_mx ) );
@@ -140,7 +119,7 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_context.UpdateBuffer( _per_frame_buffer, per_frame );
 
 	Entity e = entities.front();
-	cc = 0;
+	BaseComponent* cc = 0;
 	_entity_system.GetComponent( e, COMPONENT_RENDERABLE, &cc );
 	assert( cc );
 	RenderableComponent::Data rcd = static_cast< RenderableComponent* >( cc )->GetData();
@@ -205,6 +184,18 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
 
 	_swap_chain.Show();
+}
+
+void D3D11Renderer::BuildCameraMatrix( Entity camera, XMFLOAT4X4& matrix )
+{
+	BaseComponent* cc = 0;
+	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
+#if defined( DEBUG ) || defined( _DEBUG )
+	assert( cc );
+#endif
+	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
+
+	XMStoreFloat4x4NC( &matrix, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
 }
 
 void D3D11Renderer::BuildProjectionMatrices( const DisplaySettings& ds )

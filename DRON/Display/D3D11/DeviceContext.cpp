@@ -64,7 +64,7 @@ void DeviceContext::SetTopology( const TOPOLOGY topology ) const
 	 *       than to use a switch statement.
 	 *       I should probably use a std::map,
 	 *       but where's best to put it? Hmmm....
-	 */
+	 * /
 	D3D11_PRIMITIVE_TOPOLOGY t = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
 
 	switch( topology )
@@ -76,8 +76,10 @@ void DeviceContext::SetTopology( const TOPOLOGY topology ) const
 		default:
 			assert( false );
 	}
+	*/
 
-	_context_ptr->IASetPrimitiveTopology( t );
+	// c++-style casting doesn't work converting enums :(
+	_context_ptr->IASetPrimitiveTopology( ( D3D11_PRIMITIVE_TOPOLOGY )topology );
 }
 
 void DeviceContext::SetViewport( const DisplaySettings& ds ) const
