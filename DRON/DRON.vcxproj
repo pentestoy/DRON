@@ -80,9 +80,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Display\BaseWindow.cpp" />
     <ClCompile Include="Display\D3D11Renderer.cpp" />
-    <ClCompile Include="Display\D3D11\DataBuffer.cpp" />
     <ClCompile Include="Display\D3D11\DepthStencilBuffer.cpp" />
-    <ClCompile Include="Display\D3D11\DeviceContext.cpp" />
     <ClCompile Include="Display\D3D11\GFXDevice.cpp" />
     <ClCompile Include="Display\D3D11\RenderTarget.cpp" />
     <ClCompile Include="Display\D3D11\SwapChain.cpp" />
@@ -113,7 +111,6 @@
     <ClInclude Include="Display\D3D11Renderer.hpp" />
     <ClInclude Include="Display\D3D11\DataBuffer.hpp" />
     <ClInclude Include="Display\D3D11\DepthStencilBuffer.hpp" />
-    <ClInclude Include="Display\D3D11\DeviceContext.hpp" />
     <ClInclude Include="Display\D3D11\GFXDevice.hpp" />
     <ClInclude Include="Display\D3D11\RenderTarget.hpp" />
     <ClInclude Include="Display\D3D11\SwapChain.hpp" />

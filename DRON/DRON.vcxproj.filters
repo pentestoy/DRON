@@ -144,16 +144,10 @@
     <ClCompile Include="Display\D3D11\SwapChain.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
-    <ClCompile Include="Display\D3D11\DeviceContext.cpp">
-      <Filter>Source Files\Display\D3D11</Filter>
-    </ClCompile>
     <ClCompile Include="Display\D3D11\RenderTarget.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
     <ClCompile Include="Display\D3D11\DepthStencilBuffer.cpp">
-      <Filter>Source Files\Display\D3D11</Filter>
-    </ClCompile>
-    <ClCompile Include="Display\D3D11\DataBuffer.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
   </ItemGroup>
@@ -273,9 +267,6 @@
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="Display\D3D11\SwapChain.hpp">
-      <Filter>Header Files\Display\D3D11</Filter>
-    </ClInclude>
-    <ClInclude Include="Display\D3D11\DeviceContext.hpp">
       <Filter>Header Files\Display\D3D11</Filter>
     </ClInclude>
     <ClInclude Include="Display\D3D11\Topology.hpp">

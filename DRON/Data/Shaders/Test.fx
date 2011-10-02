@@ -25,7 +25,7 @@ VS_OUT VS_Test( VS_IN v_in )
 {
     VS_OUT v_out;
     v_out._wpos = v_in._pos;
-    v_out._pos = mul( v_in._pos, world );
+    v_out._pos = mul( v_in._pos + float4( v_in._posoffset, 0.0 ), world );
     v_out._pos = mul( v_out._pos, view );
     v_out._pos = mul( v_out._pos, proj );
     v_out._color = v_in._color;

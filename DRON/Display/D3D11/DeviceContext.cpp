@@ -47,16 +47,18 @@ void DeviceContext::InitializeFrame(
 	SetTopology( TOPOLOGY_TRIANGLE_LIST );
 }
 
+/*
 void DeviceContext::SetRenderTarget(
 	RenderTarget& target,
 	DepthStencilBuffer& dsb ) const
 {
 	/* TODO: I think I'm going to have to support multiple render targets,
 	 * so I'm going to need to rivise ths approach at some point.
-	 */
+	 * /
 	ID3D11RenderTargetView* rtv = target.GetData();
 	_context_ptr->OMSetRenderTargets( 1, &rtv, dsb.GetViewPtr() );
 }
+* /
 
 void DeviceContext::SetTopology( const TOPOLOGY topology ) const
 {
@@ -76,11 +78,12 @@ void DeviceContext::SetTopology( const TOPOLOGY topology ) const
 		default:
 			assert( false );
 	}
-	*/
+	* /
 
 	// c++-style casting doesn't work converting enums :(
 	_context_ptr->IASetPrimitiveTopology( ( D3D11_PRIMITIVE_TOPOLOGY )topology );
 }
+*/
 
 void DeviceContext::SetViewport( const DisplaySettings& ds ) const
 {

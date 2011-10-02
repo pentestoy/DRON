@@ -10,12 +10,13 @@
 #include <vector>
 #include <D3D11.h>
 #include <xnamath.h>
+#include "D3D11/DataBuffer.hpp"
 #include "D3D11/DepthStencilBuffer.hpp"
-#include "D3D11/DeviceContext.hpp"
 #include "D3D11/GFXDevice.hpp"
 #include "D3D11/RenderTarget.hpp"
 #include "D3D11/SwapChain.hpp"
 #include "../Entity/Entity.hpp"
+#include "../Utility/Geometry.hpp"
 
 struct WVP
 {
@@ -40,7 +41,8 @@ class D3D11Renderer
 
     protected:
         bool InitializeBuffers();
-		void BuildCameraMatrix( Entity camera, XMFLOAT4X4& matrix );
+		void UpdateMatrixBuffer( Entity camera );
+		XMFLOAT4X4 BuildCameraMatrix( Entity camera );
 		void BuildProjectionMatrices( const DisplaySettings& ds );
 
 		// temporary
@@ -48,19 +50,15 @@ class D3D11Renderer
 		unsigned int				_vs_id;
 
 		GFXDevice					_device;
-		DeviceContext				_context;
 		SwapChain					_swap_chain;
 		RenderTarget				_render_target;
 		DepthStencilBuffer			_depth_stencil;
 
-		WVP							_per_frame;
-		XMFLOAT4X4					_world_mx;
-		XMFLOAT4X4					_view_mx;
 		XMFLOAT4X4					_perspec_mx;
 		XMFLOAT4X4					_ortho_mx;
 
-		ID3D11Buffer*				_instance_buffer;
 		ID3D11Buffer*				_per_frame_buffer;
+		DataBuffer< InstanceData >* _instance_buffer_ptr;
 
 		EntitySystem&				_entity_system;
 };

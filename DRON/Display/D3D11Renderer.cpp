@@ -18,6 +18,7 @@
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/CameraComponent.hpp"
 #include "../Entity/Components/RenderableComponent.hpp"
+#include "../Entity/Components/XformComponent.hpp"
 #include "../Resource/MeshLocator.hpp"
 #include "../Resource/PixelShaderLocator.hpp"
 #include "../Resource/VertexShaderLocator.hpp"
@@ -27,12 +28,9 @@
 D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
-    : _device(), _context( _device.GetRawContextPtr() ),
-	  _swap_chain( _device, ds, window ), _instance_buffer( 0 ),
+    : _device(), _swap_chain( _device, ds, window ), _instance_buffer_ptr( 0 ),
 	  _per_frame_buffer( 0 ), _entity_system( es )
 {
-	// TODO: world matrix really needs to come from the gamestate
-	XMStoreFloat4x4NC( &_world_mx, XMMatrixIdentity() );
 	InitializeBuffers();
     OnResize( ds );
 }
@@ -40,7 +38,8 @@ D3D11Renderer::D3D11Renderer( HWND window,
 D3D11Renderer::~D3D11Renderer()
 {
 	DXRelease( _per_frame_buffer );
-	DXRelease( _instance_buffer );
+	delete _instance_buffer_ptr;
+	_instance_buffer_ptr = 0;
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
@@ -59,8 +58,8 @@ void D3D11Renderer::OnResize( DisplaySettings& ds )
 	_depth_stencil.Initialize( _device, ds );
 
 	// Bind the render target view and depth/stencil view to the pipeline.
-	_context.SetRenderTarget( _render_target, _depth_stencil );
-	_context.SetViewport( ds );
+	_device.SetRenderTarget( _render_target, _depth_stencil );
+	_device.SetViewport( ds );
 
 	BuildProjectionMatrices( ds );
 
@@ -86,15 +85,14 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 
 bool D3D11Renderer::InitializeBuffers()
 {
-    D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( InstanceData ) * 100; //4 for pos, rot_quat, scale, color 
-    bd.Usage = D3D11_USAGE_DYNAMIC;
-    bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    bd.MiscFlags = 0;
+	DataBufferFlags dbf;
+	dbf._access = DATA_BUFFER_ACCESS_WRITE;
+	dbf._binding = DATA_BUFFER_BIND_VERTEX_BUFFER,
+	dbf._usage   = DATA_BUFFER_USAGE_DYNAMIC;
 
-	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, 0, &_instance_buffer ) );
+	_instance_buffer_ptr = new DataBuffer< InstanceData >( _device, dbf, 100 );
 
+	D3D11_BUFFER_DESC bd;
     bd.ByteWidth = sizeof( XMMATRIX ) * 3;
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -108,15 +106,8 @@ bool D3D11Renderer::InitializeBuffers()
 
 void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
-	_context.InitializeFrame( _render_target, _depth_stencil );
-
-	BuildCameraMatrix( camera, _view_mx );
-
-	WVP per_frame;
-	per_frame._world = XMMatrixTranspose( XMLoadFloat4x4( &_world_mx ) );
-	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &_view_mx ) );
-	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
-	_context.UpdateBuffer( _per_frame_buffer, per_frame );
+	_device.InitializeFrame( _render_target, _depth_stencil );
+	UpdateMatrixBuffer( camera );
 
 	Entity e = entities.front();
 	BaseComponent* cc = 0;
@@ -124,25 +115,30 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	assert( cc );
 	RenderableComponent::Data rcd = static_cast< RenderableComponent* >( cc )->GetData();
 
+	_entity_system.GetComponent( e, COMPONENT_XFORM, &cc );
+	assert( cc );
+	XformComponent::Data xcd = static_cast< XformComponent* >( cc )->GetData();
+
 	MeshLocator ml( _device.GetRawDevicePtr() );
 	MeshResource& m = ml.Request( rcd._mesh_name );
 	Mesh& mesh = *m.Data();
 
 	InstanceData id;
-	id._translation = XMFLOAT3( 0.0f, 0.0f, 0.0f );
-	id._rotation = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
-	id._scale = XMFLOAT3( 1.0f, 1.0f, 1.0f );
-	id._color = XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f );
+	id._translation = xcd._position;
+	id._rotation = xcd._rotation;
+	id._scale = xcd._scale;
+	id._color = rcd._color;
 
-	D3D11_MAPPED_SUBRESOURCE msr;
-	_device.GetRawContextPtr()->Map( _instance_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr );
-	InstanceData* id_ptr = static_cast< InstanceData* >( msr.pData );
-	id_ptr[ 0 ] = id;
-	_device.GetRawContextPtr()->Unmap( _instance_buffer, 0 );
+	std::vector< InstanceData > idv;
+	idv.push_back( id );
+	_instance_buffer_ptr->CopyDataToBuffer(
+		_device,
+		idv,
+		DATA_BUFFER_MAP_WRITE_DISCARD );
 
 	ID3D11Buffer* buffers[ 2 ];
 	buffers[ 0 ] = mesh._vertex_buffer;
-	buffers[ 1 ] = _instance_buffer;
+	buffers[ 1 ] = _instance_buffer_ptr->GetBuffer();
 
 	unsigned int strides[ 2 ];
 	strides[ 0 ] = sizeof( Vertex );
@@ -158,7 +154,7 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 		strides,
 		offsets );
 
-	_context.SetIndexBuffer( mesh._index_buffer );
+	_device.SetIndexBuffer( mesh._index_buffer );
 
 	VertexShaderLocator vsl( _device.GetRawDevicePtr() );
 	VertexShaderResource vsr =
@@ -178,24 +174,37 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	PixelShaderResource psr =
 		psl.Request( rcd._pixel_shader_filename, rcd._pixel_shader );
 	
-	_context.SetVertexShader( vsr );
-	_context.SetPixelShader( psr );
+	_device.SetVertexShader( vsr );
+	_device.SetPixelShader( psr );
 
 	_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
 
 	_swap_chain.Show();
 }
 
-void D3D11Renderer::BuildCameraMatrix( Entity camera, XMFLOAT4X4& matrix )
+void D3D11Renderer::UpdateMatrixBuffer( Entity camera )
+{
+	XMFLOAT4X4 view_mx = BuildCameraMatrix( camera );
+
+	WVP per_frame;
+	per_frame._world = XMMatrixIdentity();
+	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &view_mx ) );
+	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
+	_device.UpdateBuffer( _per_frame_buffer, per_frame );
+}
+
+XMFLOAT4X4 D3D11Renderer::BuildCameraMatrix( Entity camera )
 {
 	BaseComponent* cc = 0;
 	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
-#if defined( DEBUG ) || defined( _DEBUG )
 	assert( cc );
-#endif
+
 	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
 
+	XMFLOAT4X4 matrix;
 	XMStoreFloat4x4NC( &matrix, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
+
+	return matrix;
 }
 
 void D3D11Renderer::BuildProjectionMatrices( const DisplaySettings& ds )

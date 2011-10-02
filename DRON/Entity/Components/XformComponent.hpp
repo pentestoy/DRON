@@ -16,8 +16,8 @@ class XformComponent : public TplComponent< XformComponent >
 	public:
 		struct Data : public BaseComponentData
 		{
-			XMFLOAT4	_position;
-			XMFLOAT4	_scale;
+			XMFLOAT3	_position;
+			XMFLOAT3	_scale;
 			XMFLOAT4	_rotation;
 		};
 		Data& GetData() { return _data; }

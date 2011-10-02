@@ -7,7 +7,6 @@
 #include "DataBuffer.hpp"
 #include <cassert>
 #include <cstring>
-#include "DeviceContext.hpp"
 #include "GFXDevice.hpp"
 #include "../../Utility/DXUtil.hpp"
 
@@ -37,13 +36,13 @@ DataBuffer< T >::~DataBuffer()
 
 template< typename T >
 void DataBuffer< T >::CopyDataToBuffer(
-	DeviceContext& context,
+	GFXDevice& device,
 	const std::vector< T >& data )
 {
 #if defined( DEBUG ) || defined( _DEBUG )  
 	cassert( data.size() <= _size );
 #endif
-	context.GetRawPtr()->Map( _buffer_ptr, 0, map_flag, 0, &_data );
+	device.GetRawContextPtr()->Map( _buffer_ptr, 0, map_flag, 0, &_data );
 	std::memcpy( _data, &data[ 0 ], data.size() );
-	context.GetRawPtr()->Unmap( _buffer_ptr, 0 );
+	device.GetRawContextPtr()->Unmap( _buffer_ptr, 0 );
 }
