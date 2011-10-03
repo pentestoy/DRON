@@ -28,7 +28,7 @@ class GFXDevice
 		ID3D11DeviceContext* GetRawContextPtr() { return _context_ptr; }
 
 		void SetRenderTargets(
-			std::vector< RenderTarget >& targets,
+			std::vector< RenderTarget* >& targets,
 			DepthStencilBuffer& dsb
 		) const;
 		void SetRenderTarget(

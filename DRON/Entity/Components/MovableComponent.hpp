@@ -12,10 +12,10 @@
 class MovableComponent : public TplComponent< MovableComponent >
 {
 	public:
-		struct Data : public BaseComponentData
+		struct Data : public BaseComponent::Data
 		{ };
 		Data& GetData() { return _data; }
-		void SetData( BaseComponent::BaseComponentData& data )
+		void SetData( BaseComponent::Data& data )
 			{ _data = static_cast< Data& >( data ); }
 
 	private:

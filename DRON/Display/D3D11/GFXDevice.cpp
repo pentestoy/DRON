@@ -48,15 +48,15 @@ GFXDevice::~GFXDevice()
 }
 
 void GFXDevice::SetRenderTargets(
-	std::vector< RenderTarget >& targets,
+	std::vector< RenderTarget* >& targets,
 	DepthStencilBuffer& dsb ) const
 {
 	std::vector< ID3D11RenderTargetView* > views;
 
-	std::vector< RenderTarget>::iterator iter = targets.begin();
+	std::vector< RenderTarget* >::iterator iter = targets.begin();
 	while( iter != targets.end() )
 	{
-		views.push_back( iter->GetData() );
+		views.push_back( ( *iter )->GetData() );
 		++iter;
 	}
 
@@ -68,8 +68,8 @@ void GFXDevice::SetRenderTarget(
 	DepthStencilBuffer& dsb ) const
 {
 	ID3D11RenderTargetView* rtv = target.GetData();
-	std::vector< RenderTarget > targets;
-	targets.push_back( target );
+	std::vector< RenderTarget* > targets;
+	targets.push_back( &target );
 	SetRenderTargets( targets, dsb );
 }
 

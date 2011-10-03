@@ -7,6 +7,8 @@
 #ifndef D3D11RENDERER_HPP
 #define D3D11RENDERER_HPP
 
+#include <map>
+#include <string>
 #include <vector>
 #include <D3D11.h>
 #include <xnamath.h>
@@ -18,9 +20,8 @@
 #include "../Entity/Entity.hpp"
 #include "../Utility/Geometry.hpp"
 
-struct WVP
+struct ViewProj
 {
-	XMMATRIX	_world;
 	XMMATRIX	_view;
 	XMMATRIX	_proj;
 };
@@ -42,6 +43,11 @@ class D3D11Renderer
     protected:
         bool InitializeBuffers();
 		void UpdateMatrixBuffer( Entity camera );
+		void BuildBatchLists(
+				std::vector< Entity >& entities,
+				std::map< std::string, std::vector< Entity > >& batches );
+		void DrawBatches(
+			std::map< std::string, std::vector< Entity > >& batches );
 		XMFLOAT4X4 BuildCameraMatrix( Entity camera );
 		void BuildProjectionMatrices( const DisplaySettings& ds );
 

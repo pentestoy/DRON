@@ -98,7 +98,7 @@ void EntitySystem::DestroyEntity( Entity e )
 void EntitySystem::CreateAndAttachComponent(
 	Entity e,
 	COMPONENT_TYPE type,
-	BaseComponent::BaseComponentData& data )
+	BaseComponent::Data& data )
 {
 	// unfortunately, it appears we have to create the component
 	// and try to insert it. It's easier than iterating through the set.
@@ -167,6 +167,32 @@ bool EntitySystem::GetComponent(
 	}
 	
 	return *component != 0;
+}
+
+BaseComponent::Data* EntitySystem::GetComponentData(
+	Entity entity,
+	COMPONENT_TYPE type )
+{
+	EntityComponentMap::iterator ec_iter =
+		_entity_map.find( entity );
+
+	int count = 0;
+	if( ec_iter != _entity_map.end() )
+	{
+		BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
+		while( bc_iter != ec_iter->second.end() )
+		{
+			if( ( *bc_iter )->GetType() == type )
+			{
+				return &const_cast< BaseComponent* >( ( *bc_iter ) )->GetData();
+				++count;
+				break;
+			}
+
+			++bc_iter;
+		}
+	}
+	return 0;
 }
 
 void EntitySystem::Register( COMPONENT_TYPE type, ComponentCreator creator_fn )

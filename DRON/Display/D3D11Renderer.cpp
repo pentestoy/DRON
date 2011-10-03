@@ -93,7 +93,7 @@ bool D3D11Renderer::InitializeBuffers()
 	_instance_buffer_ptr = new DataBuffer< InstanceData >( _device, dbf, 100 );
 
 	D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( XMMATRIX ) * 3;
+    bd.ByteWidth = sizeof( ViewProj );
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bd.CPUAccessFlags = 0;
@@ -109,75 +109,9 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.InitializeFrame( _render_target, _depth_stencil );
 	UpdateMatrixBuffer( camera );
 
-	Entity e = entities.front();
-	BaseComponent* cc = 0;
-	_entity_system.GetComponent( e, COMPONENT_RENDERABLE, &cc );
-	assert( cc );
-	RenderableComponent::Data rcd = static_cast< RenderableComponent* >( cc )->GetData();
-
-	_entity_system.GetComponent( e, COMPONENT_XFORM, &cc );
-	assert( cc );
-	XformComponent::Data xcd = static_cast< XformComponent* >( cc )->GetData();
-
-	MeshLocator ml( _device.GetRawDevicePtr() );
-	MeshResource& m = ml.Request( rcd._mesh_name );
-	Mesh& mesh = *m.Data();
-
-	InstanceData id;
-	id._translation = xcd._position;
-	id._rotation = xcd._rotation;
-	id._scale = xcd._scale;
-	id._color = rcd._color;
-
-	std::vector< InstanceData > idv;
-	idv.push_back( id );
-	_instance_buffer_ptr->CopyDataToBuffer(
-		_device,
-		idv,
-		DATA_BUFFER_MAP_WRITE_DISCARD );
-
-	ID3D11Buffer* buffers[ 2 ];
-	buffers[ 0 ] = mesh._vertex_buffer;
-	buffers[ 1 ] = _instance_buffer_ptr->GetBuffer();
-
-	unsigned int strides[ 2 ];
-	strides[ 0 ] = sizeof( Vertex );
-	strides[ 1 ] = sizeof( InstanceData );
-	unsigned int offsets[ 2 ];
-	offsets[ 0 ] = 0;
-	offsets[ 1 ] = 0;
-
-	_device.GetRawContextPtr()->IASetVertexBuffers(
-		0,
-		2,
-		buffers,
-		strides,
-		offsets );
-
-	_device.SetIndexBuffer( mesh._index_buffer );
-
-	VertexShaderLocator vsl( _device.GetRawDevicePtr() );
-	VertexShaderResource vsr =
-		vsl.Request( rcd._vertex_shader_filename, rcd._vertex_shader );
-	/**************************************************************************
-	 * VertexShaderLocator.GetInputLayout cannot be called before successfully
-	 * requesting at least one vertex shader. This is because we need a shader
-	 * blob to initialize the layout. Also, right now we really only need to
-	 * call it once, not once per draw, since all the shaders have the same
-	 * layout. We should probably add another std::map and store input layouts
-	 * per shader.
-	 */
-	_device.GetRawContextPtr()->IASetInputLayout( vsl.GetInputLayout() );
-	_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
-
-	PixelShaderLocator psl( _device.GetRawDevicePtr() );
-	PixelShaderResource psr =
-		psl.Request( rcd._pixel_shader_filename, rcd._pixel_shader );
-	
-	_device.SetVertexShader( vsr );
-	_device.SetPixelShader( psr );
-
-	_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
+	std::map< std::string, std::vector< Entity > > batches;
+	BuildBatchLists( entities, batches );
+	DrawBatches( batches );
 
 	_swap_chain.Show();
 }
@@ -186,23 +120,148 @@ void D3D11Renderer::UpdateMatrixBuffer( Entity camera )
 {
 	XMFLOAT4X4 view_mx = BuildCameraMatrix( camera );
 
-	WVP per_frame;
-	per_frame._world = XMMatrixIdentity();
+	ViewProj per_frame;
 	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &view_mx ) );
 	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
 	_device.UpdateBuffer( _per_frame_buffer, per_frame );
 }
 
+void D3D11Renderer::BuildBatchLists(
+	std::vector< Entity >& entities,
+	std::map< std::string, std::vector< Entity > >& batches )
+{
+	batches.clear();
+	std::vector< Entity >::iterator e_iter = entities.begin();
+	while( e_iter != entities.end() )
+	{
+		RenderableComponent::Data* rcd_ptr =
+			static_cast< RenderableComponent::Data* >(
+				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
+		if( rcd_ptr ) 
+		{
+			/* TODO: Right now, we're just sorting by mesh name. That will
+			 *       likely have to change at some point.
+			 */
+			batches[ rcd_ptr->_mesh_name ].push_back( *e_iter );
+		}
+		++e_iter;
+	}
+}
+
+void D3D11Renderer::DrawBatches(
+	std::map< std::string, std::vector< Entity > >& batches )
+{
+	std::map< std::string, std::vector< Entity > >::iterator batch_iter =
+		batches.begin();
+
+	while( batch_iter != batches.end() )
+	{
+		std::vector< Entity >& entities = batch_iter->second;
+
+		Entity e = entities.front();
+		/* We verified that all entities have renderable components when we
+		 * built the batches, so we should be good to skip the check here.
+		 */
+		RenderableComponent::Data* rcd_ptr =
+			static_cast< RenderableComponent::Data* >(
+				_entity_system.GetComponentData( e, COMPONENT_RENDERABLE ) );
+
+		MeshLocator ml( _device.GetRawDevicePtr() );
+		MeshResource& m = ml.Request( rcd_ptr->_mesh_name );
+		Mesh& mesh = *m.Data();
+
+		VertexShaderLocator vsl( _device.GetRawDevicePtr() );
+		VertexShaderResource& vsr =
+			vsl.Request( rcd_ptr->_vertex_shader_filename, rcd_ptr->_vertex_shader );
+		/**************************************************************************
+		 * VertexShaderLocator.GetInputLayout cannot be called before successfully
+		 * requesting at least one vertex shader. This is because we need a shader
+		 * blob to initialize the layout. Also, right now we really only need to
+		 * call it once, not once per draw, since all the shaders have the same
+		 * layout. We should probably add another std::map and store input layouts
+		 * per shader.
+		 */
+		_device.GetRawContextPtr()->IASetInputLayout( vsl.GetInputLayout() );
+		_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
+
+		PixelShaderLocator psl( _device.GetRawDevicePtr() );
+		PixelShaderResource& psr =
+			psl.Request( rcd_ptr->_pixel_shader_filename, rcd_ptr->_pixel_shader );
+
+		std::vector< InstanceData > id_vector;
+		std::vector< Entity >::iterator e_iter = entities.begin();
+		while( e_iter != entities.end() )
+		{
+			XformComponent::Data* xcd_ptr =
+				static_cast< XformComponent::Data* >(
+					_entity_system.GetComponentData( e, COMPONENT_XFORM ) );
+
+			InstanceData id;
+			XMVECTOR translation = XMLoadFloat3( &xcd_ptr->_position );
+			XMVECTOR rotation    = XMLoadFloat4( &xcd_ptr->_rotation );
+			XMVECTOR scale       = XMLoadFloat3( &xcd_ptr->_scale    );
+			XMVECTOR rot_origin  =
+				XMLoadFloat3( &XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
+			XMMATRIX xform = XMMatrixAffineTransformation(
+				scale,
+				rot_origin,
+				rotation,
+				translation );
+			XMStoreFloat4x4( &id._xform, xform );
+
+			rcd_ptr = static_cast< RenderableComponent::Data* >(
+				_entity_system.GetComponentData( e, COMPONENT_RENDERABLE ) );
+			id._color = rcd_ptr->_color;
+
+			id_vector.push_back( id );
+			++e_iter;
+		}
+
+		_instance_buffer_ptr->CopyDataToBuffer(
+			_device,
+			id_vector,
+			DATA_BUFFER_MAP_WRITE_DISCARD );
+
+		ID3D11Buffer* buffers[ 2 ];
+		buffers[ 0 ] = mesh._vertex_buffer;
+		buffers[ 1 ] = _instance_buffer_ptr->GetBuffer();
+
+		unsigned int strides[ 2 ];
+		strides[ 0 ] = sizeof( Vertex );
+		strides[ 1 ] = sizeof( InstanceData );
+		unsigned int offsets[ 2 ];
+		offsets[ 0 ] = 0;
+		offsets[ 1 ] = 0;
+
+		_device.GetRawContextPtr()->IASetVertexBuffers(
+			0,
+			2,
+			buffers,
+			strides,
+			offsets );
+
+		_device.SetIndexBuffer( mesh._index_buffer );
+	
+		_device.SetVertexShader( vsr );
+		_device.SetPixelShader( psr );
+
+		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
+
+		++batch_iter;
+	}
+}
+
 XMFLOAT4X4 D3D11Renderer::BuildCameraMatrix( Entity camera )
 {
-	BaseComponent* cc = 0;
-	_entity_system.GetComponent( camera, COMPONENT_CAMERA, &cc );
-	assert( cc );
-
-	CameraComponent::Data ccd = static_cast< CameraComponent* >( cc )->GetData();
+	CameraComponent::Data* ccd_ptr = static_cast< CameraComponent::Data* >(
+		_entity_system.GetComponentData( camera, COMPONENT_CAMERA ) );
+	assert( ccd_ptr );
 
 	XMFLOAT4X4 matrix;
-	XMStoreFloat4x4NC( &matrix, XMMatrixLookAtLH( ccd._position, ccd._lookat, ccd._up ) );
+	XMStoreFloat4x4NC( &matrix, XMMatrixLookAtLH(
+		XMLoadFloat4( &ccd_ptr->_position ),
+		XMLoadFloat4( &ccd_ptr->_lookat ),
+		XMLoadFloat4( &ccd_ptr->_up ) ) );
 
 	return matrix;
 }

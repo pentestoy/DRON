@@ -24,10 +24,8 @@ struct Vertex
 
 struct InstanceData
 {
-	XMFLOAT3 _translation;
-	XMFLOAT4 _rotation;
-	XMFLOAT3 _scale;
-	XMFLOAT4 _color;
+	XMFLOAT4X4 _xform;
+	XMFLOAT4   _color;
 };
 
 struct TexCoord

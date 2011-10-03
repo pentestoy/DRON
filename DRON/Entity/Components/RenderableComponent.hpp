@@ -14,7 +14,7 @@
 class RenderableComponent : public TplComponent< RenderableComponent >
 {
 	public:
-		struct Data : public BaseComponent::BaseComponentData
+		struct Data : public BaseComponent::Data
 		{
 			std::string _mesh_name;
 			std::string _vertex_shader_filename;
@@ -23,9 +23,8 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 			std::string _pixel_shader;
 			XMFLOAT4	_color;
 		};
-		//virtual BaseComponent::BaseComponentData& GetData() { return _data; }
 		Data& GetData() { return _data; }
-		virtual void SetData( BaseComponent::BaseComponentData& data )
+		virtual void SetData( BaseComponent::Data& data )
 			{ _data	= static_cast< Data& >( data ); }
 
 	private:

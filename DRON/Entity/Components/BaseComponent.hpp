@@ -24,9 +24,9 @@ class BaseComponent
 		virtual bool operator!=( const BaseComponent& other ) const = 0;
 		virtual bool operator<( const BaseComponent& other ) const = 0;
 
-		struct BaseComponentData { };
-		virtual BaseComponentData& GetData() = 0;
-		virtual void SetData( BaseComponentData& data ) = 0;
+		struct Data { };
+		virtual BaseComponent::Data& GetData() = 0;
+		virtual void SetData( BaseComponent::Data& data ) = 0;
 };
 
 /**********************************************************

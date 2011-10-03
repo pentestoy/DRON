@@ -32,7 +32,7 @@ class EntitySystem
 		void CreateAndAttachComponent(
 			Entity e,
 			COMPONENT_TYPE type,
-			BaseComponent::BaseComponentData& data );
+			BaseComponent::Data& data );
 
 		void GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v );
 		void GetEntityComponents( Entity e, BaseComponentPtrVector& v );
@@ -40,6 +40,10 @@ class EntitySystem
 			Entity e,
 			COMPONENT_TYPE type,
 			BaseComponent** component );
+
+		BaseComponent::Data* GetComponentData(
+			Entity e,
+			COMPONENT_TYPE type );
 
 		static void Register( COMPONENT_TYPE type, ComponentCreator creator );
 
