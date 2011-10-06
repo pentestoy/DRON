@@ -24,6 +24,8 @@ class Menu : public GameState
 		virtual void HandleKeypress( const WPARAM key );
 
 	private:
+		Menu& operator=( const Menu& );
+
 		void ProcessInput();
 
 		EntitySystem&	_entity_system;

@@ -102,8 +102,7 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
 	for( unsigned int i = 0; i < ai_mesh_ptr->mNumVertices; ++i )
 	{
 		aiVector3D v = ai_mesh_ptr->mVertices[ i ];
-		XMFLOAT4 f( v.x, v.y, v.z, 1.0f );
-		XMVECTOR vert = XMLoadFloat4( &f );
+		XMVECTOR vert = XMVectorSet( v.x, v.y, v.z, 1.0f );
 		vert = XMVector3Transform( vert, xform );
 		XMFLOAT3 final;
 		XMStoreFloat3( &final, vert );

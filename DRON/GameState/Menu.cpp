@@ -17,9 +17,9 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	  _test_entity( _entity_system.CreateNewEntity() )
 {
 	CameraComponent::Data cd;
-	cd._position = XMFLOAT4( 0.0f, 0.0f, -10.0f, 0.0f );//XMVectorSet( 0.0f, 0.0f, -10.0f, 0.0f );
-	cd._lookat   = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );//XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
-	cd._up       = XMFLOAT4( 0.0f, 1.0f, 0.0f, 0.0f );//XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
+	cd._position = XMVectorSet( 0.0f, 0.0f, -10.0f, 0.0f );
+	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );
 
 	MovableComponent::Data md;
@@ -28,9 +28,9 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	XformComponent::Data xd;
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xd );
 
-	xd._position = XMFLOAT3( 0.0f, 0.0f, 0.0f );
-	xd._rotation = XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
-	xd._scale    = XMFLOAT3( 1.0f, 1.0f, 1.0f );
+	xd._position = XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f );
+	xd._rotation = XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f );
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_XFORM, xd );
 
 	RenderableComponent::Data rd;
@@ -39,7 +39,7 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	rd._vertex_shader = "VS_Test";
 	rd._pixel_shader_filename = "test.fx";
 	rd._pixel_shader = "PS_Test";
-	rd._color = XMFLOAT4( 0.5f, 0.5f, 1.0f, 1.0f );
+	rd._color = XMVectorSet( 0.5f, 0.5f, 1.0f, 1.0f );
 	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_RENDERABLE, rd );
 
 	_mapped_actions.insert( ActionMapPair( VK_RETURN, ACTION_SELECT ) );

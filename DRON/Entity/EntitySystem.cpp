@@ -27,9 +27,10 @@ EntitySystem::~EntitySystem()
 
 		while( set_iter != set.end() )
 		{
-			delete ( *set_iter );
+			( *set_iter )->~BaseComponent();
+			_aligned_free( *set_iter );
 			// set_iter is const for some reason, so I can't set it to 0.
-			//( *set_iter ) = 0;
+			//( *set_iter )= 0;
 
 			++set_iter;
 		}
@@ -110,7 +111,8 @@ void EntitySystem::CreateAndAttachComponent(
 		_entity_map[ e ].insert( c );
 	if( !result.second )
 	{
-		delete c;
+		c->~BaseComponent();
+		_aligned_free( c );
 		c = 0;
 	}
 	else
@@ -139,36 +141,6 @@ void EntitySystem::GetEntityComponents( Entity e, std::vector< BaseComponent* >&
 		v.insert( v.end(), ec_iter->second.begin(), ec_iter->second.end() );
 }
 
-bool EntitySystem::GetComponent(
-	Entity entity,
-	COMPONENT_TYPE type,
-	BaseComponent** component )
-{
-	*component = 0;
-
-	EntityComponentMap::iterator ec_iter =
-		_entity_map.find( entity );
-
-	int count = 0;
-	if( ec_iter != _entity_map.end() )
-	{
-		BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
-		while( bc_iter != ec_iter->second.end() )
-		{
-			if( ( *bc_iter )->GetType() == type )
-			{
-				*component = const_cast< BaseComponent* >( ( *bc_iter ) );
-				++count;
-				break;
-			}
-
-			++bc_iter;
-		}
-	}
-	
-	return *component != 0;
-}
-
 BaseComponent::Data* EntitySystem::GetComponentData(
 	Entity entity,
 	COMPONENT_TYPE type )
@@ -176,7 +148,6 @@ BaseComponent::Data* EntitySystem::GetComponentData(
 	EntityComponentMap::iterator ec_iter =
 		_entity_map.find( entity );
 
-	int count = 0;
 	if( ec_iter != _entity_map.end() )
 	{
 		BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
@@ -185,8 +156,6 @@ BaseComponent::Data* EntitySystem::GetComponentData(
 			if( ( *bc_iter )->GetType() == type )
 			{
 				return &const_cast< BaseComponent* >( ( *bc_iter ) )->GetData();
-				++count;
-				break;
 			}
 
 			++bc_iter;

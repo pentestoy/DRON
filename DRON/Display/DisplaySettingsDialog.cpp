@@ -46,7 +46,7 @@ const DisplaySettings& DisplaySettingsDialog::GetDisplaySettings() const
     return _settings;
 }
 
-LRESULT CALLBACK DisplaySettingsDialog::Proc( HWND window, UINT msg, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK DisplaySettingsDialog::Proc( HWND window, UINT msg, WPARAM wParam, LPARAM /* lParam */ )
 {
 	switch ( msg )
 	{
@@ -233,8 +233,6 @@ bool DisplaySettingsDialog::ValidateSettings( DisplaySettings& ds )
     EnumerateDisplayModes( dmd_vec );
 
     // now we validate the settings by trying to find a matching display mode
-    unsigned int width = 0;
-    unsigned int height = 0;
     for( std::vector< DXGI_MODE_DESC >::size_type i = 0; i < dmd_vec.size(); ++i )
     {
         if( ds._width == dmd_vec[ i ].Width &&

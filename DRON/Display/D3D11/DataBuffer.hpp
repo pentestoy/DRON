@@ -11,11 +11,13 @@
 #include <cstring>
 #include <vector>
 #include <D3D11.h>
+#include <LinearMath/btAlignedObjectArray.h>
 #include "GFXDevice.hpp"
 #include "../../Utility/DXUtil.hpp"
 
 enum DATA_BUFFER_ACCESS
 {
+	DATA_BUFFER_ACCESS_NONE = 0,
 	DATA_BUFFER_ACCESS_READ  = D3D11_CPU_ACCESS_READ,
 	DATA_BUFFER_ACCESS_WRITE = D3D11_CPU_ACCESS_WRITE
 };
@@ -49,47 +51,51 @@ enum DATA_BUFFER_USAGE
   DATA_BUFFER_USAGE_STAGING   = D3D11_USAGE_STAGING
 };
 
-struct DataBufferFlags
-{
-	DATA_BUFFER_ACCESS  _access;
-	DATA_BUFFER_BINDING _binding;
-	DATA_BUFFER_USAGE   _usage;
-};
-
 class GFXDevice;
 template< typename T >
 class DataBuffer
 {
 	public:
-		DataBuffer( GFXDevice& device, DataBufferFlags flags, size_t size );
+		DataBuffer(
+			GFXDevice& device,
+			DATA_BUFFER_ACCESS access,
+			DATA_BUFFER_BINDING binding,
+			DATA_BUFFER_USAGE usage,
+			size_t size );
 		~DataBuffer();
 
 		ID3D11Buffer* GetBuffer() const { return _buffer; }
 
 		void CopyDataToBuffer(
 			GFXDevice& device,
-			const std::vector< T >& data,
+			const btAlignedObjectArray< T >& data, //const std::vector< T >& data,
 			DATA_BUFFER_MAP map_flag );
 		void Unmap();
 
 	private:
 		ID3D11Buffer* _buffer;
 		T*            _data;
-		size_t		  _size;
+		/* There's no reason for size to go negative, but btAlignedObjectArray
+		 * uses int for size, so I'm using it here to avoid the sign mismatch
+		 * warning.
+		 */
+		int			  _size;
 };
 
 template< typename T >
 DataBuffer< T >::DataBuffer(
 	GFXDevice& device,
-	DataBufferFlags flags,
+	DATA_BUFFER_ACCESS access,
+	DATA_BUFFER_BINDING binding,
+	DATA_BUFFER_USAGE usage,
 	size_t size )
 	: _buffer( 0 ), _data( 0 ), _size( size )
 {
     D3D11_BUFFER_DESC bd;
     bd.ByteWidth = sizeof( T ) * size;
-    bd.Usage = ( D3D11_USAGE )flags._usage;
-    bd.BindFlags = ( D3D11_BIND_FLAG )flags._binding;
-    bd.CPUAccessFlags = ( D3D11_CPU_ACCESS_FLAG )flags._access;
+    bd.Usage = ( D3D11_USAGE )usage;
+    bd.BindFlags = ( D3D11_BIND_FLAG )binding;
+    bd.CPUAccessFlags = ( D3D11_CPU_ACCESS_FLAG )access;
     bd.MiscFlags = 0;
 	bd.StructureByteStride = 0;
 
@@ -105,12 +111,11 @@ DataBuffer< T >::~DataBuffer()
 template< typename T >
 void DataBuffer< T >::CopyDataToBuffer(
 	GFXDevice& device,
-	const std::vector< T >& data,
+	const btAlignedObjectArray< T >& data, //const std::vector< T >& data,
 	DATA_BUFFER_MAP map_flag )
-{
-#if defined( DEBUG ) || defined( _DEBUG )  
+{ 
 	assert( data.size() <= _size );
-#endif
+
 	D3D11_MAPPED_SUBRESOURCE msr;
 	device.GetRawContextPtr()->Map(
 		_buffer,

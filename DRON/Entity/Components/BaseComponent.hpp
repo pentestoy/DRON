@@ -16,7 +16,7 @@
  * This simply provides GetType()
  * and a common base class, of course ;)
  */
-class BaseComponent
+class __declspec( align( 16 ) ) BaseComponent
 {
 	public:
 		virtual COMPONENT_TYPE GetType() const = 0;
@@ -42,8 +42,15 @@ struct AutoRegistrar
 {
 	AutoRegistrar()
 		{ EntitySystem::Register( TplComponent< T >::GetTypeStatic(), AutoRegistrar< T >::Create ); }
-	static BaseComponent* Create() { return new T; }
+	static BaseComponent* Create();
 };
+
+template< typename T >
+BaseComponent* AutoRegistrar< T >::Create()
+{
+	void* buffer = _aligned_malloc( sizeof( T ), 16 );
+	return new( buffer ) T;
+}
 
 /***********************************************
  * TplComponent< T >

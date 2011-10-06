@@ -85,7 +85,7 @@ void MainWindow::OnResize( DisplaySettings& ds )
     SetWindowPos( _window, HWND_TOP, 0, 0, r.right - r.left, r.bottom - r.top, SWP_NOMOVE | SWP_NOZORDER );
 }
 
-LRESULT CALLBACK MainWindow::Proc( HWND window,
+LRESULT CALLBACK MainWindow::Proc( HWND /* window */,
 								   UINT message,
 								   WPARAM wparam,
 								   LPARAM lparam )

@@ -16,14 +16,9 @@ class CameraComponent : public TplComponent< CameraComponent >
 	public:
 		struct Data : public BaseComponent::Data
 		{
-			/*
 			XMVECTOR _position;
 			XMVECTOR _lookat;
 			XMVECTOR _up;
-			*/
-			XMFLOAT4 _position;
-			XMFLOAT4 _lookat;
-			XMFLOAT4 _up;
 			Entity	 _tracked_target;
 		};
 		Data& GetData() { return _data; }

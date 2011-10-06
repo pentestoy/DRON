@@ -10,7 +10,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <D3D11.h>
+#include <Windows.h>
 #include <xnamath.h>
 #include "D3D11/DataBuffer.hpp"
 #include "D3D11/DepthStencilBuffer.hpp"
@@ -41,14 +41,15 @@ class D3D11Renderer
         void SetFullscreen( bool );
 
     protected:
-        bool InitializeBuffers();
+		D3D11Renderer& operator=( const D3D11Renderer& );
+
 		void UpdateMatrixBuffer( Entity camera );
 		void BuildBatchLists(
 				std::vector< Entity >& entities,
 				std::map< std::string, std::vector< Entity > >& batches );
 		void DrawBatches(
 			std::map< std::string, std::vector< Entity > >& batches );
-		XMFLOAT4X4 BuildCameraMatrix( Entity camera );
+		XMMATRIX BuildCameraMatrix( Entity camera );
 		void BuildProjectionMatrices( const DisplaySettings& ds );
 
 		// temporary
@@ -60,11 +61,11 @@ class D3D11Renderer
 		RenderTarget				_render_target;
 		DepthStencilBuffer			_depth_stencil;
 
-		XMFLOAT4X4					_perspec_mx;
-		XMFLOAT4X4					_ortho_mx;
+		XMMATRIX*					_perspec_mx_ptr;
+		XMMATRIX*					_ortho_mx_ptr;
 
-		ID3D11Buffer*				_per_frame_buffer;
-		DataBuffer< InstanceData >* _instance_buffer_ptr;
+		DataBuffer< ViewProj >      _per_frame_buffer;
+		DataBuffer< InstanceData >  _instance_buffer;
 
 		EntitySystem&				_entity_system;
 };

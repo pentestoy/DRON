@@ -9,8 +9,7 @@
 #include <cassert>
 #include <sstream>
 #include <vector>
-#include <D3DX11.h>
-#include <D3Dcompiler.h>
+#include <LinearMath/btAlignedObjectArray.h>
 #include <aiMesh.h>
 
 #include "DisplaySettings.hpp"
@@ -28,18 +27,34 @@
 D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
-    : _device(), _swap_chain( _device, ds, window ), _instance_buffer_ptr( 0 ),
-	  _per_frame_buffer( 0 ), _entity_system( es )
+    : _device(), _swap_chain( _device, ds, window ), _entity_system( es ),
+	  _perspec_mx_ptr( 0 ), _ortho_mx_ptr( 0 ),
+	  _instance_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
+		DATA_BUFFER_BIND_VERTEX_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 100 ),
+	  _per_frame_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
+		DATA_BUFFER_BIND_CONSTANT_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 1 )
 {
-	InitializeBuffers();
+	/* TODO: There's gotta be a better way to do this, or at least some method
+	 *       to wrap it.
+	 */
+	void* buffer = _aligned_malloc( sizeof( XMMATRIX ), 16 );
+	_perspec_mx_ptr = new( buffer ) XMMATRIX;
+
+	buffer = _aligned_malloc( sizeof( XMMATRIX ), 16 );
+	_ortho_mx_ptr = new( buffer ) XMMATRIX;
+
     OnResize( ds );
 }
 
 D3D11Renderer::~D3D11Renderer()
 {
-	DXRelease( _per_frame_buffer );
-	delete _instance_buffer_ptr;
-	_instance_buffer_ptr = 0;
+	_perspec_mx_ptr->~XMMATRIX();
+	_aligned_free( _perspec_mx_ptr );
+	_perspec_mx_ptr = 0;
+
+	_ortho_mx_ptr->~XMMATRIX();
+	_aligned_free( _ortho_mx_ptr );
+	_ortho_mx_ptr = 0;
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
@@ -83,27 +98,6 @@ void D3D11Renderer::SetFullscreen( bool go_fs )
 		*/
 }
 
-bool D3D11Renderer::InitializeBuffers()
-{
-	DataBufferFlags dbf;
-	dbf._access = DATA_BUFFER_ACCESS_WRITE;
-	dbf._binding = DATA_BUFFER_BIND_VERTEX_BUFFER,
-	dbf._usage   = DATA_BUFFER_USAGE_DYNAMIC;
-
-	_instance_buffer_ptr = new DataBuffer< InstanceData >( _device, dbf, 100 );
-
-	D3D11_BUFFER_DESC bd;
-    bd.ByteWidth = sizeof( ViewProj );
-    bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bd.CPUAccessFlags = 0;
-    bd.MiscFlags = 0;
-
-	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, 0, &_per_frame_buffer ) );
-	
-    return true;
-}
-
 void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 {
 	_device.InitializeFrame( _render_target, _depth_stencil );
@@ -118,12 +112,18 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 
 void D3D11Renderer::UpdateMatrixBuffer( Entity camera )
 {
-	XMFLOAT4X4 view_mx = BuildCameraMatrix( camera );
+	XMMATRIX view_mx = BuildCameraMatrix( camera );
 
+	btAlignedObjectArray< ViewProj > vp_array;
 	ViewProj per_frame;
-	per_frame._view  = XMMatrixTranspose( XMLoadFloat4x4( &view_mx ) );
-	per_frame._proj  = XMMatrixTranspose( XMLoadFloat4x4( &_perspec_mx ) );
-	_device.UpdateBuffer( _per_frame_buffer, per_frame );
+	per_frame._view  = XMMatrixTranspose( view_mx );
+	per_frame._proj  = XMMatrixTranspose( *_perspec_mx_ptr );
+	vp_array.push_back( per_frame );
+	_per_frame_buffer.CopyDataToBuffer(
+		_device,
+		vp_array,
+		DATA_BUFFER_MAP_WRITE_DISCARD );
+
 }
 
 void D3D11Renderer::BuildBatchLists(
@@ -182,13 +182,14 @@ void D3D11Renderer::DrawBatches(
 		 * per shader.
 		 */
 		_device.GetRawContextPtr()->IASetInputLayout( vsl.GetInputLayout() );
-		_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &_per_frame_buffer );
+		ID3D11Buffer* constant_buffer = _per_frame_buffer.GetBuffer();
+		_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &constant_buffer );
 
 		PixelShaderLocator psl( _device.GetRawDevicePtr() );
 		PixelShaderResource& psr =
 			psl.Request( rcd_ptr->_pixel_shader_filename, rcd_ptr->_pixel_shader );
 
-		std::vector< InstanceData > id_vector;
+		btAlignedObjectArray< InstanceData > id_array;
 		std::vector< Entity >::iterator e_iter = entities.begin();
 		while( e_iter != entities.end() )
 		{
@@ -197,34 +198,32 @@ void D3D11Renderer::DrawBatches(
 					_entity_system.GetComponentData( e, COMPONENT_XFORM ) );
 
 			InstanceData id;
-			XMVECTOR translation = XMLoadFloat3( &xcd_ptr->_position );
-			XMVECTOR rotation    = XMLoadFloat4( &xcd_ptr->_rotation );
-			XMVECTOR scale       = XMLoadFloat3( &xcd_ptr->_scale    );
-			XMVECTOR rot_origin  =
-				XMLoadFloat3( &XMFLOAT3( 0.0f, 0.0f, 0.0f ) );
-			XMMATRIX xform = XMMatrixAffineTransformation(
+			XMVECTOR translation = xcd_ptr->_position;//XMLoadFloat3( &xcd_ptr->_position );
+			XMVECTOR rotation    = xcd_ptr->_rotation;//XMLoadFloat4( &xcd_ptr->_rotation );
+			XMVECTOR scale       = xcd_ptr->_scale;//XMLoadFloat3( &xcd_ptr->_scale    );
+			XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+			id._xform = XMMatrixAffineTransformation(
 				scale,
 				rot_origin,
 				rotation,
 				translation );
-			XMStoreFloat4x4( &id._xform, xform );
 
 			rcd_ptr = static_cast< RenderableComponent::Data* >(
 				_entity_system.GetComponentData( e, COMPONENT_RENDERABLE ) );
 			id._color = rcd_ptr->_color;
 
-			id_vector.push_back( id );
+			id_array.push_back( id );
 			++e_iter;
 		}
 
-		_instance_buffer_ptr->CopyDataToBuffer(
+		_instance_buffer.CopyDataToBuffer(
 			_device,
-			id_vector,
+			id_array,
 			DATA_BUFFER_MAP_WRITE_DISCARD );
 
 		ID3D11Buffer* buffers[ 2 ];
 		buffers[ 0 ] = mesh._vertex_buffer;
-		buffers[ 1 ] = _instance_buffer_ptr->GetBuffer();
+		buffers[ 1 ] = _instance_buffer.GetBuffer();
 
 		unsigned int strides[ 2 ];
 		strides[ 0 ] = sizeof( Vertex );
@@ -251,31 +250,31 @@ void D3D11Renderer::DrawBatches(
 	}
 }
 
-XMFLOAT4X4 D3D11Renderer::BuildCameraMatrix( Entity camera )
+XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
 {
 	CameraComponent::Data* ccd_ptr = static_cast< CameraComponent::Data* >(
 		_entity_system.GetComponentData( camera, COMPONENT_CAMERA ) );
 	assert( ccd_ptr );
 
-	XMFLOAT4X4 matrix;
-	XMStoreFloat4x4NC( &matrix, XMMatrixLookAtLH(
-		XMLoadFloat4( &ccd_ptr->_position ),
-		XMLoadFloat4( &ccd_ptr->_lookat ),
-		XMLoadFloat4( &ccd_ptr->_up ) ) );
+	XMMATRIX matrix = XMMatrixLookAtLH(
+		ccd_ptr->_position,
+		ccd_ptr->_lookat,
+		ccd_ptr->_up );
 
 	return matrix;
 }
 
 void D3D11Renderer::BuildProjectionMatrices( const DisplaySettings& ds )
 {
-	XMStoreFloat4x4( &_perspec_mx,
-		XMMatrixPerspectiveFovLH( 0.25f * XM_PI,
-			static_cast< float >( ds._width ) / static_cast< float >( ds._height ),
-			0.1f, 100.0f )
-	);
+	*_perspec_mx_ptr = XMMatrixPerspectiveFovLH(
+		0.25f * XM_PI,
+		static_cast< float >( ds._width ) / static_cast< float >( ds._height ),
+		0.1f,
+		100.0f );
 
-	XMStoreFloat4x4( &_ortho_mx,
-		XMMatrixOrthographicLH( static_cast< float >( ds._width ) / 16.0f,
-			static_cast< float >( ds._height ) / 16.0f, 1.0f, 100.0f )
-	);
+	*_ortho_mx_ptr = XMMatrixOrthographicLH(
+		static_cast< float >( ds._width ) / 16.0f,
+		static_cast< float >( ds._height ) / 16.0f,
+		1.0f,
+		100.0f );
 }

@@ -36,10 +36,6 @@ class EntitySystem
 
 		void GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v );
 		void GetEntityComponents( Entity e, BaseComponentPtrVector& v );
-		bool GetComponent(
-			Entity e,
-			COMPONENT_TYPE type,
-			BaseComponent** component );
 
 		BaseComponent::Data* GetComponentData(
 			Entity e,

@@ -10,7 +10,7 @@
 #include <vld.h>
 #include "App.hpp"
 
-int WINAPI wWinMain( HINSTANCE instance, HINSTANCE prev_instance, LPTSTR cmd_line, int show )
+int WINAPI wWinMain( HINSTANCE instance, HINSTANCE, LPTSTR, int )
 {
 	App app( instance );
 	return app.Run();

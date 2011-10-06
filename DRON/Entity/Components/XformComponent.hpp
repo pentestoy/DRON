@@ -16,9 +16,9 @@ class XformComponent : public TplComponent< XformComponent >
 	public:
 		struct Data : public BaseComponent::Data
 		{
-			XMFLOAT3	_position;
-			XMFLOAT3	_scale;
-			XMFLOAT4	_rotation;
+			XMVECTOR	_position;
+			XMVECTOR	_scale;
+			XMVECTOR	_rotation;
 		};
 		Data& GetData() { return _data; }
 		void SetData( BaseComponent::Data& data )
