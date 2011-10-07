@@ -9,6 +9,7 @@
 
 #include "GameState.hpp"
 #include <deque>
+#include <vector>
 #include "../Entity/Entity.hpp"
 
 class EntitySystem;
@@ -26,17 +27,20 @@ class Menu : public GameState
 	private:
 		Menu& operator=( const Menu& );
 
+		void CreateTestEntities();
+
 		void ProcessInput();
 
 		EntitySystem&	_entity_system;
 		D3D11Renderer&	_renderer;
 		Entity			_camera;
-		Entity			_test_entity;
+		//Entity			_test_entity;
 
 		Maze*			_maze;
 
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;
+		std::vector< Entity > _entities;
 };
 
 #endif  MENU_HPP

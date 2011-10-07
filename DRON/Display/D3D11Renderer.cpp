@@ -195,12 +195,12 @@ void D3D11Renderer::DrawBatches(
 		{
 			XformComponent::Data* xcd_ptr =
 				static_cast< XformComponent::Data* >(
-					_entity_system.GetComponentData( e, COMPONENT_XFORM ) );
+					_entity_system.GetComponentData( *e_iter, COMPONENT_XFORM ) );
 
 			InstanceData id;
-			XMVECTOR translation = xcd_ptr->_position;//XMLoadFloat3( &xcd_ptr->_position );
-			XMVECTOR rotation    = xcd_ptr->_rotation;//XMLoadFloat4( &xcd_ptr->_rotation );
-			XMVECTOR scale       = xcd_ptr->_scale;//XMLoadFloat3( &xcd_ptr->_scale    );
+			XMVECTOR translation = xcd_ptr->_position;
+			XMVECTOR rotation    = xcd_ptr->_rotation;
+			XMVECTOR scale       = xcd_ptr->_scale;
 			XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 			id._xform = XMMatrixAffineTransformation(
 				scale,
@@ -209,7 +209,7 @@ void D3D11Renderer::DrawBatches(
 				translation );
 
 			rcd_ptr = static_cast< RenderableComponent::Data* >(
-				_entity_system.GetComponentData( e, COMPONENT_RENDERABLE ) );
+				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
 			id._color = rcd_ptr->_color;
 
 			id_array.push_back( id );
@@ -244,7 +244,7 @@ void D3D11Renderer::DrawBatches(
 		_device.SetVertexShader( vsr );
 		_device.SetPixelShader( psr );
 
-		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, 1, 0, 0, 0 );
+		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, entities.size(), 0, 0, 0 );
 
 		++batch_iter;
 	}

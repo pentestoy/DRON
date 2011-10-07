@@ -11,10 +11,21 @@
 #include "../Entity/Components/ComponentTypes.hpp"
 #include "../Entity/Components/Components.hpp"
 
+const XMVECTOR QUARTER_TURN = XMQuaternionRotationAxis(
+	XMVectorSet( 0.0f, 0.0f, -1.0f, 0.0f ),
+	XM_PIDIV2 );
+
+const XMVECTOR HALF_TURN = XMQuaternionRotationAxis(
+	XMVectorSet( 0.0f, 0.0f, -1.0f, 0.0f ),
+	XM_PI );
+
+const XMVECTOR THREE_QUARTER_TURN = XMQuaternionRotationAxis(
+	XMVectorSet( 0.0f, 0.0f, -1.0f, 0.0f ),
+	3.0f * XM_PIDIV2 );
+
 Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	: _entity_system( es ), _renderer( r ),
-	  _camera( _entity_system.CreateNewEntity() ),
-	  _test_entity( _entity_system.CreateNewEntity() )
+	  _camera( _entity_system.CreateNewEntity() )
 {
 	CameraComponent::Data cd;
 	cd._position = XMVectorSet( 0.0f, 0.0f, -10.0f, 0.0f );
@@ -28,19 +39,7 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	XformComponent::Data xd;
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xd );
 
-	xd._position = XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f );
-	xd._rotation = XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f );
-	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
-	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_XFORM, xd );
-
-	RenderableComponent::Data rd;
-	rd._mesh_name = "pipe90.x";
-	rd._vertex_shader_filename = "test.fx";
-	rd._vertex_shader = "VS_Test";
-	rd._pixel_shader_filename = "test.fx";
-	rd._pixel_shader = "PS_Test";
-	rd._color = XMVectorSet( 0.5f, 0.5f, 1.0f, 1.0f );
-	_entity_system.CreateAndAttachComponent( _test_entity, COMPONENT_RENDERABLE, rd );
+	CreateTestEntities();
 
 	_mapped_actions.insert( ActionMapPair( VK_RETURN, ACTION_SELECT ) );
 	_mapped_actions.insert( ActionMapPair( VK_UP, ACTION_MOVE_UP ) );
@@ -52,10 +51,7 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 void Menu::Update( float dt )
 {
 	ProcessInput();
-
-	std::vector< Entity > entities;
-	entities.push_back( _test_entity );
-	_renderer.Draw( entities, _camera );
+	_renderer.Draw( _entities, _camera );
 }
 
 void Menu::HandleKeypress( const WPARAM key )
@@ -92,4 +88,126 @@ void Menu::ProcessInput()
 			break;
 	}
 	_actions.pop_front();
+}
+
+void Menu::CreateTestEntities()
+{
+	Entity e = _entity_system.CreateNewEntity();
+
+	XformComponent::Data xd;
+	xd._position = XMVectorSet( -2.0f, 1.0f, 0.0f, 1.0f );
+	xd._rotation = XMQuaternionIdentity();
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+
+	RenderableComponent::Data rd;
+	rd._mesh_name = "pipe90.x";
+	rd._vertex_shader_filename = "test.fx";
+	rd._vertex_shader = "VS_Test";
+	rd._pixel_shader_filename = "test.fx";
+	rd._pixel_shader = "PS_Test";
+	rd._color = XMVectorSet( 0.5f, 0.5f, 1.0f, 1.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 2.0f, 1.0f, 0.0f, 1.0f );
+	xd._rotation = QUARTER_TURN;
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+	
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 2.0f, -1.0f, 0.0f, 1.0f );
+	xd._rotation = HALF_TURN;
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+	
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( -2.0f, -1.0f, 0.0f, 1.0f );
+	xd._rotation = THREE_QUARTER_TURN;
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+	
+	_entities.push_back( e );
+
+
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 0.0f, 1.0f, 0.0f, 1.0f );
+	xd._rotation = XMQuaternionIdentity();
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+
+	rd._mesh_name = "pipe00.x";
+	rd._vertex_shader_filename = "test.fx";
+	rd._vertex_shader = "VS_Test";
+	rd._pixel_shader_filename = "test.fx";
+	rd._pixel_shader = "PS_Test";
+	rd._color = XMVectorSet( 1.0f, 0.9f, 0.9f, 1.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( -1.0f, 1.0f, 0.0f, 1.0f );
+	xd._rotation = XMQuaternionIdentity();
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	rd._color = XMVectorSet( 0.5f, 0.5f, 1.0f, 1.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 1.0f, 1.0f, 0.0f, 1.0f );
+	xd._rotation = XMQuaternionIdentity();
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 2.0f, 0.0f, 0.0f, 1.0f );
+	xd._rotation = QUARTER_TURN;
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( 0.0f, -1.0f, 0.0f, 1.0f );
+	xd._rotation = XMQuaternionIdentity();
+	xd._scale    = XMVectorSet( 3.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
+
+	e = _entity_system.CreateNewEntity();
+
+	xd._position = XMVectorSet( -2.0f, 0.0f, 0.0f, 1.0f );
+	xd._rotation = QUARTER_TURN;
+	xd._scale    = XMVectorSet( 1.0f, 1.0f, 1.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_XFORM, xd );
+	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
+
+	_entities.push_back( e );
 }

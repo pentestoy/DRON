@@ -29,7 +29,7 @@ struct ViewProj
 struct DisplaySettings;
 class EntitySystem;
 class SwapChain;
-class D3D11Renderer
+__declspec( align( 16 ) ) class D3D11Renderer
 {
     public:
         D3D11Renderer( HWND window, DisplaySettings& ds, EntitySystem& es );

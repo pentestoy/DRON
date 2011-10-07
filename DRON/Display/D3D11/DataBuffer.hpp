@@ -111,7 +111,7 @@ DataBuffer< T >::~DataBuffer()
 template< typename T >
 void DataBuffer< T >::CopyDataToBuffer(
 	GFXDevice& device,
-	const btAlignedObjectArray< T >& data, //const std::vector< T >& data,
+	const btAlignedObjectArray< T >& data,
 	DATA_BUFFER_MAP map_flag )
 { 
 	assert( data.size() <= _size );
