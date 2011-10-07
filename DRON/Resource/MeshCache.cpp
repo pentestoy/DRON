@@ -5,8 +5,14 @@
  */
 
 #include "MeshCache.hpp"
+
+#if defined( DEBUG ) || defined( _DEBUG )  
+#include <sstream>
+#endif
+
 #include <Windows.h>
 #include <D3D11.h>
+#include <D3Dcommon.h>
 #include <assimp.hpp>
 #include <aiScene.h>
 #include <aiPostProcess.h>
@@ -15,8 +21,8 @@
 #include "../Utility/Geometry.hpp"
 #include "../Utility/StringHelper.hpp"
 
-MeshCache::MeshCache()
-	: _device( 0 )
+MeshCache::MeshCache( ID3D11Device* device )
+	: _device( device )
 {
 	MeshResource* invalid_resource = new MeshResource();
 	invalid_resource->SetValid( false );
@@ -29,15 +35,9 @@ MeshCache::~MeshCache()
 	ResourceMap::iterator iter = _resources.begin();
 	while( iter != _resources.end() )
 	{
-		delete ( *iter ).second->_data;
+		delete ( *iter ).second;
 		++iter;
 	}
-}
-
-void MeshCache::Initialize( ID3D11Device* device )
-{
-	if( !_device )
-		_device = device;
 }
 
 MeshResource& MeshCache::Request( const std::string& filename )
@@ -81,14 +81,14 @@ MeshResource& MeshCache::Load( const std::string& filename )
 	 *       of the scene data, and destroys it when it goes out of scope.
 	 */
 	MeshResource* mr_ptr = new MeshResource();
-	mr_ptr->_data = BuildMesh( scene_ptr );
+	mr_ptr->_data = BuildMesh( scene_ptr, filename );
 	mr_ptr->SetValid( true );
 	_resources.insert( std::make_pair( filename, mr_ptr ) );
 
 	return *mr_ptr;
 }
 
-Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
+Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr, const std::string& filename )
 {
 	aiMesh* ai_mesh_ptr = scene_ptr->mMeshes[ 0 ];
 	Mesh* mesh = new Mesh;
@@ -121,6 +121,16 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
 	dsd.pSysMem = &vertices[ 0 ];
 
 	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_vertex_buffer ) );
+
+#if defined( DEBUG ) || defined( _DEBUG )  
+	std::stringstream ss;
+	ss << "VB " << filename;
+	mesh->_vertex_buffer->SetPrivateData(
+		WKPDID_D3DDebugObjectName,
+		ss.str().size(),
+		ss.str().c_str() );
+#endif
+
 	mesh->_num_vertices = ai_mesh_ptr->mNumVertices;
 
 	std::vector< unsigned int > index_vector;
@@ -139,6 +149,16 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr )
 	dsd.pSysMem = &index_vector[ 0 ];
 
 	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_index_buffer ) );
+
+#if defined( DEBUG ) || defined( _DEBUG )  
+	ss.str("");
+	ss << "IB " << filename;
+	mesh->_index_buffer->SetPrivateData(
+		WKPDID_D3DDebugObjectName,
+		ss.str().size(),
+		ss.str().c_str() );
+#endif
+
 	mesh->_num_indices = ai_mesh_ptr->mNumFaces * 3;
 
 	return mesh;

@@ -141,8 +141,6 @@ void Menu::CreateTestEntities()
 	
 	_entities.push_back( e );
 
-
-
 	e = _entity_system.CreateNewEntity();
 
 	xd._position = XMVectorSet( 0.0f, 1.0f, 0.0f, 1.0f );
@@ -159,7 +157,8 @@ void Menu::CreateTestEntities()
 	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
 
 	_entities.push_back( e );
-
+	
+	/*
 	e = _entity_system.CreateNewEntity();
 
 	xd._position = XMVectorSet( -1.0f, 1.0f, 0.0f, 1.0f );
@@ -210,4 +209,5 @@ void Menu::CreateTestEntities()
 	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
 
 	_entities.push_back( e );
+	*/
 }

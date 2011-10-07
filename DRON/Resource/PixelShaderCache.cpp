@@ -26,7 +26,7 @@ PixelShaderCache::~PixelShaderCache()
 	ResourceMap::iterator iter = _resources.begin();
 	while( iter != _resources.end() )
 	{
-		DXRelease( ( *iter ).second->_data );
+		delete ( *iter ).second;
 		++iter;
 	}
 }

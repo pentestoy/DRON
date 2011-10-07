@@ -20,4 +20,9 @@ Mesh::~Mesh()
 {
 	DXRelease( _vertex_buffer );
 	//DXRelease( _index_buffer );
+	if( _index_buffer )
+	{
+		_index_buffer->Release();
+		//_index_buffer = 0;
+	}
 }

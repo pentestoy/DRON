@@ -56,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>D3D11.lib;D3DX11.lib;DXGI.lib;DXErr.lib;assimp.lib;lua5.1.lib;C:\libraries\bullet-2.79\lib\LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3D11.lib;D3DX11.lib;DXGI.lib;dxguid.lib;DXErr.lib;assimp.lib;lua5.1.lib;C:\libraries\bullet-2.79\lib\LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>

@@ -44,6 +44,10 @@ D3D11Renderer::D3D11Renderer( HWND window,
 	_ortho_mx_ptr = new( buffer ) XMMATRIX;
 
     OnResize( ds );
+
+	//_device.GetRawDevicePtr()->QueryInterface(
+	//	__uuidof( ID3D11Debug ),
+	//	reinterpret_cast< void** >( &_debug_ptr ) );
 }
 
 D3D11Renderer::~D3D11Renderer()
@@ -55,6 +59,11 @@ D3D11Renderer::~D3D11Renderer()
 	_ortho_mx_ptr->~XMMATRIX();
 	_aligned_free( _ortho_mx_ptr );
 	_ortho_mx_ptr = 0;
+
+	MeshLocator ml( _device.GetRawDevicePtr() );
+	ml.ShutDown();
+
+	//_debug_ptr->Release();
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
@@ -151,13 +160,16 @@ void D3D11Renderer::BuildBatchLists(
 void D3D11Renderer::DrawBatches(
 	std::map< std::string, std::vector< Entity > >& batches )
 {
+	//_debug_ptr->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+
 	std::map< std::string, std::vector< Entity > >::iterator batch_iter =
 		batches.begin();
 
 	while( batch_iter != batches.end() )
 	{
+		
 		std::vector< Entity >& entities = batch_iter->second;
-
+		
 		Entity e = entities.front();
 		/* We verified that all entities have renderable components when we
 		 * built the batches, so we should be good to skip the check here.
@@ -168,8 +180,9 @@ void D3D11Renderer::DrawBatches(
 
 		MeshLocator ml( _device.GetRawDevicePtr() );
 		MeshResource& m = ml.Request( rcd_ptr->_mesh_name );
+		//Mesh& mesh = *ml.Request( rcd_ptr->_mesh_name ).Data();
 		Mesh& mesh = *m.Data();
-
+		
 		VertexShaderLocator vsl( _device.GetRawDevicePtr() );
 		VertexShaderResource& vsr =
 			vsl.Request( rcd_ptr->_vertex_shader_filename, rcd_ptr->_vertex_shader );
@@ -191,6 +204,7 @@ void D3D11Renderer::DrawBatches(
 
 		btAlignedObjectArray< InstanceData > id_array;
 		std::vector< Entity >::iterator e_iter = entities.begin();
+
 		while( e_iter != entities.end() )
 		{
 			XformComponent::Data* xcd_ptr =
@@ -245,9 +259,10 @@ void D3D11Renderer::DrawBatches(
 		_device.SetPixelShader( psr );
 
 		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, entities.size(), 0, 0, 0 );
-
 		++batch_iter;
 	}
+
+	//_debug_ptr->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
 }
 
 XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )

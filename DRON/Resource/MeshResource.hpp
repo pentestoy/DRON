@@ -14,6 +14,7 @@ class MeshCache;
 class MeshResource : public Resource< Mesh >
 {
 	public:
+		MeshResource() : Resource< Mesh >() { }
 		~MeshResource();
 		Mesh* Data() const { return _data; }
 

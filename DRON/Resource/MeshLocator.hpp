@@ -17,9 +17,9 @@ class MeshLocator
 	public:
 		MeshLocator( ID3D11Device* device );
 		MeshResource& Request( const std::string& filename );
-
+		void ShutDown();
 	private:
-		static MeshCache	_cache;
+		static MeshCache*	_cache;
 };
 
 #endif //MESH_LOCATOR_HPP

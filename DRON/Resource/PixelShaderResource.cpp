@@ -9,5 +9,8 @@
 
 PixelShaderResource::~PixelShaderResource()
 {
-	DXRelease( _data );
+	/* SOMEHOW this is getting released according to the dxdebug :? */
+	//DXRelease( _data );
+	//if( _data )
+	//	_data->Release();
 }

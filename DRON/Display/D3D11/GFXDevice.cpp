@@ -43,6 +43,8 @@ GFXDevice::GFXDevice()
 
 GFXDevice::~GFXDevice()
 {
+	_context_ptr->ClearState();
+	_context_ptr->Flush();
 	DXRelease( _context_ptr );
 	DXRelease( _device_ptr );
 }

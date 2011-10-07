@@ -68,6 +68,7 @@ __declspec( align( 16 ) ) class D3D11Renderer
 		DataBuffer< InstanceData >  _instance_buffer;
 
 		EntitySystem&				_entity_system;
+		//ID3D11Debug*				_debug_ptr;
 };
 
 #endif  //D3D11RENDERER_HPP

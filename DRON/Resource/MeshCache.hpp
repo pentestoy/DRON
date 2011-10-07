@@ -17,15 +17,15 @@ class MeshResource;
 class MeshCache
 {
 	public:
-		MeshCache();
+		MeshCache( ID3D11Device* device );
 		~MeshCache();
 
-		void Initialize( ID3D11Device* device );
+		//void Initialize( ID3D11Device* device );
 		MeshResource& Request( const std::string& filename );
 
 	private:
 		MeshResource& Load( const std::string& filename );
-		Mesh* BuildMesh( const aiScene* scene );
+		Mesh* BuildMesh( const aiScene* scene, const std::string& filename );
 
 		ID3D11Device*	_device;
 

@@ -44,8 +44,6 @@ struct Mesh
 	Mesh() : _vertex_buffer( 0 ), _index_buffer( 0 ) { }
 	~Mesh();
 
-	//std::vector< unsigned int > _indices;
-	//std::vector< Triangle >		_triangles;
 	unsigned int				_num_vertices;
 	unsigned int				_num_indices;
 	ID3D11Buffer*				_vertex_buffer;
