@@ -16,6 +16,9 @@ class MazeSide
 		MazeSide() {}
 
 	private:
+		MazeSide( const MazeSide& );
+		MazeSide& operator=( const MazeSide& );
+
 		std::vector< Entity > _walls;
 
 };
@@ -26,6 +29,9 @@ class Maze
 		Maze() {}
 
 	private:
+		Maze( const Maze& );
+		Maze& operator=( const Maze& );
+
 		std::vector< MazeSide* > _sides;
 
 };

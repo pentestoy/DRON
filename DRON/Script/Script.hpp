@@ -15,6 +15,9 @@ class Script
 		~Script();
 
 	private:
+		Script( const Script& );
+		Script& operator=( const Script& );
+
 		lua_State*	_ls_ptr;
 };
 

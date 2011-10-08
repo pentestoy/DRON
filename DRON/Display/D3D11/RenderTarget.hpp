@@ -23,6 +23,9 @@ class RenderTarget
 		void Release();
 
 	private:
+		RenderTarget( const RenderTarget& );
+		RenderTarget& operator=( const RenderTarget& );
+
 		ID3D11RenderTargetView* _data;
 };
 

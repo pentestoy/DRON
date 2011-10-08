@@ -18,7 +18,11 @@ class MeshLocator
 		MeshLocator( ID3D11Device* device );
 		MeshResource& Request( const std::string& filename );
 		void ShutDown();
+
 	private:
+		MeshLocator( const MeshLocator& );
+		MeshLocator& operator=( const MeshLocator& );
+
 		static MeshCache*	_cache;
 };
 

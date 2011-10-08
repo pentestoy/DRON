@@ -73,6 +73,9 @@ class DataBuffer
 		void Unmap();
 
 	private:
+		DataBuffer( const DataBuffer& );
+		DataBuffer& operator=( const DataBuffer& );
+
 		ID3D11Buffer* _buffer;
 		T*            _data;
 		/* There's no reason for size to go negative, but btAlignedObjectArray

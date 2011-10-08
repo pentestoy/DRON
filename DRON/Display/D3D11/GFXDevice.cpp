@@ -69,7 +69,7 @@ void GFXDevice::SetRenderTarget(
 	RenderTarget& target,
 	DepthStencilBuffer& dsb ) const
 {
-	ID3D11RenderTargetView* rtv = target.GetData();
+	//ID3D11RenderTargetView* rtv = target.GetData();
 	std::vector< RenderTarget* > targets;
 	targets.push_back( &target );
 	SetRenderTargets( targets, dsb );

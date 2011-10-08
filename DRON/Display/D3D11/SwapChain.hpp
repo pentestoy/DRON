@@ -27,6 +27,9 @@ class SwapChain
 		void Show();
 
 	private:
+		SwapChain( const SwapChain& );
+		SwapChain& operator=( const SwapChain& );
+
 		IDXGISwapChain* _swap_chain_ptr;
 };
 

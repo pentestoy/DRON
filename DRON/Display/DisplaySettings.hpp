@@ -9,12 +9,13 @@
 
 struct DisplaySettings
 {
-    DisplaySettings()
-		: _width(800), _height(600), _fullscreen(false) { }
+		DisplaySettings();
+		DisplaySettings( const DisplaySettings& ds );
+		DisplaySettings& operator=( const DisplaySettings& ds );
 
-    unsigned int _width;
-    unsigned int _height;
-    bool         _fullscreen;
+		unsigned int _width;
+		unsigned int _height;
+		bool         _fullscreen;
 };
 
 #endif  //DISPLAY_SETTINGS_HPP

@@ -14,11 +14,16 @@ class MeshCache;
 class MeshResource : public Resource< Mesh >
 {
 	public:
-		MeshResource() : Resource< Mesh >() { }
+		MeshResource()
+			: Resource< Mesh >() { }
 		~MeshResource();
 		Mesh* Data() const { return _data; }
 
 		friend MeshCache;
+
+	private:
+		MeshResource( const MeshResource& );
+		MeshResource& operator=( const MeshResource& );
 };
 
 #endif //MESH_RESOURCE_HPP

@@ -25,6 +25,9 @@ class DisplaySettingsDialog : public BaseWindow
         virtual LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
         
     private:
+		DisplaySettingsDialog( const DisplaySettingsDialog& );
+		DisplaySettingsDialog& operator=( const DisplaySettingsDialog& );
+
         void OnInitDialog( HWND );
         void OnToggleFullscreen( HWND );
         void OnToggleSaveSettings( HWND );
@@ -32,10 +35,6 @@ class DisplaySettingsDialog : public BaseWindow
         bool LoadSettings();
         bool ValidateSettings( DisplaySettings& );
         void EnumerateDisplayModes( std::vector< DXGI_MODE_DESC >& );
-
-        //prevent copying
-        DisplaySettingsDialog( const DisplaySettingsDialog& );
-        DisplaySettingsDialog& operator=( const DisplaySettingsDialog& );
 
         HWND            _parentwindow;
         DisplaySettings _settings;

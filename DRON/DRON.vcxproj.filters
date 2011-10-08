@@ -150,6 +150,9 @@
     <ClCompile Include="Display\D3D11\DepthStencilBuffer.cpp">
       <Filter>Source Files\Display\D3D11</Filter>
     </ClCompile>
+    <ClCompile Include="Display\DisplaySettings.cpp">
+      <Filter>Source Files\Display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -254,9 +257,6 @@
     <ClInclude Include="Maze\Maze.hpp">
       <Filter>Header Files\Maze</Filter>
     </ClInclude>
-    <ClInclude Include="Entity\Entity.hpp">
-      <Filter>Header Files\Display</Filter>
-    </ClInclude>
     <ClInclude Include="Script\Script.hpp">
       <Filter>Header Files\Script</Filter>
     </ClInclude>
@@ -280,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="Display\D3D11\DataBuffer.hpp">
       <Filter>Header Files\Display\D3D11</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Entity.hpp">
+      <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

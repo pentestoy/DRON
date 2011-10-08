@@ -25,6 +25,7 @@ class Menu : public GameState
 		virtual void HandleKeypress( const WPARAM key );
 
 	private:
+		Menu( const Menu& );
 		Menu& operator=( const Menu& );
 
 		void CreateTestEntities();

@@ -15,14 +15,18 @@ class PixelShaderCache;
 class PixelShaderLocator
 {
 	public:
-		PixelShaderLocator();
+		//PixelShaderLocator();
 		PixelShaderLocator( ID3D11Device* device );
 
 		PixelShaderResource& Request( const std::string& filename,
 					  const std::string& shader );
+		void ShutDown();
 
 	private:
-		static PixelShaderCache	_cache;
+		PixelShaderLocator( const PixelShaderLocator& );
+		PixelShaderLocator& operator=( const PixelShaderLocator& );
+
+		static PixelShaderCache*	_cache;
 };
 
 #endif //PIXEL_SHADER_LOCATOR_HPP

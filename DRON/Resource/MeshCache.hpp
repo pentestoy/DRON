@@ -24,6 +24,9 @@ class MeshCache
 		MeshResource& Request( const std::string& filename );
 
 	private:
+		MeshCache( const MeshCache& );
+		MeshCache& operator=( const MeshCache& );
+
 		MeshResource& Load( const std::string& filename );
 		Mesh* BuildMesh( const aiScene* scene, const std::string& filename );
 

@@ -37,6 +37,9 @@ class Timer
         unsigned int GetBeatCount() const { return _beat; }
 
     protected:
+		Timer( const Timer& );
+		Timer& operator=( const Timer& );
+
         double  _seconds_per_count;
         double  _delta_time;
 

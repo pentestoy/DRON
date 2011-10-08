@@ -41,6 +41,7 @@ __declspec( align( 16 ) ) class D3D11Renderer
         void SetFullscreen( bool );
 
     protected:
+		D3D11Renderer( const D3D11Renderer& );
 		D3D11Renderer& operator=( const D3D11Renderer& );
 
 		void UpdateMatrixBuffer( Entity camera );

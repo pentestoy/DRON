@@ -15,9 +15,10 @@ class VertexShaderResource;
 class VertexShaderCache
 {
 	public:
-		VertexShaderCache();
+		VertexShaderCache( ID3D11Device* device );
 		~VertexShaderCache();
-		void Initialize( ID3D11Device* device ) { _device = device; }
+		
+		//void Initialize( ID3D11Device* device ) { _device = device; }
 		bool IsInitialized() { return _device != 0; }
 		VertexShaderResource& Request( const std::string& filename,
 									   const std::string& shader );
@@ -25,6 +26,9 @@ class VertexShaderCache
 		ID3D11InputLayout* GetInputLayout() const { return _input_layout; }
 
 	protected:
+		VertexShaderCache( const VertexShaderCache& );
+		VertexShaderCache& operator=( const VertexShaderCache& );
+
 		VertexShaderResource& Load( const std::string& filename,
 									const std::string& shader );
 

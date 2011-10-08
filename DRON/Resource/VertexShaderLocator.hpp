@@ -21,11 +21,14 @@ class VertexShaderLocator
 
 		VertexShaderResource& Request( const std::string& filename,
 					  const std::string& shader );
-
-		ID3D11InputLayout* GetInputLayout() const { return _cache.GetInputLayout(); }
+		void ShutDown();
+		ID3D11InputLayout* GetInputLayout() const { return _cache->GetInputLayout(); }
 
 	private:
-		static VertexShaderCache	_cache;
+		VertexShaderLocator( const VertexShaderLocator& );
+		VertexShaderLocator& operator=( const VertexShaderLocator& );
+
+		static VertexShaderCache*	_cache;
 };
 
 #endif //VERTEX_SHADER_LOCATOR_HPP

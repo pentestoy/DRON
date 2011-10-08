@@ -12,8 +12,8 @@
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/StringHelper.hpp"
 
-VertexShaderCache::VertexShaderCache()
-	: _device( 0 ), _input_layout( 0 )
+VertexShaderCache::VertexShaderCache( ID3D11Device* device )
+	: _device( device ), _input_layout( 0 )
 {
 	VertexShaderResource* invalid_resource = new VertexShaderResource();
 	invalid_resource->SetValid( false );
@@ -26,7 +26,7 @@ VertexShaderCache::~VertexShaderCache()
 	ResourceMap::iterator iter = _resources.begin();
 	while( iter != _resources.end() )
 	{
-		DXRelease( ( *iter ).second->_data );
+		delete ( *iter ).second;
 		++iter;
 	}
 

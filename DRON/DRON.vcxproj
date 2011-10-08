@@ -85,6 +85,7 @@
     <ClCompile Include="Display\D3D11\GFXDevice.cpp" />
     <ClCompile Include="Display\D3D11\RenderTarget.cpp" />
     <ClCompile Include="Display\D3D11\SwapChain.cpp" />
+    <ClCompile Include="Display\DisplaySettings.cpp" />
     <ClCompile Include="Display\DisplaySettingsDialog.cpp" />
     <ClCompile Include="Display\MainWindow.cpp" />
     <ClCompile Include="DRON.cpp" />

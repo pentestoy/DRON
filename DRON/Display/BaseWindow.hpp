@@ -23,6 +23,9 @@ class BaseWindow
 		const HINSTANCE GetInstance() const { return _instance; }
 
     private:
+		BaseWindow( const BaseWindow& );
+		BaseWindow& operator=( const BaseWindow& );
+
         HINSTANCE _instance;
         bool      _is_dialog;
 };

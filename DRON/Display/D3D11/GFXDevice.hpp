@@ -46,6 +46,9 @@ class GFXDevice
 		void SetPixelShader( const PixelShaderResource& resource ) const;
 
 	private:
+		GFXDevice( const GFXDevice& );
+		GFXDevice& operator=( const GFXDevice& );
+
 		void SetTopology( const TOPOLOGY topology ) const;
 
 		ID3D11Device*			_device_ptr;

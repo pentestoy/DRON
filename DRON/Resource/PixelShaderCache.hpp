@@ -15,14 +15,18 @@ class PixelShaderResource;
 class PixelShaderCache
 {
 	public:
-		PixelShaderCache();
+		PixelShaderCache( ID3D11Device* device );
 		~PixelShaderCache();
-		void Initialize( ID3D11Device* device ) { _device = device; }
+		
+		//void Initialize( ID3D11Device* device ) { _device = device; }
 		bool IsInitialized() { return _device != 0; }
 		PixelShaderResource& Request( const std::string& filename,
 									   const std::string& shader );
 
 	protected:
+		PixelShaderCache( const PixelShaderCache& );
+		PixelShaderCache& operator=( const PixelShaderCache& );
+
 		PixelShaderResource& Load( const std::string& filename,
 									const std::string& shader );
 

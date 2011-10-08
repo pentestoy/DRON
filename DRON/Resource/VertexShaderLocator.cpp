@@ -8,23 +8,22 @@
 #include "VertexShaderCache.hpp"
 #include <cassert>
 
-VertexShaderCache VertexShaderLocator::_cache;
-
-VertexShaderLocator::VertexShaderLocator()
-{
-#if defined( DEBUG ) || defined ( _DEBUG )
-	assert( _cache.IsInitialized() );
-#endif
-}
+VertexShaderCache* VertexShaderLocator::_cache = 0;
 
 VertexShaderLocator::VertexShaderLocator( ID3D11Device* device )
 {
-	_cache.Initialize( device );
+	if( !_cache )
+		_cache = new VertexShaderCache( device );
 }
 
 VertexShaderResource& VertexShaderLocator::Request( const std::string& filename,
 								   const std::string& shader )
 {
-	return _cache.Request( filename, shader );
+	return _cache->Request( filename, shader );
 }
 
+void VertexShaderLocator::ShutDown()
+{
+	delete _cache;
+	_cache = 0;
+}

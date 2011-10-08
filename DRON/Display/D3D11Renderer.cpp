@@ -63,6 +63,12 @@ D3D11Renderer::~D3D11Renderer()
 	MeshLocator ml( _device.GetRawDevicePtr() );
 	ml.ShutDown();
 
+	PixelShaderLocator psl( _device.GetRawDevicePtr() );
+	psl.ShutDown();
+
+	VertexShaderLocator vsl( _device.GetRawDevicePtr() );
+	vsl.ShutDown();
+
 	//_debug_ptr->Release();
 }
 

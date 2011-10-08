@@ -26,6 +26,7 @@ class MainWindow : public BaseWindow
         virtual LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
 
     private:
+		MainWindow( const MainWindow& );
 		MainWindow& operator=( const MainWindow& );
 
         void Register();

@@ -27,6 +27,9 @@ class DepthStencilBuffer
 		);
 
 	private:
+		DepthStencilBuffer( const DepthStencilBuffer& );
+		DepthStencilBuffer& operator=( const DepthStencilBuffer& );
+
 		ID3D11Texture2D*		_texture_ptr;
 		ID3D11DepthStencilView* _view_ptr;
 };

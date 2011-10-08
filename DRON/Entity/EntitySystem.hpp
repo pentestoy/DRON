@@ -44,7 +44,6 @@ class EntitySystem
 		static void Register( COMPONENT_TYPE type, ComponentCreator creator );
 
 	private:
-		// Prevent copying and assignment
 		EntitySystem( const EntitySystem& );
 		EntitySystem& operator=( const EntitySystem& );
 

@@ -12,8 +12,8 @@
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/StringHelper.hpp"
 
-PixelShaderCache::PixelShaderCache()
-	: _device( 0 )
+PixelShaderCache::PixelShaderCache( ID3D11Device* device )
+	: _device( device )
 {
 	PixelShaderResource* invalid_resource = new PixelShaderResource();
 	invalid_resource->SetValid( false );
