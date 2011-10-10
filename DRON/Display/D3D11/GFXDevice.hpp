@@ -14,6 +14,7 @@
 struct DisplaySettings;
 class D3D11Renderer;
 class DepthStencilBuffer;
+class InputLayoutResource;
 class PixelShaderResource;
 class RenderTarget;
 class SwapChain;
@@ -42,8 +43,9 @@ class GFXDevice
 		void UpdateBuffer( ID3D11Buffer* buffer, T& data );
 
 		void SetIndexBuffer( ID3D11Buffer* buffer ) const;
-		void SetVertexShader( const VertexShaderResource& resource ) const;
-		void SetPixelShader( const PixelShaderResource& resource ) const;
+		void SetVertexShader( const VertexShaderResource* resource ) const;
+		void SetPixelShader( const PixelShaderResource* resource ) const;
+		void SetInputLayout( const InputLayoutResource* layout ) const;
 
 	private:
 		GFXDevice( const GFXDevice& );

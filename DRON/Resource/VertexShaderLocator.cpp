@@ -29,6 +29,12 @@ VertexShaderResource* VertexShaderLocator::RequestPtr(
 	return &_cache->Request( filename, shader );
 }
 
+InputLayoutResource* VertexShaderLocator::GetInputLayout(
+	VertexShaderResource* resource ) const
+{
+	return _cache->GetInputLayout( resource );
+}
+
 void VertexShaderLocator::ShutDown()
 {
 	delete _cache;

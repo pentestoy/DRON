@@ -8,6 +8,7 @@
 #define VERTEX_SHADER_LOCATOR_HPP
 
 #include <string>
+#include "InputLayoutResource.hpp"
 #include "VertexShaderCache.hpp"
 #include "VertexShaderResource.hpp"
 
@@ -23,7 +24,7 @@ class VertexShaderLocator
 		VertexShaderResource* RequestPtr( const std::string& filename,
 					  const std::string& shader );
 		static void ShutDown();
-		ID3D11InputLayout* GetInputLayout() const { return _cache->GetInputLayout(); }
+		InputLayoutResource* GetInputLayout( VertexShaderResource* resource ) const;// { return _cache->GetInputLayout(); }
 
 	private:
 		VertexShaderLocator( const VertexShaderLocator& );

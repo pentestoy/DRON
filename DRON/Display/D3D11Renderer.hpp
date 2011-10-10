@@ -50,6 +50,9 @@ class D3D11Renderer
 		void BuildBatchLists(
 			std::vector< Entity >& entities,
 			std::map< std::string, RenderBatch >& batches );
+		void FillInstanceBuffer(
+			std::vector< Entity >& entities,
+			DataBuffer< InstanceData >& buffer );
 		void DrawBatches(
 			std::map< std::string, RenderBatch >& batches );
 		XMMATRIX BuildCameraMatrix( Entity camera );

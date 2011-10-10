@@ -8,30 +8,43 @@
 #include <cassert>
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
+#include "InputLayoutResource.hpp"
 #include "VertexShaderResource.hpp"
 #include "../Display/D3D11/GFXDevice.hpp"
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/StringHelper.hpp"
 
 VertexShaderCache::VertexShaderCache( GFXDevice& device )
-	: _device( device ), _input_layout( 0 )
+	: _device( device ) //, _input_layout( 0 )
 {
-	VertexShaderResource* invalid_resource = new VertexShaderResource();
-	invalid_resource->SetValid( false );
+	VertexShaderResource* invalid_shader = new VertexShaderResource();
+	invalid_shader->SetValid( false );
 	_resources.insert(
-		std::make_pair( "invalid_resource", invalid_resource ) );
+		std::make_pair( "invalid_resource", invalid_shader ) );
+
+	InputLayoutResource* invalid_layout = new InputLayoutResource();
+	_layouts.insert(
+		std::make_pair(
+			reinterpret_cast< VertexShaderResource* >( 0 ),
+			invalid_layout )
+	);
 }
 
 VertexShaderCache::~VertexShaderCache()
 {
-	ResourceMap::iterator iter = _resources.begin();
-	while( iter != _resources.end() )
+	ResourceMap::iterator r_iter = _resources.begin();
+	while( r_iter != _resources.end() )
 	{
-		delete ( *iter ).second;
-		++iter;
+		delete ( *r_iter ).second;
+		++r_iter;
 	}
 
-	DXRelease( _input_layout );
+	LayoutMap::iterator l_iter = _layouts.begin();
+	while( l_iter != _layouts.end() )
+	{
+		delete ( *l_iter ).second;
+		++l_iter;
+	}
 }
 
 VertexShaderResource& VertexShaderCache::Request( const std::string& filename,
@@ -44,6 +57,16 @@ VertexShaderResource& VertexShaderCache::Request( const std::string& filename,
 	if( iter != _resources.end() ) return *( *iter ).second;
 
 	return Load( filename, shader );
+}
+
+InputLayoutResource* VertexShaderCache::GetInputLayout(
+	VertexShaderResource* resource ) const
+{
+	LayoutMap::const_iterator m_iter = _layouts.find( resource );
+	if( m_iter == _layouts.end() )
+		return ( *_layouts.find( 0 ) ).second;
+
+	return ( *m_iter ).second;
 }
 
 VertexShaderResource& VertexShaderCache::Load( const std::string& filename,
@@ -64,8 +87,7 @@ VertexShaderResource& VertexShaderCache::Load( const std::string& filename,
 	std::string key( filename + shader );
 	_resources.insert( std::make_pair( key, vsr_ptr ) );
 
-	if( !_input_layout )
-		CreateInputLayout( blob );
+	CreateInputLayout( vsr_ptr, blob );
 
 	return *( *_resources.find( key ) ).second;
 }
@@ -89,8 +111,13 @@ ID3DBlob* VertexShaderCache::CompileVertexShaderFromFile(
 	return shader_blob;
 }
 
-void VertexShaderCache::CreateInputLayout( ID3DBlob* blob )
+void VertexShaderCache::CreateInputLayout(
+	VertexShaderResource* resource,
+	ID3DBlob* blob )
 {
+	/**************************************************************************
+	 * TODO: Gotta be a better way to populate this vector.
+	 */
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{ "POSITION",  0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0 },
@@ -100,10 +127,16 @@ void VertexShaderCache::CreateInputLayout( ID3DBlob* blob )
 		{ "Transform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 		{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
+	
+	std::vector< D3D11_INPUT_ELEMENT_DESC > ied_list;
+	for( unsigned int count = 0; count < 6; ++count )
+		ied_list.push_back( ied[ count ] );
 
+	InputLayoutResource* layout = new InputLayoutResource( _device, ied_list, blob );
+	_layouts.insert( std::make_pair( resource, layout ) );
 	/**************************************************************************
 	 * TODO: Get rid of this raw D3D11Device call.
 	 */
-	HR( _device.GetRawDevicePtr()->CreateInputLayout( ied, 6, blob->GetBufferPointer(),
-		blob->GetBufferSize(), &_input_layout ) );
+	//HR( _device.GetRawDevicePtr()->CreateInputLayout( ied, 6, blob->GetBufferPointer(),
+	//	blob->GetBufferSize(), &_input_layout ) );
 }

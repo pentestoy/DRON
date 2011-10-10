@@ -10,6 +10,7 @@
 #include "RenderTarget.hpp"
 #include "SwapChain.hpp"
 #include "../DisplaySettings.hpp"
+#include "../../Resource/InputLayoutResource.hpp"
 #include "../../Resource/PixelShaderResource.hpp"
 #include "../../Resource/VertexShaderResource.hpp"
 #include "../../Utility/DXUtil.hpp"
@@ -69,7 +70,6 @@ void GFXDevice::SetRenderTarget(
 	RenderTarget& target,
 	DepthStencilBuffer& dsb ) const
 {
-	//ID3D11RenderTargetView* rtv = target.GetData();
 	std::vector< RenderTarget* > targets;
 	targets.push_back( &target );
 	SetRenderTargets( targets, dsb );
@@ -120,14 +120,19 @@ void GFXDevice::SetIndexBuffer( ID3D11Buffer* buffer ) const
 	_context_ptr->IASetIndexBuffer( buffer, DXGI_FORMAT_R32_UINT, 0 );
 }
 
-void GFXDevice::SetVertexShader( const VertexShaderResource& resource ) const
+void GFXDevice::SetVertexShader( const VertexShaderResource* resource ) const
 {
 	/* TODO: Research 1D3D11ClassInstance. It might be useful as things progress.
 	 */
-	_context_ptr->VSSetShader( resource.Data(), 0, 0 );
+	_context_ptr->VSSetShader( resource->Data(), 0, 0 );
 }
 
-void GFXDevice::SetPixelShader( const PixelShaderResource& resource ) const
+void GFXDevice::SetPixelShader( const PixelShaderResource* resource ) const
 {
-	_context_ptr->PSSetShader( resource.Data(), 0, 0 );
+	_context_ptr->PSSetShader( resource->Data(), 0, 0 );
+}
+
+void GFXDevice::SetInputLayout( const InputLayoutResource* layout ) const
+{
+	_context_ptr->IASetInputLayout( &layout->Data() );
 }

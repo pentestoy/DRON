@@ -153,6 +153,9 @@
     <ClCompile Include="Display\DisplaySettings.cpp">
       <Filter>Source Files\Display</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\InputLayoutResource.cpp">
+      <Filter>Source Files\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="Display\RenderBatch.hpp">
       <Filter>Header Files\Display</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\InputLayoutResource.hpp">
+      <Filter>Header Files\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

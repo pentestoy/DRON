@@ -12,6 +12,7 @@
 #include <D3D11.h>
 
 class GFXDevice;
+class InputLayoutResource;
 class VertexShaderResource;
 class VertexShaderCache
 {
@@ -22,7 +23,8 @@ class VertexShaderCache
 		VertexShaderResource& Request( const std::string& filename,
 									   const std::string& shader );
 
-		ID3D11InputLayout* GetInputLayout() const { return _input_layout; }
+		//ID3D11InputLayout* GetInputLayout() const { return _input_layout; }
+		InputLayoutResource* GetInputLayout( VertexShaderResource* resource ) const;
 
 	protected:
 		VertexShaderCache( const VertexShaderCache& );
@@ -35,13 +37,15 @@ class VertexShaderCache
 			const std::string& filename,
 			const std::string& shader );
 
-		void CreateInputLayout( ID3DBlob* );
+		void CreateInputLayout( VertexShaderResource*, ID3DBlob* );
 
 		GFXDevice&			_device;
-		ID3D11InputLayout*	_input_layout;
+		//ID3D11InputLayout*	_input_layout;
 
 		typedef std::map< std::string, VertexShaderResource* > ResourceMap;
+		typedef std::map< VertexShaderResource* , InputLayoutResource* > LayoutMap;
 		ResourceMap _resources;
+		LayoutMap   _layouts;
 };
 
 #endif //VERTEX_SHADER_CACHE_HPP

@@ -130,20 +130,24 @@ void D3D11Renderer::BuildBatchLists(
 			/* TODO: Right now, we're just sorting by mesh name. That will
 			 *       likely have to change at some point.
 			 */
-			std::map< std::string, RenderBatch >::iterator m_iter =
-				batches.find( rcd_ptr->_mesh_name );
-			if( m_iter == batches.end() )
+			/* If the entry has already been created then its entities vector
+			 * won't be empty.
+			 */
+			std::string key = rcd_ptr->_mesh_name;
+			if( batches[ key ]._entities.size() == 0 )
 			{
 				MeshLocator ml( _device );
 				VertexShaderLocator vsl( _device );
 				PixelShaderLocator psl( _device );
-				batches[ rcd_ptr->_mesh_name ]._mesh_res_ptr =
+				batches[ key ]._mesh_res_ptr =
 					ml.RequestPtr( rcd_ptr->_mesh_name );
-				batches[ rcd_ptr->_mesh_name ]._vertex_shader_res_ptr =
+				batches[ key ]._vertex_shader_res_ptr =
 					vsl.RequestPtr(
 						rcd_ptr->_vertex_shader_filename,
 						rcd_ptr->_vertex_shader
 					);
+				batches[ key ]._layout_res_ptr =
+					vsl.GetInputLayout( batches[ key ]._vertex_shader_res_ptr );
 				batches[ rcd_ptr->_mesh_name ]._pixel_shader_res_ptr =
 					psl.RequestPtr(
 						rcd_ptr->_pixel_shader_filename,
@@ -165,60 +169,16 @@ void D3D11Renderer::DrawBatches(
 
 	while( batch_iter != batches.end() )
 	{
-		
-		std::vector< Entity >& entities = batch_iter->second._entities;
+		RenderBatch& batch = batch_iter->second;
+		std::vector< Entity >& entities = batch._entities;
 
-		/**************************************************************************
-		 * VertexShaderLocator.GetInputLayout cannot be called before successfully
-		 * requesting at least one vertex shader. This is because we need a shader
-		 * blob to initialize the layout. Also, right now we really only need to
-		 * call it once, not once per draw, since all the shaders have the same
-		 * layout. We should probably add another std::map and store input layouts
-		 * per shader.
-		 *
-		 * Also, I should probably ad the input layout to the RenderBatch structure.
-		 * That way I can remove the dependency on VectorShaderLocator here.
-		 */
-		VertexShaderLocator vsl( _device );
-		_device.GetRawContextPtr()->IASetInputLayout( vsl.GetInputLayout() );
+		_device.SetInputLayout( batch._layout_res_ptr );
 		ID3D11Buffer* constant_buffer = _per_frame_buffer.GetBuffer();
 		_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &constant_buffer );
 
-		btAlignedObjectArray< InstanceData > id_array;
-		std::vector< Entity >::iterator e_iter = entities.begin();
+		FillInstanceBuffer( entities, _instance_buffer );
 
-		while( e_iter != entities.end() )
-		{
-			XformComponent::Data* xcd_ptr =
-				static_cast< XformComponent::Data* >(
-					_entity_system.GetComponentData( *e_iter, COMPONENT_XFORM ) );
-
-			InstanceData id;
-			XMVECTOR translation = xcd_ptr->_position;
-			XMVECTOR rotation    = xcd_ptr->_rotation;
-			XMVECTOR scale       = xcd_ptr->_scale;
-			XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
-			id._xform = XMMatrixAffineTransformation(
-				scale,
-				rot_origin,
-				rotation,
-				translation );
-
-			RenderableComponent::Data* rcd_ptr = static_cast< RenderableComponent::Data* >(
-				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
-			id._color = rcd_ptr->_color;
-
-			id_array.push_back( id );
-			++e_iter;
-		}
-
-		_instance_buffer.CopyDataToBuffer(
-			_device,
-			id_array,
-			DATA_BUFFER_MAP_WRITE_DISCARD );
-
-		RenderBatch& rb = batch_iter->second;
-		Mesh* mesh = rb._mesh_res_ptr->Data();
+		Mesh* mesh = batch._mesh_res_ptr->Data();
 		ID3D11Buffer* buffers[ 2 ];
 		buffers[ 0 ] = mesh->_vertex_buffer;
 		buffers[ 1 ] = _instance_buffer.GetBuffer();
@@ -239,12 +199,50 @@ void D3D11Renderer::DrawBatches(
 
 		_device.SetIndexBuffer( mesh->_index_buffer );
 	
-		_device.SetVertexShader( *rb._vertex_shader_res_ptr );
-		_device.SetPixelShader( *rb._pixel_shader_res_ptr );
+		_device.SetVertexShader( batch._vertex_shader_res_ptr );
+		_device.SetPixelShader( batch._pixel_shader_res_ptr );
 
 		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh->_num_indices, entities.size(), 0, 0, 0 );
 		++batch_iter;
 	}
+}
+
+void D3D11Renderer::FillInstanceBuffer(
+	std::vector< Entity >& entities,
+	DataBuffer< InstanceData >& buffer )
+{
+	std::vector< Entity >::iterator e_iter = entities.begin();
+	btAlignedObjectArray< InstanceData > id_array;
+
+	while( e_iter != entities.end() )
+	{
+		XformComponent::Data* xcd_ptr =
+			static_cast< XformComponent::Data* >(
+				_entity_system.GetComponentData( *e_iter, COMPONENT_XFORM ) );
+
+		InstanceData id;
+		XMVECTOR translation = xcd_ptr->_position;
+		XMVECTOR rotation    = xcd_ptr->_rotation;
+		XMVECTOR scale       = xcd_ptr->_scale;
+		XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+		id._xform = XMMatrixAffineTransformation(
+			scale,
+			rot_origin,
+			rotation,
+			translation );
+
+		RenderableComponent::Data* rcd_ptr = static_cast< RenderableComponent::Data* >(
+			_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
+		id._color = rcd_ptr->_color;
+
+		id_array.push_back( id );
+		++e_iter;
+	}
+
+	_instance_buffer.CopyDataToBuffer(
+		_device,
+		id_array,
+		DATA_BUFFER_MAP_WRITE_DISCARD );
 }
 
 XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
