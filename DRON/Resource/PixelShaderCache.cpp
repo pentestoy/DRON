@@ -5,14 +5,14 @@
  */
 
 #include "PixelShaderCache.hpp"
-#include <cassert>
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
 #include "PixelShaderResource.hpp"
+#include "../Display/D3D11/GFXDevice.hpp"
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/StringHelper.hpp"
 
-PixelShaderCache::PixelShaderCache( ID3D11Device* device )
+PixelShaderCache::PixelShaderCache( GFXDevice& device )
 	: _device( device )
 {
 	PixelShaderResource* invalid_resource = new PixelShaderResource();
@@ -45,16 +45,15 @@ PixelShaderResource& PixelShaderCache::Request( const std::string& filename,
 PixelShaderResource& PixelShaderCache::Load( const std::string& filename,
 											 const std::string& shader )
 {
-#if defined ( DEBUG ) || defined (_DEBUG )
-	assert( _device );
-#endif
-
 	ID3DBlob* blob = CompilePixelShaderFromFile( filename, shader );
 	if( !blob )
 		return *( *_resources.find( "invalid_resource" ) ).second;
 
 	PixelShaderResource* psr_ptr = new PixelShaderResource();
-	HR( _device->CreatePixelShader( blob->GetBufferPointer(),
+	/**************************************************************************
+	 * TODO: Get rid of this raw D3D11Device call.
+	 */
+	HR( _device.GetRawDevicePtr()->CreatePixelShader( blob->GetBufferPointer(),
 		blob->GetBufferSize(), 0, &psr_ptr->_data ) );
 	psr_ptr->SetValid( true );
 

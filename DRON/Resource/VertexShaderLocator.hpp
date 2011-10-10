@@ -8,20 +8,21 @@
 #define VERTEX_SHADER_LOCATOR_HPP
 
 #include <string>
-#include <D3D11.h>
 #include "VertexShaderCache.hpp"
 #include "VertexShaderResource.hpp"
 
+class GFXDevice;
 class VertexShaderCache;
 class VertexShaderLocator
 {
 	public:
-		VertexShaderLocator();
-		VertexShaderLocator( ID3D11Device* device );
+		VertexShaderLocator( GFXDevice& device );
 
 		VertexShaderResource& Request( const std::string& filename,
 					  const std::string& shader );
-		void ShutDown();
+		VertexShaderResource* RequestPtr( const std::string& filename,
+					  const std::string& shader );
+		static void ShutDown();
 		ID3D11InputLayout* GetInputLayout() const { return _cache->GetInputLayout(); }
 
 	private:

@@ -11,15 +11,14 @@
 #include <string>
 #include <D3D11.h>
 
+class GFXDevice;
 class PixelShaderResource;
 class PixelShaderCache
 {
 	public:
-		PixelShaderCache( ID3D11Device* device );
+		PixelShaderCache( GFXDevice& device );
 		~PixelShaderCache();
-		
-		//void Initialize( ID3D11Device* device ) { _device = device; }
-		bool IsInitialized() { return _device != 0; }
+
 		PixelShaderResource& Request( const std::string& filename,
 									   const std::string& shader );
 
@@ -34,7 +33,7 @@ class PixelShaderCache
 			const std::string& filename,
 			const std::string& shader );
 
-		ID3D11Device*		_device;
+		GFXDevice&		_device;
 
 		typedef std::map< std::string, PixelShaderResource* > ResourceMap;
 		ResourceMap _resources;

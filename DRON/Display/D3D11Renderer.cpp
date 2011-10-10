@@ -6,13 +6,11 @@
 
 #include "D3D11Renderer.hpp"
 
-#include <cassert>
-#include <sstream>
-#include <vector>
 #include <LinearMath/btAlignedObjectArray.h>
 #include <aiMesh.h>
 
 #include "DisplaySettings.hpp"
+#include "RenderBatch.hpp"
 #include "D3D11/Topology.hpp"
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/CameraComponent.hpp"
@@ -28,48 +26,23 @@ D3D11Renderer::D3D11Renderer( HWND window,
 							  DisplaySettings& ds,
 							  EntitySystem& es )
     : _device(), _swap_chain( _device, ds, window ), _entity_system( es ),
-	  _perspec_mx_ptr( 0 ), _ortho_mx_ptr( 0 ),
+	  _perspec_mx(), _ortho_mx(),
 	  _instance_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
 		DATA_BUFFER_BIND_VERTEX_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 100 ),
 	  _per_frame_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
 		DATA_BUFFER_BIND_CONSTANT_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 1 )
 {
-	/* TODO: There's gotta be a better way to do this, or at least some method
-	 *       to wrap it.
-	 */
-	void* buffer = _aligned_malloc( sizeof( XMMATRIX ), 16 );
-	_perspec_mx_ptr = new( buffer ) XMMATRIX;
-
-	buffer = _aligned_malloc( sizeof( XMMATRIX ), 16 );
-	_ortho_mx_ptr = new( buffer ) XMMATRIX;
+	_perspec_mx.ResetWithDefault();
+	_ortho_mx.ResetWithDefault();
 
     OnResize( ds );
-
-	//_device.GetRawDevicePtr()->QueryInterface(
-	//	__uuidof( ID3D11Debug ),
-	//	reinterpret_cast< void** >( &_debug_ptr ) );
 }
 
 D3D11Renderer::~D3D11Renderer()
 {
-	_perspec_mx_ptr->~XMMATRIX();
-	_aligned_free( _perspec_mx_ptr );
-	_perspec_mx_ptr = 0;
-
-	_ortho_mx_ptr->~XMMATRIX();
-	_aligned_free( _ortho_mx_ptr );
-	_ortho_mx_ptr = 0;
-
-	MeshLocator ml( _device.GetRawDevicePtr() );
-	ml.ShutDown();
-
-	PixelShaderLocator psl( _device.GetRawDevicePtr() );
-	psl.ShutDown();
-
-	VertexShaderLocator vsl( _device.GetRawDevicePtr() );
-	vsl.ShutDown();
-
-	//_debug_ptr->Release();
+	MeshLocator::ShutDown();
+	PixelShaderLocator::ShutDown();
+	VertexShaderLocator::ShutDown();
 }
 
 void D3D11Renderer::OnResize( DisplaySettings& ds )
@@ -118,7 +91,7 @@ void D3D11Renderer::Draw( std::vector< Entity >& entities, Entity camera )
 	_device.InitializeFrame( _render_target, _depth_stencil );
 	UpdateMatrixBuffer( camera );
 
-	std::map< std::string, std::vector< Entity > > batches;
+	std::map< std::string, RenderBatch > batches;
 	BuildBatchLists( entities, batches );
 	DrawBatches( batches );
 
@@ -132,7 +105,7 @@ void D3D11Renderer::UpdateMatrixBuffer( Entity camera )
 	btAlignedObjectArray< ViewProj > vp_array;
 	ViewProj per_frame;
 	per_frame._view  = XMMatrixTranspose( view_mx );
-	per_frame._proj  = XMMatrixTranspose( *_perspec_mx_ptr );
+	per_frame._proj  = XMMatrixTranspose( *_perspec_mx );
 	vp_array.push_back( per_frame );
 	_per_frame_buffer.CopyDataToBuffer(
 		_device,
@@ -143,7 +116,7 @@ void D3D11Renderer::UpdateMatrixBuffer( Entity camera )
 
 void D3D11Renderer::BuildBatchLists(
 	std::vector< Entity >& entities,
-	std::map< std::string, std::vector< Entity > >& batches )
+	std::map< std::string, RenderBatch >& batches )
 {
 	batches.clear();
 	std::vector< Entity >::iterator e_iter = entities.begin();
@@ -157,41 +130,44 @@ void D3D11Renderer::BuildBatchLists(
 			/* TODO: Right now, we're just sorting by mesh name. That will
 			 *       likely have to change at some point.
 			 */
-			batches[ rcd_ptr->_mesh_name ].push_back( *e_iter );
+			std::map< std::string, RenderBatch >::iterator m_iter =
+				batches.find( rcd_ptr->_mesh_name );
+			if( m_iter == batches.end() )
+			{
+				MeshLocator ml( _device );
+				VertexShaderLocator vsl( _device );
+				PixelShaderLocator psl( _device );
+				batches[ rcd_ptr->_mesh_name ]._mesh_res_ptr =
+					ml.RequestPtr( rcd_ptr->_mesh_name );
+				batches[ rcd_ptr->_mesh_name ]._vertex_shader_res_ptr =
+					vsl.RequestPtr(
+						rcd_ptr->_vertex_shader_filename,
+						rcd_ptr->_vertex_shader
+					);
+				batches[ rcd_ptr->_mesh_name ]._pixel_shader_res_ptr =
+					psl.RequestPtr(
+						rcd_ptr->_pixel_shader_filename,
+						rcd_ptr->_pixel_shader
+					);
+			}
+			batches[ rcd_ptr->_mesh_name ]._entities.push_back( *e_iter );
+			MeshLocator ml( _device );
 		}
 		++e_iter;
 	}
 }
 
 void D3D11Renderer::DrawBatches(
-	std::map< std::string, std::vector< Entity > >& batches )
+	std::map< std::string, RenderBatch >& batches )
 {
-	//_debug_ptr->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
-
-	std::map< std::string, std::vector< Entity > >::iterator batch_iter =
+	std::map< std::string, RenderBatch >::iterator batch_iter =
 		batches.begin();
 
 	while( batch_iter != batches.end() )
 	{
 		
-		std::vector< Entity >& entities = batch_iter->second;
-		
-		Entity e = entities.front();
-		/* We verified that all entities have renderable components when we
-		 * built the batches, so we should be good to skip the check here.
-		 */
-		RenderableComponent::Data* rcd_ptr =
-			static_cast< RenderableComponent::Data* >(
-				_entity_system.GetComponentData( e, COMPONENT_RENDERABLE ) );
+		std::vector< Entity >& entities = batch_iter->second._entities;
 
-		MeshLocator ml( _device.GetRawDevicePtr() );
-		MeshResource& m = ml.Request( rcd_ptr->_mesh_name );
-		//Mesh& mesh = *ml.Request( rcd_ptr->_mesh_name ).Data();
-		Mesh& mesh = *m.Data();
-		
-		VertexShaderLocator vsl( _device.GetRawDevicePtr() );
-		VertexShaderResource& vsr =
-			vsl.Request( rcd_ptr->_vertex_shader_filename, rcd_ptr->_vertex_shader );
 		/**************************************************************************
 		 * VertexShaderLocator.GetInputLayout cannot be called before successfully
 		 * requesting at least one vertex shader. This is because we need a shader
@@ -199,14 +175,14 @@ void D3D11Renderer::DrawBatches(
 		 * call it once, not once per draw, since all the shaders have the same
 		 * layout. We should probably add another std::map and store input layouts
 		 * per shader.
+		 *
+		 * Also, I should probably ad the input layout to the RenderBatch structure.
+		 * That way I can remove the dependency on VectorShaderLocator here.
 		 */
+		VertexShaderLocator vsl( _device );
 		_device.GetRawContextPtr()->IASetInputLayout( vsl.GetInputLayout() );
 		ID3D11Buffer* constant_buffer = _per_frame_buffer.GetBuffer();
 		_device.GetRawContextPtr()->VSSetConstantBuffers( 0, 1, &constant_buffer );
-
-		PixelShaderLocator psl( _device.GetRawDevicePtr() );
-		PixelShaderResource& psr =
-			psl.Request( rcd_ptr->_pixel_shader_filename, rcd_ptr->_pixel_shader );
 
 		btAlignedObjectArray< InstanceData > id_array;
 		std::vector< Entity >::iterator e_iter = entities.begin();
@@ -228,7 +204,7 @@ void D3D11Renderer::DrawBatches(
 				rotation,
 				translation );
 
-			rcd_ptr = static_cast< RenderableComponent::Data* >(
+			RenderableComponent::Data* rcd_ptr = static_cast< RenderableComponent::Data* >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
 			id._color = rcd_ptr->_color;
 
@@ -241,8 +217,10 @@ void D3D11Renderer::DrawBatches(
 			id_array,
 			DATA_BUFFER_MAP_WRITE_DISCARD );
 
+		RenderBatch& rb = batch_iter->second;
+		Mesh* mesh = rb._mesh_res_ptr->Data();
 		ID3D11Buffer* buffers[ 2 ];
-		buffers[ 0 ] = mesh._vertex_buffer;
+		buffers[ 0 ] = mesh->_vertex_buffer;
 		buffers[ 1 ] = _instance_buffer.GetBuffer();
 
 		unsigned int strides[ 2 ];
@@ -259,16 +237,14 @@ void D3D11Renderer::DrawBatches(
 			strides,
 			offsets );
 
-		_device.SetIndexBuffer( mesh._index_buffer );
+		_device.SetIndexBuffer( mesh->_index_buffer );
 	
-		_device.SetVertexShader( vsr );
-		_device.SetPixelShader( psr );
+		_device.SetVertexShader( *rb._vertex_shader_res_ptr );
+		_device.SetPixelShader( *rb._pixel_shader_res_ptr );
 
-		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh._num_indices, entities.size(), 0, 0, 0 );
+		_device.GetRawContextPtr()->DrawIndexedInstanced( mesh->_num_indices, entities.size(), 0, 0, 0 );
 		++batch_iter;
 	}
-
-	//_debug_ptr->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
 }
 
 XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
@@ -287,13 +263,13 @@ XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
 
 void D3D11Renderer::BuildProjectionMatrices( const DisplaySettings& ds )
 {
-	*_perspec_mx_ptr = XMMatrixPerspectiveFovLH(
+	*_perspec_mx = XMMatrixPerspectiveFovLH(
 		0.25f * XM_PI,
 		static_cast< float >( ds._width ) / static_cast< float >( ds._height ),
 		0.1f,
 		100.0f );
 
-	*_ortho_mx_ptr = XMMatrixOrthographicLH(
+	*_ortho_mx = XMMatrixOrthographicLH(
 		static_cast< float >( ds._width ) / 16.0f,
 		static_cast< float >( ds._height ) / 16.0f,
 		1.0f,

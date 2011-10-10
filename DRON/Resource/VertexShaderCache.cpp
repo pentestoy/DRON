@@ -9,10 +9,11 @@
 #include <D3Dcompiler.h>
 #include <D3DX11async.h>
 #include "VertexShaderResource.hpp"
+#include "../Display/D3D11/GFXDevice.hpp"
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/StringHelper.hpp"
 
-VertexShaderCache::VertexShaderCache( ID3D11Device* device )
+VertexShaderCache::VertexShaderCache( GFXDevice& device )
 	: _device( device ), _input_layout( 0 )
 {
 	VertexShaderResource* invalid_resource = new VertexShaderResource();
@@ -31,7 +32,6 @@ VertexShaderCache::~VertexShaderCache()
 	}
 
 	DXRelease( _input_layout );
-	DXRelease( _device );
 }
 
 VertexShaderResource& VertexShaderCache::Request( const std::string& filename,
@@ -49,16 +49,15 @@ VertexShaderResource& VertexShaderCache::Request( const std::string& filename,
 VertexShaderResource& VertexShaderCache::Load( const std::string& filename,
 											   const std::string& shader )
 {
-#if defined ( DEBUG ) || defined (_DEBUG )
-	assert( _device );
-#endif
-
 	ID3DBlob* blob = CompileVertexShaderFromFile( filename, shader );
 	if( !blob )
 		return *( *_resources.find( "invalid_resource" ) ).second;
 
 	VertexShaderResource* vsr_ptr = new VertexShaderResource();
-	HR( _device->CreateVertexShader( blob->GetBufferPointer(),
+	/**************************************************************************
+	 * TODO: Get rid of this raw D3D11Device call.
+	 */
+	HR( _device.GetRawDevicePtr()->CreateVertexShader( blob->GetBufferPointer(),
 		blob->GetBufferSize(), 0, &vsr_ptr->_data ) );
 	vsr_ptr->SetValid( true );
 
@@ -102,6 +101,9 @@ void VertexShaderCache::CreateInputLayout( ID3DBlob* blob )
 		{ "COLOR",     0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 }
 	};
 
-	HR( _device->CreateInputLayout( ied, 6, blob->GetBufferPointer(),
+	/**************************************************************************
+	 * TODO: Get rid of this raw D3D11Device call.
+	 */
+	HR( _device.GetRawDevicePtr()->CreateInputLayout( ied, 6, blob->GetBufferPointer(),
 		blob->GetBufferSize(), &_input_layout ) );
 }

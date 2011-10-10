@@ -10,14 +10,15 @@
 #include <string>
 #include "MeshResource.hpp"
 
-struct ID3D11Device;
+class GFXDevice;
 class MeshCache;
 class MeshLocator
 {
 	public:
-		MeshLocator( ID3D11Device* device );
+		MeshLocator( GFXDevice& debice );
 		MeshResource& Request( const std::string& filename );
-		void ShutDown();
+		MeshResource* RequestPtr( const std::string& filename );
+		static void ShutDown();
 
 	private:
 		MeshLocator( const MeshLocator& );

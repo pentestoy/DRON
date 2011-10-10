@@ -11,16 +11,15 @@
 #include <string>
 
 struct aiScene;
-struct ID3D11Device;
 struct Mesh;
+class GFXDevice;
 class MeshResource;
 class MeshCache
 {
 	public:
-		MeshCache( ID3D11Device* device );
+		MeshCache( GFXDevice& device );
 		~MeshCache();
 
-		//void Initialize( ID3D11Device* device );
 		MeshResource& Request( const std::string& filename );
 
 	private:
@@ -30,7 +29,7 @@ class MeshCache
 		MeshResource& Load( const std::string& filename );
 		Mesh* BuildMesh( const aiScene* scene, const std::string& filename );
 
-		ID3D11Device*	_device;
+		GFXDevice&		_device;
 
 		typedef std::map< std::string, MeshResource* > ResourceMap;
 		ResourceMap		_resources;

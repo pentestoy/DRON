@@ -17,11 +17,12 @@
 #include <aiScene.h>
 #include <aiPostProcess.h>
 #include "MeshResource.hpp"
+#include "../Display/D3D11/GFXDevice.hpp"
 #include "../Utility/DXUtil.hpp"
 #include "../Utility/Geometry.hpp"
 #include "../Utility/StringHelper.hpp"
 
-MeshCache::MeshCache( ID3D11Device* device )
+MeshCache::MeshCache( GFXDevice& device )
 	: _device( device )
 {
 	MeshResource* invalid_resource = new MeshResource();
@@ -76,10 +77,6 @@ MeshResource& MeshCache::Load( const std::string& filename )
 		return *( *_resources.find( "invalid_resource" ) ).second;
 	}
 
-	/**************************************************************************
-	 * TODO: Need to copy the mesh data, because the Importer keeps ownership
-	 *       of the scene data, and destroys it when it goes out of scope.
-	 */
 	MeshResource* mr_ptr = new MeshResource();
 	mr_ptr->_data = BuildMesh( scene_ptr, filename );
 	mr_ptr->SetValid( true );
@@ -120,7 +117,10 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr, const std::string& filenam
 	ZeroMemory( &dsd, sizeof( dsd ) );
 	dsd.pSysMem = &vertices[ 0 ];
 
-	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_vertex_buffer ) );
+	/**************************************************************************
+	 * TODO: Change this to not require a raw call to the D3D11Device.
+	 */
+	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, &dsd, &mesh->_vertex_buffer ) );
 
 #if defined( DEBUG ) || defined( _DEBUG )  
 	std::stringstream ss;
@@ -148,7 +148,10 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr, const std::string& filenam
 
 	dsd.pSysMem = &index_vector[ 0 ];
 
-	HR( _device->CreateBuffer( &bd, &dsd, &mesh->_index_buffer ) );
+	/**************************************************************************
+	 * TODO: Change this to not require a raw call to the D3D11Device.
+	 */
+	HR( _device.GetRawDevicePtr()->CreateBuffer( &bd, &dsd, &mesh->_index_buffer ) );
 
 #if defined( DEBUG ) || defined( _DEBUG )  
 	ss.str("");

@@ -120,6 +120,7 @@
     <ClInclude Include="Display\DisplaySettings.hpp" />
     <ClInclude Include="Display\DisplaySettingsDialog.hpp" />
     <ClInclude Include="Display\MainWindow.hpp" />
+    <ClInclude Include="Display\RenderBatch.hpp" />
     <ClInclude Include="Entity\Components\BaseComponent.hpp" />
     <ClInclude Include="Entity\Components\CameraComponent.hpp" />
     <ClInclude Include="Entity\Components\Components.hpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Script\Lua.hpp" />
     <ClInclude Include="Script\Script.hpp" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Utility\AlignedPtr.hpp" />
     <ClInclude Include="Utility\DXUtil.hpp" />
     <ClInclude Include="Utility\Geometry.hpp" />
     <ClInclude Include="Utility\StringHelper.hpp" />

@@ -10,7 +10,7 @@
 
 PixelShaderCache* PixelShaderLocator::_cache = 0;
 
-PixelShaderLocator::PixelShaderLocator( ID3D11Device* device )
+PixelShaderLocator::PixelShaderLocator( GFXDevice& device )
 {
 	if( !_cache )
 		_cache = new PixelShaderCache( device );
@@ -21,6 +21,13 @@ PixelShaderResource& PixelShaderLocator::Request(
 	const std::string& shader )
 {
 	return _cache->Request( filename, shader );
+}
+
+PixelShaderResource* PixelShaderLocator::RequestPtr(
+	const std::string& filename,
+	const std::string& shader )
+{
+	return &_cache->Request( filename, shader );
 }
 
 void PixelShaderLocator::ShutDown()

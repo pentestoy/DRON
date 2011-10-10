@@ -9,7 +9,7 @@
 
 MeshCache* MeshLocator::_cache = 0;
 
-MeshLocator::MeshLocator( ID3D11Device* device )
+MeshLocator::MeshLocator( GFXDevice& device )
 {
 	if( !_cache )
 		_cache = new MeshCache( device );
@@ -18,6 +18,11 @@ MeshLocator::MeshLocator( ID3D11Device* device )
 MeshResource& MeshLocator::Request( const std::string& filename )
 {
 	return _cache->Request( filename );
+}
+
+MeshResource* MeshLocator::RequestPtr( const std::string& filename )
+{
+	return &_cache->Request( filename );
 }
 
 void MeshLocator::ShutDown()

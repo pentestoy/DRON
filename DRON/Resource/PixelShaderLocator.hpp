@@ -8,19 +8,20 @@
 #define PIXEL_SHADER_LOCATOR_HPP
 
 #include <string>
-#include <D3D11.h>
 #include "PixelShaderResource.hpp"
 
+class GFXDevice;
 class PixelShaderCache;
 class PixelShaderLocator
 {
 	public:
-		//PixelShaderLocator();
-		PixelShaderLocator( ID3D11Device* device );
+		PixelShaderLocator( GFXDevice& device );
 
 		PixelShaderResource& Request( const std::string& filename,
 					  const std::string& shader );
-		void ShutDown();
+		PixelShaderResource* RequestPtr( const std::string& filename,
+					  const std::string& shader );
+		static void ShutDown();
 
 	private:
 		PixelShaderLocator( const PixelShaderLocator& );

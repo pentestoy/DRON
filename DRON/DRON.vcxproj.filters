@@ -284,6 +284,12 @@
     <ClInclude Include="Entity\Entity.hpp">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="Utility\AlignedPtr.hpp">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Display\RenderBatch.hpp">
+      <Filter>Header Files\Display</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DRON.rc">

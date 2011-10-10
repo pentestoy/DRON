@@ -18,6 +18,7 @@
 #include "D3D11/RenderTarget.hpp"
 #include "D3D11/SwapChain.hpp"
 #include "../Entity/Entity.hpp"
+#include "../Utility/AlignedPtr.hpp"
 #include "../Utility/Geometry.hpp"
 
 struct ViewProj
@@ -27,9 +28,10 @@ struct ViewProj
 };
 
 struct DisplaySettings;
+struct RenderBatch;
 class EntitySystem;
 class SwapChain;
-__declspec( align( 16 ) ) class D3D11Renderer
+class D3D11Renderer
 {
     public:
         D3D11Renderer( HWND window, DisplaySettings& ds, EntitySystem& es );
@@ -46,30 +48,25 @@ __declspec( align( 16 ) ) class D3D11Renderer
 
 		void UpdateMatrixBuffer( Entity camera );
 		void BuildBatchLists(
-				std::vector< Entity >& entities,
-				std::map< std::string, std::vector< Entity > >& batches );
+			std::vector< Entity >& entities,
+			std::map< std::string, RenderBatch >& batches );
 		void DrawBatches(
-			std::map< std::string, std::vector< Entity > >& batches );
+			std::map< std::string, RenderBatch >& batches );
 		XMMATRIX BuildCameraMatrix( Entity camera );
 		void BuildProjectionMatrices( const DisplaySettings& ds );
-
-		// temporary
-		unsigned int				_ps_id;
-		unsigned int				_vs_id;
 
 		GFXDevice					_device;
 		SwapChain					_swap_chain;
 		RenderTarget				_render_target;
 		DepthStencilBuffer			_depth_stencil;
 
-		XMMATRIX*					_perspec_mx_ptr;
-		XMMATRIX*					_ortho_mx_ptr;
+		AlignedPtr< XMMATRIX >		_perspec_mx;
+		AlignedPtr< XMMATRIX >		_ortho_mx;
 
 		DataBuffer< ViewProj >      _per_frame_buffer;
 		DataBuffer< InstanceData >  _instance_buffer;
 
 		EntitySystem&				_entity_system;
-		//ID3D11Debug*				_debug_ptr;
 };
 
 #endif  //D3D11RENDERER_HPP

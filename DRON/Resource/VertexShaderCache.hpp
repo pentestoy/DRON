@@ -11,15 +11,14 @@
 #include <string>
 #include <D3D11.h>
 
+class GFXDevice;
 class VertexShaderResource;
 class VertexShaderCache
 {
 	public:
-		VertexShaderCache( ID3D11Device* device );
+		VertexShaderCache( GFXDevice& device );
 		~VertexShaderCache();
 		
-		//void Initialize( ID3D11Device* device ) { _device = device; }
-		bool IsInitialized() { return _device != 0; }
 		VertexShaderResource& Request( const std::string& filename,
 									   const std::string& shader );
 
@@ -38,7 +37,7 @@ class VertexShaderCache
 
 		void CreateInputLayout( ID3DBlob* );
 
-		ID3D11Device*		_device;
+		GFXDevice&			_device;
 		ID3D11InputLayout*	_input_layout;
 
 		typedef std::map< std::string, VertexShaderResource* > ResourceMap;

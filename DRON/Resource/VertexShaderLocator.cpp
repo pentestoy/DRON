@@ -6,20 +6,27 @@
 
 #include "VertexShaderLocator.hpp"
 #include "VertexShaderCache.hpp"
-#include <cassert>
 
 VertexShaderCache* VertexShaderLocator::_cache = 0;
 
-VertexShaderLocator::VertexShaderLocator( ID3D11Device* device )
+VertexShaderLocator::VertexShaderLocator( GFXDevice& device )
 {
 	if( !_cache )
 		_cache = new VertexShaderCache( device );
 }
 
-VertexShaderResource& VertexShaderLocator::Request( const std::string& filename,
-								   const std::string& shader )
+VertexShaderResource& VertexShaderLocator::Request(
+	const std::string& filename,
+	const std::string& shader )
 {
 	return _cache->Request( filename, shader );
+}
+
+VertexShaderResource* VertexShaderLocator::RequestPtr(
+	const std::string& filename,
+	const std::string& shader )
+{
+	return &_cache->Request( filename, shader );
 }
 
 void VertexShaderLocator::ShutDown()
