@@ -28,20 +28,19 @@ class Menu : public GameState
 		Menu( const Menu& );
 		Menu& operator=( const Menu& );
 
-		void CreateTestEntities();
+		//void CreateTestEntities();
 
 		void ProcessInput();
 
 		EntitySystem&	_entity_system;
 		D3D11Renderer&	_renderer;
 		Entity			_camera;
-		//Entity			_test_entity;
 
 		Maze*			_maze;
 
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;
-		std::vector< Entity > _entities;
+		//std::vector< Entity > _entities;
 };
 
 #endif  MENU_HPP

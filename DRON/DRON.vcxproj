@@ -92,6 +92,7 @@
     <ClCompile Include="Entity\EntitySystem.cpp" />
     <ClCompile Include="GameState\GameState.cpp" />
     <ClCompile Include="GameState\Menu.cpp" />
+    <ClCompile Include="Maze\Maze.cpp" />
     <ClCompile Include="Resource\InputLayoutResource.cpp" />
     <ClCompile Include="Resource\MeshCache.cpp" />
     <ClCompile Include="Resource\MeshLocator.cpp" />

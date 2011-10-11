@@ -10,6 +10,7 @@
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/ComponentTypes.hpp"
 #include "../Entity/Components/Components.hpp"
+#include "../Maze/Maze.hpp"
 
 const XMVECTOR QUARTER_TURN = XMQuaternionRotationAxis(
 	XMVectorSet( 0.0f, 0.0f, -1.0f, 0.0f ),
@@ -25,10 +26,11 @@ const XMVECTOR THREE_QUARTER_TURN = XMQuaternionRotationAxis(
 
 Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	: _entity_system( es ), _renderer( r ),
-	  _camera( _entity_system.CreateNewEntity() )
+	  _camera( _entity_system.CreateNewEntity() ),
+	  _maze( new Maze( "Maze01.lua", es ) )
 {
 	CameraComponent::Data cd;
-	cd._position = XMVectorSet( 0.0f, 0.0f, -10.0f, 0.0f );
+	cd._position = XMVectorSet( 0.0f, 0.0f, -37.5f, 0.0f );
 	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );
@@ -39,19 +41,20 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	XformComponent::Data xd;
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xd );
 
-	CreateTestEntities();
+	//CreateTestEntities();
 
 	_mapped_actions.insert( ActionMapPair( VK_RETURN, ACTION_SELECT ) );
 	_mapped_actions.insert( ActionMapPair( VK_UP, ACTION_MOVE_UP ) );
 	_mapped_actions.insert( ActionMapPair( VK_DOWN, ACTION_MOVE_DOWN ) );
 	_mapped_actions.insert( ActionMapPair( VK_ESCAPE, ACTION_EXIT ) );
-	
 }
 
 void Menu::Update( float dt )
 {
 	ProcessInput();
-	_renderer.Draw( _entities, _camera );
+	std::vector< Entity > entities;
+	_maze->GetRenderableEntities( entities );
+	_renderer.Draw( entities, _camera );
 }
 
 void Menu::HandleKeypress( const WPARAM key )
@@ -90,6 +93,7 @@ void Menu::ProcessInput()
 	_actions.pop_front();
 }
 
+/*
 void Menu::CreateTestEntities()
 {
 	Entity e = _entity_system.CreateNewEntity();
@@ -209,5 +213,6 @@ void Menu::CreateTestEntities()
 	_entity_system.CreateAndAttachComponent( e, COMPONENT_RENDERABLE, rd );
 
 	_entities.push_back( e );
-	*/
+	* /
 }
+*/

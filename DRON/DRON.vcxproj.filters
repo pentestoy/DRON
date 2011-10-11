@@ -67,6 +67,9 @@
     <Filter Include="Source Files\Display\D3D11">
       <UniqueIdentifier>{6fd77f5d-299a-4d34-9e69-4c391918d4ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Maze">
+      <UniqueIdentifier>{61f8411b-1c08-4112-84fb-46ab68daec0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DRON.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="Resource\InputLayoutResource.cpp">
       <Filter>Source Files\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Maze\Maze.cpp">
+      <Filter>Source Files\Maze</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

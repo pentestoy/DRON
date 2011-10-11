@@ -28,7 +28,7 @@ D3D11Renderer::D3D11Renderer( HWND window,
     : _device(), _swap_chain( _device, ds, window ), _entity_system( es ),
 	  _perspec_mx(), _ortho_mx(),
 	  _instance_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
-		DATA_BUFFER_BIND_VERTEX_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 100 ),
+		DATA_BUFFER_BIND_VERTEX_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 144 ),
 	  _per_frame_buffer( _device, DATA_BUFFER_ACCESS_WRITE,
 		DATA_BUFFER_BIND_CONSTANT_BUFFER, DATA_BUFFER_USAGE_DYNAMIC, 1 )
 {

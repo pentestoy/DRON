@@ -18,6 +18,7 @@ class AlignedPtr
 		bool IsValid() const;
 		void Release();
 		void Reset( T* ptr = 0 );
+		void Reset( const T& value );
 
 		T& operator*() const;
 		T* operator->() const;
@@ -67,6 +68,23 @@ void AlignedPtr< T >::Reset( T* ptr = 0 )
 {
 	Release();
 	_ptr = ptr;
+}
+
+template< typename T >
+void AlignedPtr< T >::Reset( const T& value )
+{
+	if( !_ptr )
+	{
+	void* buffer = _aligned_malloc( sizeof( T ), 16 );
+	_ptr = new( buffer ) T;
+	}
+
+	*_ptr = value;/*XMVectorSet(
+		XMVectorGetX( value ),
+		XMVectorGetY( value ),
+		XMVectorGetZ( value ),
+		XMVectorGetW( value )
+	);*/
 }
 
 template< typename T >
