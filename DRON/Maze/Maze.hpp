@@ -9,30 +9,11 @@
 
 #include <string>
 #include <vector>
-#include <Windows.h>
-#include <xnamath.h>
 #include "../Entity/Entity.hpp"
 #include "../Utility/AlignedPtr.hpp"
 
-class Maze;
-class MazeSide
-{
-	public:
-		MazeSide();
-
-	private:
-		MazeSide( const MazeSide& );
-		MazeSide& operator=( const MazeSide& );
-
-		friend class Maze;
-
-		std::vector< Entity >  _walls;
-		std::string            _maze_data;
-		unsigned int		   _maze_size;
-		AlignedPtr< XMVECTOR > _position;
-};
-
 class EntitySystem;
+class MazeSide;
 class Maze
 {
 	public:

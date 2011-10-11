@@ -30,7 +30,7 @@ Menu::Menu( EntitySystem& es, D3D11Renderer& r )
 	  _maze( new Maze( "Maze01.lua", es ) )
 {
 	CameraComponent::Data cd;
-	cd._position = XMVectorSet( 0.0f, 0.0f, -37.5f, 0.0f );
+	cd._position = XMVectorSet( 0.0f, 0.0f, -52.5f, 0.0f );
 	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
 	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );

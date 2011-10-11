@@ -93,6 +93,7 @@
     <ClCompile Include="GameState\GameState.cpp" />
     <ClCompile Include="GameState\Menu.cpp" />
     <ClCompile Include="Maze\Maze.cpp" />
+    <ClCompile Include="Maze\MazeSide.cpp" />
     <ClCompile Include="Resource\InputLayoutResource.cpp" />
     <ClCompile Include="Resource\MeshCache.cpp" />
     <ClCompile Include="Resource\MeshLocator.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="GameState\Menu.hpp" />
     <ClInclude Include="Input\ActionConstants.hpp" />
     <ClInclude Include="Maze\Maze.hpp" />
+    <ClInclude Include="Maze\MazeSide.hpp" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Resource\BaseResource.hpp" />
     <ClInclude Include="Resource\InputLayoutResource.hpp" />

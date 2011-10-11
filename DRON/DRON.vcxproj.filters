@@ -162,6 +162,9 @@
     <ClCompile Include="Maze\Maze.cpp">
       <Filter>Source Files\Maze</Filter>
     </ClCompile>
+    <ClCompile Include="Maze\MazeSide.cpp">
+      <Filter>Source Files\Maze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp">
@@ -301,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="Resource\InputLayoutResource.hpp">
       <Filter>Header Files\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze\MazeSide.hpp">
+      <Filter>Header Files\Maze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
