@@ -107,6 +107,7 @@
     <ClCompile Include="Script\Script.cpp" />
     <ClCompile Include="Utility\DXUtil.cpp" />
     <ClCompile Include="Utility\Grometry.cpp" />
+    <ClCompile Include="Utility\Rotations.cpp" />
     <ClCompile Include="Utility\StringHelper.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
   </ItemGroup>
@@ -156,11 +157,15 @@
     <ClInclude Include="Utility\AlignedPtr.hpp" />
     <ClInclude Include="Utility\DXUtil.hpp" />
     <ClInclude Include="Utility\Geometry.hpp" />
+    <ClInclude Include="Utility\Rotations.hpp" />
     <ClInclude Include="Utility\StringHelper.hpp" />
     <ClInclude Include="Utility\Timer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DRON.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Script\Maze.i" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

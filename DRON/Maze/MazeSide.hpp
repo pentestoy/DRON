@@ -14,20 +14,31 @@
 #include "../Entity/Entity.hpp"
 #include "../Utility/AlignedPtr.hpp"
 
+class EntitySystem;
 class Maze;
 class MazeSide
 {
 	public:
+		MazeSide();
 		MazeSide(
 			unsigned int size,
 			std::string& definition,
 			XMVECTOR& position,
-			XMVECTOR& rotation );
+			XMVECTOR& rotation,
+			EntitySystem& es );
 
-		XMVECTOR& GetPosition() const;
-		XMVECTOR& GetRotation() const;
 		void SetPosition( XMVECTOR& position );
+		void SetPosition( float x, float y, float z );
+		XMVECTOR& GetPosition() const;
+
 		void SetRotation( XMVECTOR& rotation );
+		void SetRotation( float x, float y, float z, float w );
+		XMVECTOR& GetRotation() const;
+
+		void SetMazeSize( unsigned int size );
+		void SetMazeDefinition( const std::string& definition );
+
+		void ProcessMaze( EntitySystem& es );
 
 	private:
 		MazeSide( const MazeSide& );
@@ -37,7 +48,7 @@ class MazeSide
 
 		std::vector< Entity >  _walls;
 		std::string            _maze_data;
-		unsigned int		   _maze_size;
+		unsigned int		   _size;
 		AlignedPtr< XMVECTOR > _position;
 		AlignedPtr< XMVECTOR > _rotation;
 };

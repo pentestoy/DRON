@@ -25,8 +25,6 @@ class Maze
 		Maze( const Maze& );
 		Maze& operator=( const Maze& );
 
-		void GenerateMaze();
-
 		std::vector< MazeSide* > _sides;
 		EntitySystem&			 _entity_system;
 };

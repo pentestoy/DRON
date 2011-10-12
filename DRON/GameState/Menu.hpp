@@ -28,8 +28,6 @@ class Menu : public GameState
 		Menu( const Menu& );
 		Menu& operator=( const Menu& );
 
-		//void CreateTestEntities();
-
 		void ProcessInput();
 
 		EntitySystem&	_entity_system;
@@ -40,7 +38,6 @@ class Menu : public GameState
 
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;
-		//std::vector< Entity > _entities;
 };
 
 #endif  MENU_HPP
