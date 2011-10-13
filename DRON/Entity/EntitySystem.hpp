@@ -19,7 +19,7 @@ struct BaseComponentData;
 class EntitySystem
 {
 	public:
-		EntitySystem() { }
+		EntitySystem();
 		~EntitySystem();
 		
 		typedef BaseComponent* ( *ComponentCreator )();
@@ -37,9 +37,14 @@ class EntitySystem
 		void GetEntitiesByComponentType( COMPONENT_TYPE type, EntityVector& v );
 		void GetEntityComponents( Entity e, BaseComponentPtrVector& v );
 
-		BaseComponent::Data* GetComponentData(
+		const BaseComponent::Data& GetComponentData(
 			Entity e,
 			COMPONENT_TYPE type );
+
+		void SetComponentData(
+			Entity e,
+			COMPONENT_TYPE type,
+			BaseComponent::Data& data );
 
 		static void Register( COMPONENT_TYPE type, ComponentCreator creator );
 

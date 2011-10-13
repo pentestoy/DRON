@@ -7,12 +7,12 @@
 #include "EntitySystem.hpp"
 #include "Components/Components.hpp"
 #include <algorithm>
-#if defined( DEBUG ) || defined( _DEBUG )
 #include <cassert>
-#endif
-
 #include <Windows.h>
 #include <sstream>
+
+EntitySystem::EntitySystem()
+{ }
 
 EntitySystem::~EntitySystem()
 {
@@ -141,27 +141,53 @@ void EntitySystem::GetEntityComponents( Entity e, std::vector< BaseComponent* >&
 		v.insert( v.end(), ec_iter->second.begin(), ec_iter->second.end() );
 }
 
-BaseComponent::Data* EntitySystem::GetComponentData(
-	Entity entity,
+const BaseComponent::Data& EntitySystem::GetComponentData(
+	Entity e,
 	COMPONENT_TYPE type )
 {
 	EntityComponentMap::iterator ec_iter =
-		_entity_map.find( entity );
+		_entity_map.find( e );
 
-	if( ec_iter != _entity_map.end() )
+	//Ensure it's a valid entity
+	assert( ec_iter != _entity_map.end() );
+
+	//Now we look for the requested component
+	BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
+	while( bc_iter != ec_iter->second.end() )
 	{
-		BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
-		while( bc_iter != ec_iter->second.end() )
-		{
-			if( ( *bc_iter )->GetType() == type )
-			{
-				return &const_cast< BaseComponent* >( ( *bc_iter ) )->GetData();
-			}
+		if( ( *bc_iter )->GetType() == type )
+			break;
 
-			++bc_iter;
-		}
+		++bc_iter;
 	}
-	return 0;
+
+	assert( bc_iter != ec_iter->second.end() );
+	return ( *bc_iter )->GetData();
+}
+
+void EntitySystem::SetComponentData(
+	Entity e,
+	COMPONENT_TYPE type,
+	BaseComponent::Data& data )
+{
+	EntityComponentMap::iterator ec_iter =
+		_entity_map.find( e );
+
+	//Ensure it's a valid entity
+	assert( ec_iter != _entity_map.end() );
+
+	//Now we look for the requested component
+	BaseComponentPtrSet::iterator bc_iter = ec_iter->second.begin();
+	while( bc_iter != ec_iter->second.end() )
+	{
+		if( ( *bc_iter )->GetType() == type )
+			break;
+
+		++bc_iter;
+	}
+
+	assert( bc_iter != ec_iter->second.end() );
+	( *bc_iter )->SetData( data );
 }
 
 void EntitySystem::Register( COMPONENT_TYPE type, ComponentCreator creator_fn )

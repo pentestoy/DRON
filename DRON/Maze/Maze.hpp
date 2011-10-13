@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <D3D11.h>
 #include "../Entity/Entity.hpp"
 #include "../Utility/AlignedPtr.hpp"
 
@@ -25,8 +26,12 @@ class Maze
 		Maze( const Maze& );
 		Maze& operator=( const Maze& );
 
+		void BuildMazeMesh();
+
 		std::vector< MazeSide* > _sides;
 		EntitySystem&			 _entity_system;
+		ID3D11Buffer*			 _maze_vb;
+		ID3D11Buffer*			 _maze_ib;
 };
 
 #endif //MAZE_MAZE_HPP

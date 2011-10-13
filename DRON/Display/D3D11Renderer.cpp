@@ -122,41 +122,40 @@ void D3D11Renderer::BuildBatchLists(
 	std::vector< Entity >::iterator e_iter = entities.begin();
 	while( e_iter != entities.end() )
 	{
-		RenderableComponent::Data* rcd_ptr =
-			static_cast< RenderableComponent::Data* >(
+		const RenderableComponent::Data& render_data_ptr =
+			static_cast< const RenderableComponent::Data& >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
-		if( rcd_ptr ) 
+
+		/* TODO: Right now, we're just sorting by mesh name. That will
+			*       likely have to change at some point.
+			*/
+		/* If the entry has already been created then its entities vector
+			* won't be empty.
+			*/
+		std::string key = render_data_ptr._mesh_name;
+		if( batches[ key ]._entities.size() == 0 )
 		{
-			/* TODO: Right now, we're just sorting by mesh name. That will
-			 *       likely have to change at some point.
-			 */
-			/* If the entry has already been created then its entities vector
-			 * won't be empty.
-			 */
-			std::string key = rcd_ptr->_mesh_name;
-			if( batches[ key ]._entities.size() == 0 )
-			{
-				MeshLocator ml( _device );
-				VertexShaderLocator vsl( _device );
-				PixelShaderLocator psl( _device );
-				batches[ key ]._mesh_res_ptr =
-					ml.RequestPtr( rcd_ptr->_mesh_name );
-				batches[ key ]._vertex_shader_res_ptr =
-					vsl.RequestPtr(
-						rcd_ptr->_vertex_shader_filename,
-						rcd_ptr->_vertex_shader
-					);
-				batches[ key ]._layout_res_ptr =
-					vsl.GetInputLayout( batches[ key ]._vertex_shader_res_ptr );
-				batches[ rcd_ptr->_mesh_name ]._pixel_shader_res_ptr =
-					psl.RequestPtr(
-						rcd_ptr->_pixel_shader_filename,
-						rcd_ptr->_pixel_shader
-					);
-			}
-			batches[ rcd_ptr->_mesh_name ]._entities.push_back( *e_iter );
 			MeshLocator ml( _device );
+			VertexShaderLocator vsl( _device );
+			PixelShaderLocator psl( _device );
+			batches[ key ]._mesh_res_ptr =
+				ml.RequestPtr( render_data_ptr._mesh_name );
+			batches[ key ]._vertex_shader_res_ptr =
+				vsl.RequestPtr(
+					render_data_ptr._vertex_shader_filename,
+					render_data_ptr._vertex_shader
+				);
+			batches[ key ]._layout_res_ptr =
+				vsl.GetInputLayout( batches[ key ]._vertex_shader_res_ptr );
+			batches[ render_data_ptr._mesh_name ]._pixel_shader_res_ptr =
+				psl.RequestPtr(
+					render_data_ptr._pixel_shader_filename,
+					render_data_ptr._pixel_shader
+				);
 		}
+		batches[ render_data_ptr._mesh_name ]._entities.push_back( *e_iter );
+		MeshLocator ml( _device );
+
 		++e_iter;
 	}
 }
@@ -216,14 +215,14 @@ void D3D11Renderer::FillInstanceBuffer(
 
 	while( e_iter != entities.end() )
 	{
-		XformComponent::Data* xcd_ptr =
-			static_cast< XformComponent::Data* >(
+		const XformComponent::Data& xform_data_ptr =
+			static_cast< const XformComponent::Data& >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_XFORM ) );
 
 		InstanceData id;
-		XMVECTOR translation = xcd_ptr->_position;
-		XMVECTOR rotation    = xcd_ptr->_rotation;
-		XMVECTOR scale       = xcd_ptr->_scale;
+		XMVECTOR translation = xform_data_ptr._position;
+		XMVECTOR rotation    = xform_data_ptr._rotation;
+		XMVECTOR scale       = xform_data_ptr._scale;
 		XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 		id._xform = XMMatrixAffineTransformation(
 			scale,
@@ -231,9 +230,10 @@ void D3D11Renderer::FillInstanceBuffer(
 			rotation,
 			translation );
 
-		RenderableComponent::Data* rcd_ptr = static_cast< RenderableComponent::Data* >(
-			_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
-		id._color = rcd_ptr->_color;
+		const RenderableComponent::Data& render_data_ptr =
+			static_cast< const RenderableComponent::Data& >(
+				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
+		id._color = render_data_ptr._color;
 
 		id_array.push_back( id );
 		++e_iter;
@@ -247,14 +247,14 @@ void D3D11Renderer::FillInstanceBuffer(
 
 XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
 {
-	CameraComponent::Data* ccd_ptr = static_cast< CameraComponent::Data* >(
-		_entity_system.GetComponentData( camera, COMPONENT_CAMERA ) );
-	assert( ccd_ptr );
+	const CameraComponent::Data& camera_data_ptr =
+		static_cast< const CameraComponent::Data& >(
+			_entity_system.GetComponentData( camera, COMPONENT_CAMERA ) );
 
 	XMMATRIX matrix = XMMatrixLookAtLH(
-		ccd_ptr->_position,
-		ccd_ptr->_lookat,
-		ccd_ptr->_up );
+		camera_data_ptr._position,
+		camera_data_ptr._lookat,
+		camera_data_ptr._up );
 
 	return matrix;
 }

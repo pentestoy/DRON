@@ -36,6 +36,10 @@ class Menu : public GameState
 
 		Maze*			_maze;
 
+		float	_theta; //0 is -Z axis, increases ccw looking down the +Y axis.
+		float	_phi;   //0 is XZ plane increases going up and around.
+		ACTION  _direction;
+
 		typedef std::deque< ACTION > ActionDeque;
 		ActionDeque	_actions;
 };

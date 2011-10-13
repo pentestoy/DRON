@@ -13,6 +13,8 @@
 #include "../Entity/EntitySystem.hpp"
 #include "../Entity/Components/RenderableComponent.hpp"
 #include "../Entity/Components/XformComponent.hpp"
+#include "../Resource/MeshLocator.hpp"
+#include "../Utility/Geometry.hpp"
 #include "../Utility/Rotations.hpp"
 
 const char maze_def[] =
@@ -78,10 +80,29 @@ Maze::Maze( const std::string& filename, EntitySystem& es )
 	rotation = XMQuaternionRotationRollPitchYaw( 0.0f, -XM_PIDIV2, 0.0f );
 	ms = new MazeSide( 31, maze_definition, position, rotation, es );
 	_sides.push_back( ms );
+
+	//BuildMazeMesh();
 }
 
 void Maze::GetRenderableEntities( std::vector< Entity >& entities )
 {
 	for( unsigned int count = 0; count < _sides.size(); ++count )
 		entities.insert( entities.begin(), _sides[ count ]->_walls.begin(), _sides[ count ]->_walls.end() );
+}
+
+void Maze::BuildMazeMesh()
+{
+	unsigned int vertex_count = 0;
+	unsigned int index_count = 0;
+	for( unsigned int count = 0; count < _sides.size(); ++count )
+	{
+		std::vector< Entity > entities = _sides[ count ]->_walls;
+		std::vector< Entity >::iterator e_iter = entities.begin();
+		while( e_iter != entities.end() )
+		{
+			//MeshLocator ml();
+			//Mesh& m = 
+			++e_iter;
+		}
+	}
 }

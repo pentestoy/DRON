@@ -23,6 +23,5 @@ Mesh::~Mesh()
 	if( _index_buffer )
 	{
 		_index_buffer->Release();
-		//_index_buffer = 0;
 	}
 }
