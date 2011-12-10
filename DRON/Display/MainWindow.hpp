@@ -16,7 +16,7 @@ class App;
 class MainWindow : public BaseWindow
 {
     public:
-        MainWindow( HINSTANCE instance, App& app, DisplaySettings& ds );
+        explicit MainWindow( HINSTANCE instance, App& app, DisplaySettings& ds );
 		virtual ~MainWindow() { }
 
         const HWND GetHWND() const { return _window; }
@@ -26,6 +26,7 @@ class MainWindow : public BaseWindow
         virtual LRESULT CALLBACK Proc( HWND, UINT, WPARAM, LPARAM );
 
     private:
+		//prevent copying
 		MainWindow( const MainWindow& );
 		MainWindow& operator=( const MainWindow& );
 
@@ -44,7 +45,7 @@ class MainWindow : public BaseWindow
 		std::wstring	_title;
 		std::wstring	_classname;
 
-        std::auto_ptr< DisplaySettings >	_ds_ptr;
+		std::unique_ptr< DisplaySettings >	_ds_ptr;
 };
 
 #endif  //MAIN_WINDOW_HPP

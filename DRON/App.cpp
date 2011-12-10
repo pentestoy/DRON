@@ -10,21 +10,16 @@
 #include "Display/MainWindow.hpp"
 #include "Entity/EntitySystem.hpp"
 #include "GameState/Menu.hpp"
+#include "Script/Script.hpp"
 #include "Utility/StringHelper.hpp"
 
 App::App( HINSTANCE instance )
 	: _instance( instance ), _entity_system_ptr( new EntitySystem() ),
-	  _main_window_ptr( 0 ), _renderer_ptr( 0 ), _menu_ptr( 0 ),
-	  _world_ptr( 0 ), _current_state_ptr( 0 )
+	  _script_ptr( new Script( "Data/Scripts/" ) )
 { }
 
 App::~App()
 {
-	SAFE_DELETE( _renderer_ptr );
-	SAFE_DELETE( _main_window_ptr );
-	SAFE_DELETE( _menu_ptr );
-	SAFE_DELETE( _entity_system_ptr );
-
 	CoUninitialize();
 }
 
@@ -39,7 +34,7 @@ bool App::Initialize()
 	DisplaySettings ds = dsd.GetDisplaySettings();
 	try
 	{
-		_main_window_ptr = new MainWindow( _instance, *this, ds );
+		_main_window_ptr.reset( new MainWindow( _instance, *this, ds ) );
 	}
 	catch( std::exception& e )
 	{
@@ -48,11 +43,11 @@ bool App::Initialize()
 		return false;
 	}
 
-	_renderer_ptr = new D3D11Renderer(
+	_renderer_ptr.reset( new D3D11Renderer(
 		_main_window_ptr->GetHWND(),
 		ds,
-		*_entity_system_ptr );
-	_menu_ptr = new Menu( *_entity_system_ptr, *_renderer_ptr );
+		*_entity_system_ptr ) );
+	_menu_ptr.reset( new Menu( *_entity_system_ptr, *_renderer_ptr, *_script_ptr ) );
 	_current_state_ptr = _menu_ptr;
 
 	_timer.Reset();

@@ -12,7 +12,12 @@
 #include <sstream>
 
 EntitySystem::EntitySystem()
-{ }
+{
+	Register( CameraComponent::GetTypeStatic(), CameraComponent::Create );
+	Register( MovableComponent::GetTypeStatic(), MovableComponent::Create );
+	Register( RenderableComponent::GetTypeStatic(), RenderableComponent::Create );
+	Register( XformComponent::GetTypeStatic(), XformComponent::Create );
+}
 
 EntitySystem::~EntitySystem()
 {

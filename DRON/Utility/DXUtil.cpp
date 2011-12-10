@@ -6,6 +6,7 @@
 
 #include "DXUtil.hpp"
 
+/*
 float DistanceXY(D3DXVECTOR2 v1, D3DXVECTOR2 v2)
 {
     float dx = v1.x - v2.x;
@@ -33,7 +34,7 @@ float DistanceXY(D3DXVECTOR3 v1, D3DXVECTOR2 v2)
  *  We can use this to determine parallelity. cos(angle) should be 1 for true
  *  parallelity. We return true if it's > 0.9998 to account for floating point
  *  errors.
- */
+ * /
 bool AreParallel( const D3DXVECTOR3& v1, const D3DXVECTOR3& v2 )
 {
     if( ( D3DXVec3Dot(&v1, &v2) /
@@ -43,3 +44,4 @@ bool AreParallel( const D3DXVECTOR3& v1, const D3DXVECTOR3& v2 )
 
     return false;
 }
+*/

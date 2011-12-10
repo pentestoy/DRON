@@ -57,6 +57,7 @@ MeshResource& MeshCache::Load( const std::string& filename )
 
 	const aiScene* scene_ptr = importer.ReadFile( file_and_path,
 		aiProcess_JoinIdenticalVertices |
+		aiProcess_GenSmoothNormals      |
 		aiProcess_Triangulate           |
 		aiProcess_ImproveCacheLocality  |
 		aiProcess_SortByPType           |
@@ -99,7 +100,7 @@ Mesh* MeshCache::BuildMesh( const aiScene* scene_ptr, const std::string& filenam
 	for( unsigned int i = 0; i < ai_mesh_ptr->mNumVertices; ++i )
 	{
 		aiVector3D v = ai_mesh_ptr->mVertices[ i ];
-		XMVECTOR vert = XMVectorSet( v.x, v.y, v.z, 1.0f );
+		XMVECTOR vert = XMVectorSet( v.x, v.y, v.z, 0.0f );
 		vert = XMVector3Transform( vert, xform );
 		XMFLOAT3 final;
 		XMStoreFloat3( &final, vert );

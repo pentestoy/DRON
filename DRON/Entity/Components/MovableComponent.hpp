@@ -23,6 +23,5 @@ class MovableComponent : public TplComponent< MovableComponent >
 };
 
 COMPONENT_TYPE TplComponent< MovableComponent >::_type = COMPONENT_MOVABLE;
-AutoRegistrar< MovableComponent > TplComponent< MovableComponent >::_registrar;
 
 #endif  //MOVALBE_COMPONENT_HPP

@@ -11,28 +11,29 @@
 #include "../Entity/Components/ComponentTypes.hpp"
 #include "../Entity/Components/Components.hpp"
 #include "../Maze/Maze.hpp"
+#include "../Script/Script.hpp"
 
-Menu::Menu( EntitySystem& es, D3D11Renderer& r )
-	: _entity_system( es ), _renderer( r ),
+Menu::Menu( EntitySystem& es, D3D11Renderer& r, Script& s )
+	: _entity_system( es ), _renderer( r ), _script( s ),
 	  _theta( 0 ), _phi( 0 ), _direction( ACTION_MOVE_STOP ),
 	  _camera( _entity_system.CreateNewEntity() ),
-	  _maze( new Maze( "Maze01.lua", es ) )
+	  _maze( new Maze( s, "Mazes/maze_menu.lua", es ) )
 {
 	XMVECTOR player_start = XMVectorSet( 0.0f, -7.0f, -15.0f, 0.0f );
 	player_start = XMVector3Normalize( player_start );
 	player_start *= 42.0f;
 
-	CameraComponent::Data cd;
-	cd._position = player_start;
-	cd._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
-	cd._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
-	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, cd );
+	CameraComponent::Data camera_data;
+	camera_data._position = player_start;
+	camera_data._lookat   = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
+	camera_data._up       = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
+	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_CAMERA, camera_data );
 
-	MovableComponent::Data md;
-	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_MOVABLE, md );
+	MovableComponent::Data movable_data;
+	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_MOVABLE, movable_data );
 
-	XformComponent::Data xd;
-	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xd );
+	XformComponent::Data xform_data;
+	_entity_system.CreateAndAttachComponent( _camera, COMPONENT_XFORM, xform_data );
 
 	_mapped_actions.insert( ActionMapPair( VK_RETURN, ACTION_SELECT ) );
 	_mapped_actions.insert( ActionMapPair( VK_UP, ACTION_MOVE_UP ) );
@@ -49,16 +50,16 @@ void Menu::Update( float dt )
 	ProcessInput();
 
 	if( _direction == ACTION_MOVE_UP )
-		_phi += ( XM_PIDIV2 * dt ) / 5.0f;
+		_phi += ( XM_PIDIV2 * dt ) / 9.0f;
 
 	else if( _direction == ACTION_MOVE_DOWN )
-		_phi -= ( XM_PIDIV2 * dt ) / 5.0f;
+		_phi -= ( XM_PIDIV2 * dt ) / 9.0f;
 
 	else if( _direction == ACTION_MOVE_RIGHT )
-		_theta += ( XM_PIDIV2 * dt ) / 5.0f;
+		_theta += ( XM_PIDIV2 * dt ) / 9.0f;
 
 	else if( _direction == ACTION_MOVE_LEFT )
-		_theta -= ( XM_PIDIV2 * dt ) / 5.0f;
+		_theta -= ( XM_PIDIV2 * dt ) / 9.0f;
 
 	const CameraComponent::Data& camera_data =
 		static_cast< const CameraComponent::Data& >( _entity_system.GetComponentData( _camera, COMPONENT_CAMERA ) );

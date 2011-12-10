@@ -9,6 +9,8 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include "../Entity/Entity.hpp"
 
 struct aiScene;
 struct Mesh;

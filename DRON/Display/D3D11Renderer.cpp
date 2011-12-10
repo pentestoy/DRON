@@ -122,39 +122,38 @@ void D3D11Renderer::BuildBatchLists(
 	std::vector< Entity >::iterator e_iter = entities.begin();
 	while( e_iter != entities.end() )
 	{
-		const RenderableComponent::Data& render_data_ptr =
+		const RenderableComponent::Data& render_data =
 			static_cast< const RenderableComponent::Data& >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
 
 		/* TODO: Right now, we're just sorting by mesh name. That will
 			*       likely have to change at some point.
 			*/
-		/* If the entry has already been created then its entities vector
+		/* If the batch has already been created then its entities vector
 			* won't be empty.
 			*/
-		std::string key = render_data_ptr._mesh_name;
+		std::string key = render_data._mesh_name;
 		if( batches[ key ]._entities.size() == 0 )
 		{
 			MeshLocator ml( _device );
 			VertexShaderLocator vsl( _device );
 			PixelShaderLocator psl( _device );
 			batches[ key ]._mesh_res_ptr =
-				ml.RequestPtr( render_data_ptr._mesh_name );
+				ml.RequestPtr( render_data._mesh_name );
 			batches[ key ]._vertex_shader_res_ptr =
 				vsl.RequestPtr(
-					render_data_ptr._vertex_shader_filename,
-					render_data_ptr._vertex_shader
+					render_data._vertex_shader_filename,
+					render_data._vertex_shader
 				);
 			batches[ key ]._layout_res_ptr =
 				vsl.GetInputLayout( batches[ key ]._vertex_shader_res_ptr );
-			batches[ render_data_ptr._mesh_name ]._pixel_shader_res_ptr =
+			batches[ key ]._pixel_shader_res_ptr =
 				psl.RequestPtr(
-					render_data_ptr._pixel_shader_filename,
-					render_data_ptr._pixel_shader
+					render_data._pixel_shader_filename,
+					render_data._pixel_shader
 				);
 		}
-		batches[ render_data_ptr._mesh_name ]._entities.push_back( *e_iter );
-		MeshLocator ml( _device );
+		batches[ key ]._entities.push_back( *e_iter );
 
 		++e_iter;
 	}
@@ -215,14 +214,14 @@ void D3D11Renderer::FillInstanceBuffer(
 
 	while( e_iter != entities.end() )
 	{
-		const XformComponent::Data& xform_data_ptr =
+		const XformComponent::Data& xform_data =
 			static_cast< const XformComponent::Data& >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_XFORM ) );
 
 		InstanceData id;
-		XMVECTOR translation = xform_data_ptr._position;
-		XMVECTOR rotation    = xform_data_ptr._rotation;
-		XMVECTOR scale       = xform_data_ptr._scale;
+		XMVECTOR translation = xform_data._position;
+		XMVECTOR rotation    = xform_data._rotation;
+		XMVECTOR scale       = xform_data._scale;
 		XMVECTOR rot_origin  = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
 		id._xform = XMMatrixAffineTransformation(
 			scale,
@@ -230,10 +229,10 @@ void D3D11Renderer::FillInstanceBuffer(
 			rotation,
 			translation );
 
-		const RenderableComponent::Data& render_data_ptr =
+		const RenderableComponent::Data& render_data =
 			static_cast< const RenderableComponent::Data& >(
 				_entity_system.GetComponentData( *e_iter, COMPONENT_RENDERABLE ) );
-		id._color = render_data_ptr._color;
+		id._color = render_data._color;
 
 		id_array.push_back( id );
 		++e_iter;
@@ -247,14 +246,14 @@ void D3D11Renderer::FillInstanceBuffer(
 
 XMMATRIX D3D11Renderer::BuildCameraMatrix( Entity camera )
 {
-	const CameraComponent::Data& camera_data_ptr =
+	const CameraComponent::Data& camera_data =
 		static_cast< const CameraComponent::Data& >(
 			_entity_system.GetComponentData( camera, COMPONENT_CAMERA ) );
 
 	XMMATRIX matrix = XMMatrixLookAtLH(
-		camera_data_ptr._position,
-		camera_data_ptr._lookat,
-		camera_data_ptr._up );
+		camera_data._position,
+		camera_data._lookat,
+		camera_data._up );
 
 	return matrix;
 }

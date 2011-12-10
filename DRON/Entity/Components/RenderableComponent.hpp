@@ -32,6 +32,5 @@ class RenderableComponent : public TplComponent< RenderableComponent >
 };
 
 COMPONENT_TYPE TplComponent< RenderableComponent >::_type = COMPONENT_RENDERABLE;
-AutoRegistrar< RenderableComponent > TplComponent< RenderableComponent >::_registrar;
 
 #endif  //RENDERABLE_COMPONENT_HPP

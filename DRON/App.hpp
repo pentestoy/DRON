@@ -10,16 +10,16 @@
 #define APP_HPP
 
 #include <Windows.h>
+#include <memory>
 #include "Entity/Entity.hpp"
 #include "Utility/Timer.hpp"
-
-#define SAFE_DELETE( x ) if( x ){ delete x; x = 0; }
 
 class D3D11Renderer;
 class EntitySystem;
 class GameState;
 class MainWindow;
 class Menu;
+class Script;
 class World;
 class App
 {
@@ -30,7 +30,7 @@ class App
         int Run();
 		void HandleKeypress( const WPARAM key );
 
-    protected:
+    private:
         //prevent copies
         App( const App& );
         App& operator=( const App& );
@@ -38,13 +38,19 @@ class App
         bool Initialize();
 
 		HINSTANCE		_instance;
-		EntitySystem*	_entity_system_ptr;
-		MainWindow*		_main_window_ptr;
-		D3D11Renderer*	_renderer_ptr;
+		std::shared_ptr< EntitySystem >  _entity_system_ptr;
+		std::shared_ptr< D3D11Renderer > _renderer_ptr;
+		std::unique_ptr< MainWindow >	 _main_window_ptr;
+		std::shared_ptr< Script >		 _script_ptr;
 
+		/*
 		Menu*			_menu_ptr;
 		World*			_world_ptr;
 		GameState*		_current_state_ptr;
+		*/
+		std::shared_ptr< GameState > _menu_ptr;
+		std::shared_ptr< GameState > _world_ptr;
+		std::shared_ptr< GameState > _current_state_ptr;
 
 		Timer			_timer;
 };

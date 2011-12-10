@@ -11,7 +11,7 @@ template< typename T >
 class AlignedPtr
 {
 	public:
-		AlignedPtr();
+		explicit AlignedPtr();
 		~AlignedPtr();
 
 		bool ResetWithDefault();
@@ -79,12 +79,7 @@ void AlignedPtr< T >::Reset( const T& value )
 	_ptr = new( buffer ) T;
 	}
 
-	*_ptr = value;/*XMVectorSet(
-		XMVectorGetX( value ),
-		XMVectorGetY( value ),
-		XMVectorGetZ( value ),
-		XMVectorGetW( value )
-	);*/
+	*_ptr = value;
 }
 
 template< typename T >

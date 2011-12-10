@@ -29,29 +29,6 @@ class __declspec( align( 16 ) ) BaseComponent
 		virtual void SetData( BaseComponent::Data& data ) = 0;
 };
 
-/**********************************************************
- * AutoRegistrar< T >
- * When instantiated, the constructor auto-registers
- * Create(), which creates a new T*, with the EntitySystem.
- * Each component type inherits from a templated class that
- * has a static AutoRegistrar< T > member, so that 
- * instantiation occurs at program startup.
- */
-template< typename T >
-struct AutoRegistrar
-{
-	AutoRegistrar()
-		{ EntitySystem::Register( TplComponent< T >::GetTypeStatic(), AutoRegistrar< T >::Create ); }
-	static BaseComponent* Create();
-};
-
-template< typename T >
-BaseComponent* AutoRegistrar< T >::Create()
-{
-	void* buffer = _aligned_malloc( sizeof( T ), 16 );
-	return new( buffer ) T;
-}
-
 /***********************************************
  * TplComponent< T >
  * Each component T derives from this class.
@@ -60,9 +37,10 @@ template< class T >
 class TplComponent : public BaseComponent
 {
 	public:
-		TplComponent() { &_registrar; }
+		TplComponent() { }
 		virtual COMPONENT_TYPE GetType() const { return _type; }
 		static COMPONENT_TYPE GetTypeStatic() { return _type; }
+		static BaseComponent* Create();
 
 		virtual bool operator==( const BaseComponent& other ) const
 			{ return GetType() == other.GetType(); }
@@ -73,7 +51,13 @@ class TplComponent : public BaseComponent
 
 	private:
 		static COMPONENT_TYPE		_type;
-		static AutoRegistrar< T >	_registrar;
 };
+
+template< class T >
+BaseComponent* TplComponent< T >::Create()
+{
+	void* buffer = _aligned_malloc( sizeof( T ), 16 );
+	return new( buffer ) T;
+}
 
 #endif  //BASE_COMPONENT_HPP

@@ -15,10 +15,11 @@
 class EntitySystem;
 class D3D11Renderer;
 class Maze;
+class Script;
 class Menu : public GameState
 {
 	public:
-		Menu( EntitySystem& es, D3D11Renderer& r );
+		Menu( EntitySystem& es, D3D11Renderer& r, Script& s );
 		virtual ~Menu() { }
 
 		virtual void Update( float dt );
@@ -32,6 +33,8 @@ class Menu : public GameState
 
 		EntitySystem&	_entity_system;
 		D3D11Renderer&	_renderer;
+		Script&			_script;
+
 		Entity			_camera;
 
 		Maze*			_maze;

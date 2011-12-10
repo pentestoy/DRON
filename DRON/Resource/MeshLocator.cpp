@@ -5,9 +5,15 @@
  */
 
 #include "MeshLocator.hpp"
+#include <cassert>
 #include "MeshCache.hpp"
 
 MeshCache* MeshLocator::_cache = 0;
+
+MeshLocator::MeshLocator()
+{
+	assert( _cache );
+}
 
 MeshLocator::MeshLocator( GFXDevice& device )
 {
@@ -30,3 +36,4 @@ void MeshLocator::ShutDown()
 	delete _cache;
 	_cache = 0;
 }
+

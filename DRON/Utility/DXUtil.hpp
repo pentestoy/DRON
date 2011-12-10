@@ -30,10 +30,11 @@
 
 #define DXRelease(x) { if(x){ x->Release();x = 0; } }
 
+/*
 float DistanceXY( D3DXVECTOR2, D3DXVECTOR2 );
 float DistanceXY( D3DXVECTOR2, D3DXVECTOR3 );
 float DistanceXY( D3DXVECTOR3, D3DXVECTOR2 );
 
 bool AreParallel( const D3DXVECTOR3&, const D3DXVECTOR3& );
-
+*/
 #endif  DXUTIL_HPP

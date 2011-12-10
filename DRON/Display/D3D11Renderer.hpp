@@ -42,7 +42,8 @@ class D3D11Renderer
         void OnResize( DisplaySettings& );
         void SetFullscreen( bool );
 
-    protected:
+    private:
+		//prevent copying
 		D3D11Renderer( const D3D11Renderer& );
 		D3D11Renderer& operator=( const D3D11Renderer& );
 

@@ -29,6 +29,5 @@ class XformComponent : public TplComponent< XformComponent >
 };
 
 COMPONENT_TYPE TplComponent< XformComponent >::_type = COMPONENT_XFORM;
-AutoRegistrar< XformComponent > TplComponent< XformComponent >::_registrar;
 
 #endif  //XFORM_COMPONENT_HPP

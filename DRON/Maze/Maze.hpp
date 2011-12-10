@@ -15,10 +15,11 @@
 
 class EntitySystem;
 class MazeSide;
+class Script;
 class Maze
 {
 	public:
-		Maze( const std::string& filename, EntitySystem& es );
+		Maze( Script& s, const std::string& filename, EntitySystem& es );
 		
 		void GetRenderableEntities( std::vector< Entity >& entities );
 
@@ -26,12 +27,9 @@ class Maze
 		Maze( const Maze& );
 		Maze& operator=( const Maze& );
 
-		void BuildMazeMesh();
-
 		std::vector< MazeSide* > _sides;
 		EntitySystem&			 _entity_system;
-		ID3D11Buffer*			 _maze_vb;
-		ID3D11Buffer*			 _maze_ib;
+		Script&					 _script;
 };
 
 #endif //MAZE_MAZE_HPP

@@ -30,6 +30,5 @@ class CameraComponent : public TplComponent< CameraComponent >
 };
 
 COMPONENT_TYPE TplComponent< CameraComponent >::_type = COMPONENT_CAMERA;
-AutoRegistrar< CameraComponent > TplComponent< CameraComponent >::_registrar;
 
 #endif  //CAMERA_COMPONENT_HPP

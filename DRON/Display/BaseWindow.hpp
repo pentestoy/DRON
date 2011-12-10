@@ -23,6 +23,7 @@ class BaseWindow
 		const HINSTANCE GetInstance() const { return _instance; }
 
     private:
+		//prevent copying
 		BaseWindow( const BaseWindow& );
 		BaseWindow& operator=( const BaseWindow& );
 

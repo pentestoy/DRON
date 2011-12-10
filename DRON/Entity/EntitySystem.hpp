@@ -90,6 +90,7 @@ class EntitySystem
 		}
 		EntityVector			_entities;
 		EntityVector			_dead_entities;
+		//TODO: use shared_ptrs in the map and return weak_ptrs when queried for components
 		EntityComponentMap		_entity_map;
 		ComponentTypeEntityMap	_component_type_map;
 		ComponentVector			_orphaned_components;
