@@ -7,7 +7,6 @@
 
 #include "targetver.h"
 #include <Windows.h>
-#include <vld.h>
 #include "App.hpp"
 
 int WINAPI wWinMain( HINSTANCE instance, HINSTANCE, LPTSTR, int )

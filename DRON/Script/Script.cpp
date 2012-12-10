@@ -39,3 +39,9 @@ std::string Script::GetString( const std::string& variable ) const
 	LuaTempResult ltr = _interpreter_ptr->eval( variable );
 	return std::string( static_cast< std::string >( ltr ) );
 }
+
+int Script::GetNumber( const std::string& variable ) const
+{
+	LuaTempResult ltr = _interpreter_ptr->eval( variable );
+	return int( static_cast< int >( ltr ) );
+}

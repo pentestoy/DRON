@@ -20,6 +20,7 @@ class Script
 
 		bool DoFile( const std::string& filename );
 		std::string GetString( const std::string& variable ) const;
+		int GetNumber( const std::string& variable ) const;
 
 	private:
 		Script( const Script& );

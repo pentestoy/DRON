@@ -43,11 +43,6 @@ class App
 		std::unique_ptr< MainWindow >	 _main_window_ptr;
 		std::shared_ptr< Script >		 _script_ptr;
 
-		/*
-		Menu*			_menu_ptr;
-		World*			_world_ptr;
-		GameState*		_current_state_ptr;
-		*/
 		std::shared_ptr< GameState > _menu_ptr;
 		std::shared_ptr< GameState > _world_ptr;
 		std::shared_ptr< GameState > _current_state_ptr;

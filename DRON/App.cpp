@@ -58,7 +58,10 @@ bool App::Initialize()
 int App::Run()
 {
     if( !Initialize() )
+	{
+		MessageBox( 0, L"DRON failed to properly initialize and must shut down.", L"DRON Fatal Error", MB_OK | MB_ICONEXCLAMATION );
 		return 0;
+	}
 
 	MSG msg = {0};
 	while (msg.message != WM_QUIT)

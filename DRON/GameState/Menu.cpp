@@ -95,7 +95,8 @@ void Menu::HandleKeypress( const WPARAM key )
 
 void Menu::ProcessInput()
 {
-	ActionDeque::const_iterator iter = _actions.begin();
+	//ActionDeque::const_iterator iter = _actions.begin();
+	auto iter = _actions.begin();
 	if( iter == _actions.end() )
 		return;
 
